@@ -1,0 +1,14 @@
+Must compile with JDK 1.5. (This is important for remaining compatible 
+with Android.) 
+
+No tabs please.
+
+UTF-8 is the preferred file encoding.
+
+Braces like this please {
+  //indent 2-3 spaces
+}
+
+The project includes junit.jar, version 3.8.1.
+That version is a bit stale, but for the sake of uniformity, please 
+use that version of junit for any new tests, if you create any.
