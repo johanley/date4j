@@ -1,0 +1,19 @@
+# Please edit this file to suit your taste
+
+# Eclipse items
+.project
+.classpath
+.settings/
+bin/
+
+# generated binary files
+*.class
+
+# OS Files #
+.DS_Store
+
+# non-public items used by the project owner
+private.build.xml
+classes/javadocoptions.txt
+classes/classes.txt
+inherit.gif

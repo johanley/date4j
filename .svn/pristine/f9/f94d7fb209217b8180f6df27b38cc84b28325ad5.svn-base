@@ -1,0 +1,20 @@
+javadoc
+-d C:\johanley\Projects\date4j-website\javadoc
+-sourcepath C:\johanley\Projects\date4j-trunk\classes
+-classpath C:\johanley\Projects\Libraries\junit3.8.1\junit.jar;
+-protected
+-source 1.5
+-author
+-version
+-header "<b>Version 1.5.0</b>"
+-bottom "Copyright Hirondelle Systems. Published May 18, 2013"
+-windowtitle "DATE4J Javadoc"
+-noqualifier java.*:javax.*:com.sun.*
+-stylesheetfile C:\johanley\Projects\date4j-trunk\javadoc.css
+-overview C:\johanley\Projects\date4j-trunk\classes\overview.html
+-quiet
+-linksource
+-stylesheetfile C:\johanley\Projects\date4j-trunk\highlight.css
+-link http://docs.oracle.com/javase/6/docs/api/
+-link http://docs.oracle.com/javaee/5/api/
+-link http://www.web4j.com/fish/javadoc/

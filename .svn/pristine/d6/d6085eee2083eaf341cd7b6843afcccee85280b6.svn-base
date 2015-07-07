@@ -1,0 +1,78 @@
+/* Javadoc style sheet */
+.highlight  {
+  background-color: #FFFDE3;
+}
+
+/* syntax highlighting */
+.keyword {
+  font-weight: bolder;
+  color: #000080;
+}
+.literal {
+  color: blue;
+}
+.comment {
+  color: green;
+}
+  
+/* Define colors, fonts and other style attributes here to override the defaults */
+
+/* Page background color */
+/* body { background-color: #FFFFFF } */
+body { 
+ background-color: rgb(90%, 90%, 90%); 
+ font-family: Verdana, sans-serif;
+} 
+
+/*style of bullets. */
+li {
+  list-style-type: square;
+}
+
+.opening-quote{
+  margin: 10px;
+  margin-left: 12.0em;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  /* background-color:#E5E2D5; */
+  border-top: 1px solid #C2BB9E;
+  border-left: 5px solid #C2BB9E;
+  border-right: 5px solid #C2BB9E;
+  border-bottom: 1px solid #C2BB9E;
+  padding: 10px;
+  width: 60%;
+}
+
+.author {
+ font-style: italic;
+ padding-top: 0em;
+ margin-top: 0.25em;
+ text-align: right;
+}
+
+/* Table colors */
+.TableHeadingColor     { background: #CCCCFF } /* Dark mauve */
+.TableSubHeadingColor  { background: #EEEEFF } /* Light mauve */
+.TableRowColor         { 
+  background-color: rgb(90%, 90%, 90%); 
+  /* background: #FFFFFF */
+} 
+
+/* Font used in left-hand frame lists */
+.FrameTitleFont   { font-size: 10pts; font-family: Helvetica, Arial, san-serif }
+.FrameHeadingFont { font-size: 10pts; font-family: Helvetica, Arial, san-serif }
+.FrameItemFont    { font-size: 10pts; font-family: Helvetica, Arial, san-serif }
+
+/* Example of smaller, sans-serif font in frames */
+/* .FrameItemFont  { font-size: 10pt; font-family: Helvetica, Arial, sans-serif } */
+
+/* Navigation bar fonts and colors */
+.NavBarCell1    { background-color:#EEEEFF;}/* Light mauve */
+.NavBarCell1Rev { background-color:#00008B;}/* Dark Blue */
+.NavBarFont1    { font-family: Arial, Helvetica, sans-serif; color:#000000;}
+.NavBarFont1Rev { font-family: Arial, Helvetica, sans-serif; color:#FFFFFF;}
+
+.NavBarCell2    { font-family: Arial, Helvetica, sans-serif; background-color: rgb(90%, 90%, 90%);}
+.NavBarCell3    { font-family: Arial, Helvetica, sans-serif; background-color: rgb(90%, 90%, 90%);}
+

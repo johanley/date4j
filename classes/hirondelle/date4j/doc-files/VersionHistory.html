@@ -1,0 +1,92 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Hirondelle Systems">
+   <meta name="GENERATOR" content="Mozilla/4.76 [en] (WinNT; U) [Netscape]">
+   <title>DATE4J Version History</title>
+</head>
+<style>
+body { 
+ background-color: rgb(90%, 90%, 90%); 
+ font-family: Verdana, sans-serif;
+} 
+li {
+  list-style-type: square;
+}
+</style>
+<body>
+
+
+<P><a name="VersionHistory"></a><h2>DATE4J Version History</h2>
+
+<h3>date4j.jar version 1.5.1 (Published November 19, 2013)</h3>
+Bug fix for <tt>numSecondsFrom</tt>, which failed when only a time portion was being passed.
+Thanks to Jamie Craane for the bug report. 
+
+<h3>date4j.jar version 1.5.0 (Published May 18, 2013)</h3>
+Some additions regarding nanoseconds, and explicit verification of Strings intended for the DateTime(String) constructor.
+This release is backwards-compatible.
+
+<P>Thanks to Jean-Christophe Garnier for his assistance with this release. 
+
+<P>Three methods have been added in this release.
+<ul>
+ <li><code>public static boolean isParseable(String aCandidateDateTime)</code>
+</ul>
+The above method lets you verify explicitly that text will be parseable by DateTime.
+ 
+ <P>The remaining two methods form a pair, and let you pass nanosecond values into and out of DateTime:
+<ul>
+ <li><code>public static DateTime forInstantNanos(long aNanoseconds, TimeZone aTimeZone)</code>
+ <li><code>public long getNanosecondsInstant(TimeZone aTimeZone)</code>
+</ul> 
+
+
+<h3>date4j.jar version 1.4.0 (Published July 14, 2012)</h3>
+There's a single change in this release. 
+The <tt>plus</tt> and <tt>minus</tt> methods have been extended to include fractional seconds (nanoseconds). 
+This change is not backwards compatible. (Sorry about that.)
+Existing code which calls these methods will need to add another parameter at the end.
+If you don't care about the nanoseconds, just pass a value of 0.
+
+<P>Thanks to Piero Campalani for his help with this item.
+
+<h3>date4j.jar version 1.3.0 (Published May 24, 2012)</h3>
+There's a single change in this release. The DateTime constructor that takes a String now also accepts a 'T' separating the 
+date and the time, in addition to accepting a single space as a separator. Two examples of the new syntax:
+<pre>
+2012-05-24T02:03:04
+2012-05-24T02:03:04.123456789
+</pre>
+This change is backwards-compatible. This change was added mainly for compatibility with the <i>input type='datetime-local'</i>
+defined by HTML5. It allows browser implementations to submit text of the above syntax. 
+
+<h3>date4j.jar version 1.2.0 (Published June 4, 2011)</h3>
+There are two changes in this release. This release is not backwards compatible. 
+
+<P><b>Formatting</b><br>
+The <tt>format()</tt> methods have changed implementation. 
+The style 'YYYYMMDD', for example, is now permitted. (This corrects an oversight.)
+
+<P>In addition, the text that can be passed to the <tt>format</tt> methods can now take a much wider range of values. 
+For example, a valid format String is :
+<PRE>'Now: YYYY-MM-DD hh:mm:ss'</PRE>
+This text acts like a little template. The preamble 'Now :' is simply echoed, since it contains no formatting symbols.
+
+<P>Such free-form text will often need pairs of escape characters '|', to prevent <tt>h, m, s, a, f,</tt> and so on from being interpreted 
+as formatting symbols. For example :
+<PRE>'|The date is:|  YYYY-MM-DD'</PRE>
+
+<P><b>DateTime.isValidFormatString(String)</b><br>
+This method has been removed. Since the String passed to the <tt>format()</tt> methods has no restrictions, such a 
+method no longer makes sense. 
+
+<h3>date4j.jar version 1.1.0 (Published April 13, 2011)</h3>
+Sole change: the <tt>toString</tt> method now returns a better result.
+
+<h3>date4j.jar version 1.0.0 (Published April 30, 2010)</h3>
+This is the first version of date4j. 
+
+</body>
+</html>

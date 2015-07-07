@@ -1,0 +1,99 @@
+<project name="date4j" default="build.all" basedir=".">
+  
+ <description>Ant build file for the date4j project.</description>
+
+  <!--
+   Example run:
+   >set JAVA_HOME=C:\jdk1.5.0\
+   # to show all targets:
+   >ant -projecthelp
+   # to run all targets:
+   >ant 
+   # to run a single target:
+   >ant clean
+  -->
+	
+ <property name='app.name' value='date4j'/>
+ <property name='app.version' value='1.5.1'/>
+ <!-- ADJUST this base dir as needed, on your local file system: -->
+ <property name="temp" location="C:\@build\${app.name}"/>
+ <property name="build" location="${temp}\build"/>
+ <property name="distro" location="${temp}\distro"/>
+ <property name="javadoc" location="${temp}\javadoc"/>
+ <property name="lib" location="libs"/>
+ 
+ <path id='compile.classpath'>
+   <fileset dir='libs'>
+      <include name='*.jar'/>
+   </fileset>
+ </path>
+	
+ <echo>
+  App Name   : ${app.name} 
+  App Ver    : ${app.version}
+  Build Dir  : ${build}
+  Java Home  : ${java.home}
+  Build File : ${ant.file} 
+  Run By     : ${user.name}
+  Base Dir   : ${basedir}
+ </echo>
+	
+ <target name="clean"  description="Remove all generated items.">
+  <delete dir="${temp}"/>
+ </target>
+
+  <target name="mkdirs" description="Make directories for generated items.">
+   <mkdir dir="${temp}"/>
+   <mkdir dir="${build}"/>
+   <mkdir dir="${distro}"/>
+   <mkdir dir="${javadoc}"/>
+  </target>
+  
+  <target name="compile" depends="mkdirs" description="Create class files.">
+    <javac srcdir="classes" destdir="${build}" source="1.5" encoding="UTF8" includeantruntime="false">
+     <classpath refid='compile.classpath'/>    	
+   </javac>
+   <echo>Classpath: ${toString:compile.classpath}</echo>  	
+  </target>
+  
+ <target name="jar" depends="compile" description="Unsigned jar file of compiled classes, with Manifest and License.">
+   <copy file="LICENSE.txt" todir="${build}" />
+   <jar jarfile="${distro}\${app.name}.jar" 
+     basedir="${build}" 
+     includes="**/*.class, LICENSE.txt" 
+     excludes="**/TEST*"    
+     manifest="MANIFEST.MF" 
+   />
+ </target>
+  
+  <target name="source" description="Create zip of all source files.">
+   <zip zipfile="${distro}\${app.name}-source.zip" includes="**/*.java, **/*overview.html, MANIFEST.MF, LICENSE.txt, libs/**" excludes="bin/**, inherit.gif" basedir="."/>
+  </target>
+  
+  <target name='javadoc' description='Generate javadoc for all classes, including those not part of the API.' >
+    <javadoc  
+      source='1.5'
+      sourcepath='classes'
+      destdir='${javadoc}'
+      windowtitle='${app.name} ${app.version}'
+      overview='classes/overview.html'  
+      packagenames='*.*' 
+      noqualifier='java.*:javax.*:com.sun.*'   
+      linksource='true'
+      use='true' 
+      author='true' 
+      version='true'
+      access='package'
+    	stylesheetfile='javadoc.css'
+    >
+      <classpath refid='compile.classpath'/>
+      <link href='http://docs.oracle.com/javase/6/docs/api/'/>      
+      <header><![CDATA[<h1>${app.name} ${app.version}</h1>]]></header>
+    </javadoc>
+  </target>	
+	
+  <target name="build.all" depends="clean, mkdirs, compile, jar, source, javadoc">
+    <echo message="Building all items from scratch."/>
+  </target>
+
+</project>
