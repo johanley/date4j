@@ -14,7 +14,7 @@
   -->
 	
  <property name='app.name' value='date4j'/>
- <property name='app.version' value='1.5.1'/>
+ <property name='app.version' value='1.5.2'/>
  <!-- ADJUST this base dir as needed, on your local file system: -->
  <property name="temp" location="C:\@build\${app.name}"/>
  <property name="build" location="${temp}\build"/>
