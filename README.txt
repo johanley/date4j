@@ -12,4 +12,5 @@ Date4j was built by:
  - John O'Hanley (main author, Canada)
  - Piero Campalani (Italy)
  - Jean-Christophe Garnier (CERN - Switzerland)
- - Jamie Craane (Netherlands)   
+ - Jamie Craane (Netherlands) 
+ - Dan J (USA)  
