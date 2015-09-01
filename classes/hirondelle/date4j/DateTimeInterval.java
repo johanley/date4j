@@ -317,7 +317,7 @@ final class DateTimeInterval {
       }
       else if (DayOverflow.FirstDay == fDayOverflow) {
         fDay = 1;
-        stepMonth();
+        nextMonth();
       }
       else if (DayOverflow.LastDay == fDayOverflow) {
         fDay = daysInMonth;
@@ -325,8 +325,20 @@ final class DateTimeInterval {
       else if (DayOverflow.Spillover == fDayOverflow) {
         int overflowAmount = fDay - daysInMonth;
         fDay = overflowAmount;
-        stepMonth();
+        nextMonth();
       }
+    }
+  }
+
+  /** 
+   For day-of-the-month overflow cases, the month is never decremented; it either stays the same, 
+   or is incremented. 
+  */
+  private void nextMonth(){
+    fMonth = fMonth + 1;
+    if(fMonth > 12) { 
+      fMonth = 1;
+      fYear = fYear + 1;
     }
   }
 

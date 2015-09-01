@@ -276,6 +276,11 @@ public class TESTDateTimeInterval extends TestCase {
     testDayOverflowMinus("2001-07-31 10:20:30.0", DateTime.DayOverflow.LastDay, "2001-06-30 10:20:30.0", 0,1,0,0,0,0,0);
     testDayOverflowMinus("2001-05-31 10:20:30.0", DateTime.DayOverflow.LastDay, "2001-04-30 10:20:30.0", 0,1,0,0,0,0,0);
     testDayOverflowMinus("2001-05-31 10:20:30.0", DateTime.DayOverflow.LastDay, "2001-02-28 10:20:30.0", 0,3,0,0,0,0,0);
+    
+    testDayOverflowMinus("2015-03-31 10:20:30.0", DateTime.DayOverflow.LastDay, "2014-09-30 10:20:30.0", 0,6,0,0,0,0,0);
+    testDayOverflowMinus("2015-03-31 10:20:30.0", DateTime.DayOverflow.FirstDay, "2014-10-01 10:20:30.0", 0,6,0,0,0,0,0);
+    testDayOverflowMinus("2015-03-31 10:20:30.0", DateTime.DayOverflow.Spillover, "2014-10-01 10:20:30.0", 0,6,0,0,0,0,0);
+    testDayOverflowMinus("2015-03-31 10:20:30.0", DateTime.DayOverflow.Spillover, "2015-03-03 10:20:30.0", 0,1,0,0,0,0,0);
   }
   
   public void testWeekIssue(){
