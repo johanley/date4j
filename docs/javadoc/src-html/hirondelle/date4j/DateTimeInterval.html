@@ -1,0 +1,346 @@
+<HTML>
+ <HEAD>
+  <TITLE>
+DateTimeInterval.java
+  </TITLE>
+  <LINK REL ='stylesheet' TYPE='text/css' HREF='../../../highlight.css' TITLE='Style'>
+ </HEAD>
+ <BODY>
+<PRE>
+<span class='keyword'>package</span> hirondelle.date4j;<a name=line.1></a>
+<a name=line.2></a>
+<span class='keyword'>import</span> hirondelle.date4j.DateTime.DayOverflow;<a name=line.3></a>
+<span class='keyword'>import</span> hirondelle.date4j.DateTime.Unit;<a name=line.4></a>
+<a name=line.5></a>
+<span class='comment'>/**<a name=line.6></a>
+ Helper class for adding intervals of time. <a name=line.7></a>
+ The mental model of this class is similar to that of a car's odometer.<a name=line.8></a>
+*/</span><a name=line.9></a>
+<span class='keyword'>final</span> <span class='keyword'>class</span> DateTimeInterval {<a name=line.10></a>
+<a name=line.11></a>
+  <span class='comment'>/**  Constructor.  */</span><a name=line.12></a>
+  DateTimeInterval(DateTime aFrom, DayOverflow aMonthOverflow){<a name=line.13></a>
+    fFrom = aFrom;<a name=line.14></a>
+    checkUnits();<a name=line.15></a>
+    fYear = fFrom.getYear() == <span class='keyword'>null</span> ? <span class='literal'>1</span> : fFrom.getYear();<a name=line.16></a>
+    fMonth = fFrom.getMonth() == <span class='keyword'>null</span> ? <span class='literal'>1</span> : fFrom.getMonth();<a name=line.17></a>
+    fDay = fFrom.getDay() == <span class='keyword'>null</span> ? <span class='literal'>1</span> : fFrom.getDay();<a name=line.18></a>
+    fHour = fFrom.getHour() == <span class='keyword'>null</span> ? <span class='literal'>0</span> : fFrom.getHour();<a name=line.19></a>
+    fMinute = fFrom.getMinute() == <span class='keyword'>null</span> ? <span class='literal'>0</span> : fFrom.getMinute();<a name=line.20></a>
+    fSecond = fFrom.getSecond() == <span class='keyword'>null</span> ? <span class='literal'>0</span> : fFrom.getSecond();<a name=line.21></a>
+    fNanosecond = fFrom.getNanoseconds() == <span class='keyword'>null</span> ? <span class='literal'>0</span> : fFrom.getNanoseconds();<a name=line.22></a>
+    fDayOverflow = aMonthOverflow;<a name=line.23></a>
+  }<a name=line.24></a>
+  <a name=line.25></a>
+  DateTime plus(<span class='keyword'>int</span> aYear, <span class='keyword'>int</span> aMonth, <span class='keyword'>int</span> aDay, <span class='keyword'>int</span> aHour, <span class='keyword'>int</span> aMinute, <span class='keyword'>int</span> aSecond, <span class='keyword'>int</span> aNanosecond){<a name=line.26></a>
+    <span class='keyword'>return</span> plusOrMinus(PLUS, aYear, aMonth, aDay, aHour, aMinute, aSecond, aNanosecond);<a name=line.27></a>
+  }<a name=line.28></a>
+  <a name=line.29></a>
+  DateTime minus(<span class='keyword'>int</span> aYear, <span class='keyword'>int</span> aMonth, <span class='keyword'>int</span> aDay, <span class='keyword'>int</span> aHour, <span class='keyword'>int</span> aMinute, <span class='keyword'>int</span> aSecond, <span class='keyword'>int</span> aNanosecond){<a name=line.30></a>
+    <span class='keyword'>return</span> plusOrMinus(MINUS, aYear, aMonth, aDay, aHour, aMinute, aSecond, aNanosecond);<a name=line.31></a>
+  }<a name=line.32></a>
+  <a name=line.33></a>
+  <span class='comment'>// PRIVATE <a name=line.34></a>
+</span>  <a name=line.35></a>
+  <span class='comment'>//the base date to which the interval is calculated<a name=line.36></a>
+</span>  <span class='keyword'>private</span> <span class='keyword'>final</span> DateTime fFrom;<a name=line.37></a>
+  <a name=line.38></a>
+  <span class='keyword'>private</span> <span class='keyword'>boolean</span> fIsPlus;<a name=line.39></a>
+  <span class='keyword'>private</span> DateTime.DayOverflow fDayOverflow;<a name=line.40></a>
+  <a name=line.41></a>
+  <span class='comment'>//the various increments<a name=line.42></a>
+</span>  <span class='keyword'>private</span> <span class='keyword'>int</span> fYearIncr;<a name=line.43></a>
+  <span class='keyword'>private</span> <span class='keyword'>int</span> fMonthIncr;<a name=line.44></a>
+  <span class='keyword'>private</span> <span class='keyword'>int</span>  fDayIncr;<a name=line.45></a>
+  <span class='keyword'>private</span> <span class='keyword'>int</span> fHourIncr;<a name=line.46></a>
+  <span class='keyword'>private</span> <span class='keyword'>int</span> fMinuteIncr;<a name=line.47></a>
+  <span class='keyword'>private</span> <span class='keyword'>int</span> fSecondIncr;<a name=line.48></a>
+  <span class='keyword'>private</span> <span class='keyword'>int</span> fNanosecondIncr;<a name=line.49></a>
+<a name=line.50></a>
+  <span class='comment'>//work area for the final result - starts off with values from base date fFrom<a name=line.51></a>
+</span>  <span class='keyword'>private</span> Integer fYear;<a name=line.52></a>
+  <span class='keyword'>private</span> Integer fMonth;<a name=line.53></a>
+  <span class='keyword'>private</span> Integer fDay;<a name=line.54></a>
+  <span class='keyword'>private</span> Integer fHour;<a name=line.55></a>
+  <span class='keyword'>private</span> Integer fMinute;<a name=line.56></a>
+  <span class='keyword'>private</span> Integer fSecond;<a name=line.57></a>
+  <span class='keyword'>private</span> Integer fNanosecond;<a name=line.58></a>
+<a name=line.59></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>int</span> MIN = <span class='literal'>0</span>;<a name=line.60></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>int</span> MAX = <span class='literal'>9999</span>;<a name=line.61></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>int</span> MIN_NANOS = <span class='literal'>0</span>;<a name=line.62></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>int</span> MAX_NANOS = <span class='literal'>999999999</span>;<a name=line.63></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>boolean</span> PLUS = <span class='keyword'>true</span>;<a name=line.64></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>boolean</span> MINUS = <span class='keyword'>false</span>;<a name=line.65></a>
+<a name=line.66></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> checkUnits(){<a name=line.67></a>
+    <span class='keyword'>boolean</span> success = <span class='keyword'>false</span>;<a name=line.68></a>
+    <span class='keyword'>if</span>(fFrom.unitsAllPresent(Unit.YEAR, Unit.MONTH, Unit.DAY, Unit.HOUR, Unit.MINUTE, Unit.SECOND) ){<a name=line.69></a>
+      success = <span class='keyword'>true</span>;<a name=line.70></a>
+    }<a name=line.71></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span>( fFrom.unitsAllPresent(Unit.YEAR, Unit.MONTH, Unit.DAY) &amp;&amp;  fFrom.unitsAllAbsent(Unit.HOUR, Unit.MINUTE, Unit.SECOND) ){<a name=line.72></a>
+      success = <span class='keyword'>true</span>;<a name=line.73></a>
+    }<a name=line.74></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span> ( fFrom.unitsAllAbsent(Unit.YEAR, Unit.MONTH, Unit.DAY) &amp;&amp; fFrom.unitsAllPresent(Unit.HOUR, Unit.MINUTE, Unit.SECOND) ){<a name=line.75></a>
+      success = <span class='keyword'>true</span>;<a name=line.76></a>
+    }<a name=line.77></a>
+    <span class='keyword'>else</span> {<a name=line.78></a>
+      success = <span class='keyword'>false</span>;<a name=line.79></a>
+    }<a name=line.80></a>
+    <span class='keyword'>if</span>(! success ){<a name=line.81></a>
+      <span class='keyword'>throw</span> <span class='keyword'>new</span> IllegalArgumentException(<span class='literal'>"For interval calculations, DateTime must have year-month-day, or hour-minute-second, or both."</span>);<a name=line.82></a>
+    }<a name=line.83></a>
+  }<a name=line.84></a>
+  <a name=line.85></a>
+  <span class='keyword'>private</span> DateTime plusOrMinus(<span class='keyword'>boolean</span> aIsPlus, Integer aYear, Integer aMonth, Integer aDay, Integer aHour, Integer aMinute, Integer aSecond, Integer aNanosecond){<a name=line.86></a>
+    fIsPlus = aIsPlus;<a name=line.87></a>
+    fYearIncr = aYear;<a name=line.88></a>
+    fMonthIncr = aMonth;<a name=line.89></a>
+    fDayIncr = aDay;<a name=line.90></a>
+    fHourIncr = aHour;<a name=line.91></a>
+    fMinuteIncr = aMinute;<a name=line.92></a>
+    fSecondIncr = aSecond;<a name=line.93></a>
+    fNanosecondIncr = aNanosecond;<a name=line.94></a>
+    <a name=line.95></a>
+    checkRange(fYearIncr, <span class='literal'>"Year"</span>);<a name=line.96></a>
+    checkRange(fMonthIncr, <span class='literal'>"Month"</span>);<a name=line.97></a>
+    checkRange(fDayIncr, <span class='literal'>"Day"</span>);<a name=line.98></a>
+    checkRange(fHourIncr, <span class='literal'>"Hour"</span>);<a name=line.99></a>
+    checkRange(fMinuteIncr, <span class='literal'>"Minute"</span>);<a name=line.100></a>
+    checkRange(fSecondIncr, <span class='literal'>"Second"</span>);<a name=line.101></a>
+    checkRangeNanos(fNanosecondIncr);<a name=line.102></a>
+    <a name=line.103></a>
+    changeYear();<a name=line.104></a>
+    changeMonth();<a name=line.105></a>
+    handleMonthOverflow();<a name=line.106></a>
+    changeDay();<a name=line.107></a>
+    changeHour();<a name=line.108></a>
+    changeMinute();<a name=line.109></a>
+    changeSecond();<a name=line.110></a>
+    changeNanosecond();<a name=line.111></a>
+    <a name=line.112></a>
+    <span class='keyword'>return</span> <span class='keyword'>new</span> DateTime(fYear, fMonth, fDay, fHour, fMinute, fSecond, fNanosecond);<a name=line.113></a>
+  }<a name=line.114></a>
+<a name=line.115></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> checkRange(Integer aValue, String aName) {<a name=line.116></a>
+    <span class='keyword'>if</span> ( aValue &lt;  MIN || aValue &gt; MAX ) { <a name=line.117></a>
+      <span class='keyword'>throw</span> <span class='keyword'>new</span> IllegalArgumentException(aName + <span class='literal'>" is not in the range "</span> + MIN + <span class='literal'>".."</span> + MAX); <a name=line.118></a>
+    }<a name=line.119></a>
+  }<a name=line.120></a>
+  <a name=line.121></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> checkRangeNanos(Integer aValue) {<a name=line.122></a>
+    <span class='keyword'>if</span> ( aValue &lt;  MIN_NANOS || aValue &gt; MAX_NANOS ) { <a name=line.123></a>
+      <span class='keyword'>throw</span> <span class='keyword'>new</span> IllegalArgumentException(<span class='literal'>"Nanosecond interval is not in the range "</span> + MIN_NANOS + <span class='literal'>".."</span> + MAX_NANOS); <a name=line.124></a>
+    }<a name=line.125></a>
+  }<a name=line.126></a>
+  <a name=line.127></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> changeYear(){<a name=line.128></a>
+    <span class='keyword'>if</span>(fIsPlus){<a name=line.129></a>
+      fYear = fYear + fYearIncr;<a name=line.130></a>
+    }<a name=line.131></a>
+    <span class='keyword'>else</span> {<a name=line.132></a>
+      fYear = fFrom.getYear() - fYearIncr;<a name=line.133></a>
+    }<a name=line.134></a>
+    <span class='comment'>//the DateTime ctor will check the range of the year <a name=line.135></a>
+</span>  }<a name=line.136></a>
+  <a name=line.137></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> changeMonth(){<a name=line.138></a>
+    <span class='keyword'>int</span> count = <span class='literal'>0</span>;<a name=line.139></a>
+    <span class='keyword'>while</span> (count &lt; fMonthIncr){<a name=line.140></a>
+      stepMonth();<a name=line.141></a>
+      count++;<a name=line.142></a>
+    }<a name=line.143></a>
+  }<a name=line.144></a>
+<a name=line.145></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span>  changeDay(){<a name=line.146></a>
+    <span class='keyword'>int</span> count = <span class='literal'>0</span>;<a name=line.147></a>
+    <span class='keyword'>while</span> (count &lt; fDayIncr){<a name=line.148></a>
+      stepDay();<a name=line.149></a>
+      count++;<a name=line.150></a>
+    }<a name=line.151></a>
+  }<a name=line.152></a>
+<a name=line.153></a>
+  <span class='keyword'>private</span>  <span class='keyword'>void</span> changeHour(){<a name=line.154></a>
+    <span class='keyword'>int</span> count = <span class='literal'>0</span>;<a name=line.155></a>
+    <span class='keyword'>while</span> (count &lt; fHourIncr){<a name=line.156></a>
+      stepHour();<a name=line.157></a>
+      count++;<a name=line.158></a>
+    }<a name=line.159></a>
+  }<a name=line.160></a>
+<a name=line.161></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> changeMinute(){<a name=line.162></a>
+    <span class='keyword'>int</span> count = <span class='literal'>0</span>;<a name=line.163></a>
+    <span class='keyword'>while</span> (count &lt; fMinuteIncr){<a name=line.164></a>
+      stepMinute();<a name=line.165></a>
+      count++;<a name=line.166></a>
+    }<a name=line.167></a>
+  }<a name=line.168></a>
+  <a name=line.169></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> changeSecond(){<a name=line.170></a>
+    <span class='keyword'>int</span> count = <span class='literal'>0</span>;<a name=line.171></a>
+    <span class='keyword'>while</span> (count &lt; fSecondIncr){<a name=line.172></a>
+      stepSecond();<a name=line.173></a>
+      count++;<a name=line.174></a>
+    }<a name=line.175></a>
+  }<a name=line.176></a>
+<a name=line.177></a>
+  <span class='comment'>/** <a name=line.178></a>
+   Nanos are different from other items. They don't cycle one step at a time.<a name=line.179></a>
+   They are just added. If they under/over flow, then extra math is performed.<a name=line.180></a>
+   They don't over/under by more than 1 second, since the size of the increment is limited.<a name=line.181></a>
+  */</span> <a name=line.182></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> changeNanosecond(){<a name=line.183></a>
+    <span class='keyword'>if</span> (fIsPlus){<a name=line.184></a>
+      fNanosecond = fNanosecond + fNanosecondIncr;      <a name=line.185></a>
+    }<a name=line.186></a>
+    <span class='keyword'>else</span> {<a name=line.187></a>
+      fNanosecond = fNanosecond - fNanosecondIncr;      <a name=line.188></a>
+    }<a name=line.189></a>
+    <span class='keyword'>if</span>(fNanosecond &gt; MAX_NANOS){<a name=line.190></a>
+      stepSecond();<a name=line.191></a>
+      fNanosecond = fNanosecond - MAX_NANOS - <span class='literal'>1</span>;<a name=line.192></a>
+    }<a name=line.193></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span> (fNanosecond &lt; MIN_NANOS){<a name=line.194></a>
+      stepSecond();<a name=line.195></a>
+      fNanosecond =  MAX_NANOS + fNanosecond + <span class='literal'>1</span>;<a name=line.196></a>
+    }<a name=line.197></a>
+  }<a name=line.198></a>
+  <a name=line.199></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> stepYear() {<a name=line.200></a>
+    <span class='keyword'>if</span>(fIsPlus) {<a name=line.201></a>
+      fYear = fYear + <span class='literal'>1</span>;<a name=line.202></a>
+    }<a name=line.203></a>
+    <span class='keyword'>else</span> {<a name=line.204></a>
+      fYear = fYear - <span class='literal'>1</span>;<a name=line.205></a>
+    }<a name=line.206></a>
+  }<a name=line.207></a>
+  <a name=line.208></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> stepMonth() {<a name=line.209></a>
+    <span class='keyword'>if</span>(fIsPlus){<a name=line.210></a>
+      fMonth = fMonth + <span class='literal'>1</span>;<a name=line.211></a>
+    }<a name=line.212></a>
+    <span class='keyword'>else</span> {<a name=line.213></a>
+      fMonth = fMonth - <span class='literal'>1</span>;<a name=line.214></a>
+    }<a name=line.215></a>
+    <span class='keyword'>if</span>(fMonth &gt; <span class='literal'>12</span>) { <a name=line.216></a>
+      fMonth = <span class='literal'>1</span>;<a name=line.217></a>
+      stepYear();<a name=line.218></a>
+    }<a name=line.219></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span>(fMonth &lt; <span class='literal'>1</span>){<a name=line.220></a>
+      fMonth = <span class='literal'>12</span>;<a name=line.221></a>
+      stepYear();<a name=line.222></a>
+    }<a name=line.223></a>
+  }<a name=line.224></a>
+<a name=line.225></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> stepDay() {<a name=line.226></a>
+    <span class='keyword'>if</span>(fIsPlus){<a name=line.227></a>
+      fDay = fDay + <span class='literal'>1</span>;<a name=line.228></a>
+    }<a name=line.229></a>
+    <span class='keyword'>else</span> {<a name=line.230></a>
+      fDay = fDay - <span class='literal'>1</span>;<a name=line.231></a>
+    }<a name=line.232></a>
+    <span class='keyword'>if</span>(fDay &gt; numDaysInMonth()){<a name=line.233></a>
+      fDay = <span class='literal'>1</span>;<a name=line.234></a>
+      stepMonth();<a name=line.235></a>
+    }<a name=line.236></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span> (fDay &lt; <span class='literal'>1</span>){<a name=line.237></a>
+      fDay = numDaysInPreviousMonth();<a name=line.238></a>
+      stepMonth();<a name=line.239></a>
+    }<a name=line.240></a>
+  }<a name=line.241></a>
+  <a name=line.242></a>
+  <span class='keyword'>private</span> <span class='keyword'>int</span> numDaysInMonth(){<a name=line.243></a>
+    <span class='keyword'>return</span> DateTime.getNumDaysInMonth(fYear, fMonth);<a name=line.244></a>
+  }<a name=line.245></a>
+  <a name=line.246></a>
+  <span class='keyword'>private</span> <span class='keyword'>int</span> numDaysInPreviousMonth(){<a name=line.247></a>
+    <span class='keyword'>int</span> result = <span class='literal'>0</span>;<a name=line.248></a>
+    <span class='keyword'>if</span>(fMonth &gt; <span class='literal'>1</span>) {<a name=line.249></a>
+      result = DateTime.getNumDaysInMonth(fYear, fMonth - <span class='literal'>1</span>);<a name=line.250></a>
+    }<a name=line.251></a>
+    <span class='keyword'>else</span> {<a name=line.252></a>
+      result = DateTime.getNumDaysInMonth(fYear - <span class='literal'>1</span> , <span class='literal'>12</span>);<a name=line.253></a>
+    }<a name=line.254></a>
+    <span class='keyword'>return</span> result;<a name=line.255></a>
+  }<a name=line.256></a>
+  <a name=line.257></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> stepHour() {<a name=line.258></a>
+    <span class='keyword'>if</span>(fIsPlus){<a name=line.259></a>
+      fHour = fHour + <span class='literal'>1</span>;      <a name=line.260></a>
+    }<a name=line.261></a>
+    <span class='keyword'>else</span> {<a name=line.262></a>
+      fHour = fHour - <span class='literal'>1</span>;      <a name=line.263></a>
+    }<a name=line.264></a>
+    <span class='keyword'>if</span>(fHour &gt; <span class='literal'>23</span>){<a name=line.265></a>
+      fHour = <span class='literal'>0</span>;<a name=line.266></a>
+      stepDay();<a name=line.267></a>
+    }<a name=line.268></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span> (fHour &lt; <span class='literal'>0</span>){<a name=line.269></a>
+      fHour = <span class='literal'>23</span>;<a name=line.270></a>
+      stepDay();<a name=line.271></a>
+    }<a name=line.272></a>
+  }<a name=line.273></a>
+  <a name=line.274></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> stepMinute() {<a name=line.275></a>
+    <span class='keyword'>if</span>(fIsPlus){<a name=line.276></a>
+      fMinute = fMinute + <span class='literal'>1</span>;      <a name=line.277></a>
+    }<a name=line.278></a>
+    <span class='keyword'>else</span> {<a name=line.279></a>
+      fMinute = fMinute - <span class='literal'>1</span>;      <a name=line.280></a>
+    }<a name=line.281></a>
+    <span class='keyword'>if</span>(fMinute &gt; <span class='literal'>59</span>){<a name=line.282></a>
+      fMinute = <span class='literal'>0</span>;<a name=line.283></a>
+      stepHour();<a name=line.284></a>
+    }<a name=line.285></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span> (fMinute &lt; <span class='literal'>0</span>){<a name=line.286></a>
+      fMinute = <span class='literal'>59</span>;<a name=line.287></a>
+      stepHour();<a name=line.288></a>
+    }<a name=line.289></a>
+  }<a name=line.290></a>
+  <a name=line.291></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> stepSecond() {<a name=line.292></a>
+    <span class='keyword'>if</span>(fIsPlus){<a name=line.293></a>
+      fSecond = fSecond + <span class='literal'>1</span>;        <a name=line.294></a>
+    }<a name=line.295></a>
+    <span class='keyword'>else</span> {<a name=line.296></a>
+      fSecond = fSecond - <span class='literal'>1</span>;        <a name=line.297></a>
+    }<a name=line.298></a>
+    <span class='keyword'>if</span> (fSecond &gt; <span class='literal'>59</span>){<a name=line.299></a>
+      fSecond = <span class='literal'>0</span>;<a name=line.300></a>
+      stepMinute();<a name=line.301></a>
+    }<a name=line.302></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span> (fSecond &lt; <span class='literal'>0</span>){<a name=line.303></a>
+      fSecond = <span class='literal'>59</span>;<a name=line.304></a>
+      stepMinute();<a name=line.305></a>
+    }<a name=line.306></a>
+  }<a name=line.307></a>
+  <a name=line.308></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> handleMonthOverflow(){<a name=line.309></a>
+    <span class='keyword'>int</span> daysInMonth = numDaysInMonth();<a name=line.310></a>
+    <span class='keyword'>if</span>( fDay &gt; daysInMonth ){<a name=line.311></a>
+      <span class='keyword'>if</span>(DayOverflow.Abort == fDayOverflow) {<a name=line.312></a>
+        <span class='keyword'>throw</span> <span class='keyword'>new</span> RuntimeException(<a name=line.313></a>
+          <span class='literal'>"Day Overflow: Year:"</span> + fYear + <span class='literal'>" Month:"</span> + fMonth + <span class='literal'>" has "</span> + daysInMonth + <span class='literal'>" days, but day has value:"</span> + fDay + <a name=line.314></a>
+          <span class='literal'>" To avoid these exceptions, please specify a different DayOverflow policy."</span><a name=line.315></a>
+        );<a name=line.316></a>
+      }<a name=line.317></a>
+      <span class='keyword'>else</span> <span class='keyword'>if</span> (DayOverflow.FirstDay == fDayOverflow) {<a name=line.318></a>
+        fDay = <span class='literal'>1</span>;<a name=line.319></a>
+        stepMonth();<a name=line.320></a>
+      }<a name=line.321></a>
+      <span class='keyword'>else</span> <span class='keyword'>if</span> (DayOverflow.LastDay == fDayOverflow) {<a name=line.322></a>
+        fDay = daysInMonth;<a name=line.323></a>
+      }<a name=line.324></a>
+      <span class='keyword'>else</span> <span class='keyword'>if</span> (DayOverflow.Spillover == fDayOverflow) {<a name=line.325></a>
+        <span class='keyword'>int</span> overflowAmount = fDay - daysInMonth;<a name=line.326></a>
+        fDay = overflowAmount;<a name=line.327></a>
+        stepMonth();<a name=line.328></a>
+      }<a name=line.329></a>
+    }<a name=line.330></a>
+  }<a name=line.331></a>
+<a name=line.332></a>
+}<a name=line.333></a>
+ <a name=line.334></a>
+</PRE><a name=line.335></a>
+ </BODY><a name=line.336></a>
+<HTML><a name=line.337></a>

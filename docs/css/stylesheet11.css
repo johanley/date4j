@@ -1,0 +1,346 @@
+
+/* Color scheme comes first. */
+body {
+  /* background-color: rgb(191, 191, 191); */
+   background-color: rgb(255,255,255);
+}
+a {
+ color: rgb(0,100,26); 
+}
+a:hover {
+  background-color:rgb(164,255,158); 
+}
+a:visited {
+ color: rgb(0,150,26); 
+}
+.opening-quote {
+  background-color: rgb(85%, 85%, 85%);
+  border-top: 1px solid rgb(50%,50%,50%);
+  border-left: 5px solid rgb(50%,50%,50%);
+  border-right: 5px solid rgb(50%,50%,50%);
+  border-bottom: 1px solid rgb(50%,50%,50%);
+  margin:0em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
+.opening-quote{
+  margin: 30px;
+}
+
+img.photo {
+ border-color: rgb(50%,50%,50%);
+}
+.highlight {
+ background-color: #ffff66; 
+}
+.sidebar{
+  background-color:  rgb(85%, 85%, 85%);
+  border-top: 1px solid rgb(50%,50%,50%);
+  border-left: 5px solid rgb(50%,50%,50%);
+  border-right: 5px solid rgb(50%,50%,50%);
+  border-bottom: 1px solid rgb(50%,50%,50%);
+}
+
+/* End of the color scheme. */
+
+
+
+body {
+  margin: 1.0em; 
+  padding: 1.0em;
+  font: 1.0em Verdana, Arial, Helvetica, sans-serif;
+}
+
+a {
+ font-weight: bold;
+ text-decoration: none;
+}
+
+/*
+Problems : 
+ adds extra line leading.
+ links have underline that's too low and thick
+tt {
+ line-height:0em; 
+ font-family: monospace;
+}
+*/
+
+h2{
+  font: bold 20px Verdana, Arial, Helvetica, sans-serif;
+  border-bottom: 1px solid;
+}
+
+h3{
+  font: bold 16px Verdana, Arial, Helvetica, sans-serif;
+}
+
+h4{
+  font: bold 16px Verdana, Arial, Helvetica, sans-serif;
+}
+
+blockquote.abstract{
+ padding: 0.3em;
+}
+
+ul {
+ list-style-type: square;
+}
+
+tr { 
+  vertical-align: top 
+}
+
+/* 
+Tables used for user input.
+*/
+form.user-input table {
+ background-color: rgb(83%, 83%, 83%);
+ border-style: solid;
+ border-width: 2px; 
+ border-color: rgb(45%,45%,45%); 
+ padding: 1.0em;
+}
+/* improves alignment of form controls */
+form.user-input input {
+ margin: 0;
+}
+
+
+/* 
+REPORTS 
+Here, reports are implemented with tables, and refer to any kind of listing.
+*/
+table.report {
+ background-color: rgb(83%, 83%, 83%); 
+ border-style: solid;
+ border-width: 2px;
+ border-color: rgb(45%,45%,45%); 
+ border-collapse: collapse;
+ empty-cells: show; 
+ caption-side: bottom;
+}
+
+table.report td, th {
+ /*white-space: nowrap;*/
+ border: 1px ridge rgb(65%,65%,65%); 
+ padding: 0.30em;
+}
+
+/* no underline for sorting links */
+table.report th a {
+  text-decoration: none;
+}
+table.report th img {
+ padding: 0;
+ margin: 0;
+}
+
+table.report tbody {
+ border: 1px solid black;
+}
+/* 
+Highlighting the row when the cursor hovers above it 
+increases legibility. 
+*/
+table.report tr:hover {
+  background-color: #FFFDE3;
+}
+table.report caption {
+ font-weight: bold;
+ text-align: center;
+ padding: 0.5em;
+}
+table.report caption:after {
+ content : " - ";
+}
+table.report caption:before {
+ content : " - ";
+}
+
+/* 
+MESSAGES of various kinds.
+*/
+.message {
+ font-weight: bolder;  
+}
+.warning {
+ font-weight: bolder;  
+}
+.error {
+ font-weight: bolder;  
+ color: rgb(255,0,0);
+}
+p.display-messages {
+ text-align: center;
+}
+
+
+img.photo {
+ margin-top:1.0em;
+ margin-bottom:1.0em;
+ margin-left:1.0em;
+ margin-right:1.0em;
+ border-style: solid;
+ border-width: 2px;
+}
+
+img.photo-home {
+ margin: 0;
+ border-style: solid;
+ border-width: 2px;
+ float: left; 
+}
+
+/* The top banner */
+#header{
+ text-align:center;
+ padding-top:0.1em;
+}
+
+
+
+.loud {
+ font-size: 150%;
+ padding: 1.0em;
+}
+
+
+#bodycontent{
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+#nav-menu{
+  padding-top:0.5em;
+  text-align:center;
+} 
+
+#nav-menu ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#nav-menu li {
+  text-decoration: none;
+  display: inline;
+}
+
+#nav-menu li a {
+  padding-left: 7px;
+  padding-right: 7px;
+  height: 22px;
+  width: 75px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+
+/* Search form in menu */
+#nav-menu li form {
+  padding-left: 7px;
+  padding-top: 6px;
+  height: 22px;
+  width: 113px;
+  font-weight: bold;
+}
+
+
+#content{
+  /* margin-left: 135px; */
+  margin-left: 1em;
+  padding-top:1px; 
+}
+
+#contentdisabled{
+  margin: 10px;
+  padding:10px;
+}
+
+.maincopy a:hover {
+  text-decoration: underline;
+}
+
+#textcontent{
+  height:100%;
+  padding-left:0;
+  padding-right:15px;
+}
+
+div.author {
+ font-style: italic;
+ padding-top: 0em;
+ margin-top: 0.25em;
+ text-align: right;
+}
+
+.sidebar{
+  margin: 10px;
+  padding: 10px;
+}
+
+#footer{
+  text-align:center;
+  height:24px;
+  padding-top: 10px;
+  padding-left: 0px;
+  font: 11px Verdana, Arial, Helvetica, sans-serif;
+  padding-right: 10px;
+  border-right-width: 0px;
+  border-bottom-width: 0px;
+  border-left-width: 0px;
+}
+
+.small-graphic{
+ float:left;
+ margin-right:0.2em;
+}
+
+/* sometimes footer is too high on page */
+div.spacer {
+  height: 14.0em;
+}
+div.smallspacer {
+  height: 7.0em;
+}
+div.bigspacer {
+  height: 30.0em;
+}
+
+
+/* Small screens */
+@media all and (max-width: 450px) {
+  /** Remove margin for small screens. */
+	body {
+    margin: 0.1em; 
+    padding: 0em;
+	}
+}
+
+/* Styles for print. */
+@media print {
+ * {
+  color: black !important;
+  background: white !important;
+ }
+ body {
+  font-family: "Times New Roman", serif;
+  font-size: 12pt;
+ }
+ a {
+  text-decoration: none;
+ }
+ img.photo {
+  display: none;
+ }
+ div#nav-menu{
+  display: none;
+ }
+ div#header{
+  display: none;
+ }
+}

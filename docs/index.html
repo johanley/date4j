@@ -1,0 +1,346 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> 
+<html>
+<head>
+ <meta http-equiv="Content-Type" content="text/html">
+ <meta name="keywords" content="java.util.Date, java, date, java.util.Calendar, calendar, replace, replacement, alternate, alternative, bugs, problems, sucks">
+ <meta name="description" content="Simple replacement for java.util.Date and related Java classes.">
+ <meta name="viewport" content="width=device-width"> 
+ <title>DATE4J - Simple Alternative To java.util.Date</title>
+ <link rel="stylesheet" type="text/css" href="css/stylesheet11.css" media="all"> 
+ <link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon">
+</head>
+
+<body>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-2633428-4', 'auto');
+  ga('send', 'pageview');
+</script>
+
+ <div id="header"><h1>Java's Date Classes Must <em>Die</em>.</h1></div>
+
+  <div id="nav-menu">
+   <ul>
+    <li><a href='#Problem' title='Problems with dates in Java'>Problem</a></li>
+    <li><a href='#Joda' title='Problems with JodaTime'>Joda</a></li>
+    <li><a href='#Databases' title='How databases treat dates and times'>Databases</a></li>
+    <li><a href='#Solution' title="Date4j's alternative design">Solution</a></li>
+    <li><a href='#Examples' title='Example code'>Examples</a></li>
+    <li><a href='date4j.jar' title='Download jar' onClick="javascript: pageTracker._trackPageview('/downloads/jar'); ">Jar</a></li>
+    <li><a href='javadoc/index.html' title='Javadoc' onClick="javascript: pageTracker._trackPageview('/downloads/javadoc'); ">Javadoc</a></li>
+    <li><a href='date4j-source.zip' title='Download zip of source files' onClick="javascript: pageTracker._trackPageview('/downloads/src'); ">Source</a></li>
+    <li><a href='LICENSE_BSD.txt' title='BSD License'>BSD</a></li>
+    <li><a href='#contributors' title='Contributors to date4j'>Contributors</a></li>
+    <li><a href='#web4j' title='Where date4j comes from'>WEB4J</a></li>
+   </ul>
+  </div> 
+
+<h2>DATE4J</h2>
+
+<div class='opening-quote'>
+ <b>
+But, soft! what code in yonder program breaks?<br>
+It is the Date, and dim grows the Sun!<br>
+Arise, fair Sun, and kill the egregious Date,<br>
+Who is already sick and pale with grief,<br>
+That we, perchance, art more fair than she.<br>  
+</b>
+</div>
+
+<P>
+
+This site offers a Java tool called <b>date4j</b>. 
+It's an alternative to <a title='Abandon all hope, all ye who enter here.' href='http://docs.oracle.com/javase/6/docs/api/java/util/Date.html'>Date</a>, <a href='http://docs.oracle.com/javase/6/docs/api/java/util/Calendar.html'>Calendar</a>, and related Java classes.
+The JDK's treatment of dates is likely the single most <span title='capable of or adapted to sucking'>suctorial</span> aspect of the Java core libraries.
+It needs improvement.
+
+<P>The main goals of date4j are:
+<ul>
+ <li>easy manipulation of dates/times in the Gregorian calendar (the civil calendar used in almost all countries).
+ <li>easy storage and retrieval of such dates/times from a relational database.
+ <li>a simplified model of civil timekeeping, similar to the model used by many databases.
+</ul>
+
+<a name='Problem'></a>
+<h3>Problem</h3>
+For reference, here are the JDK classes related to dates.
+
+<P>Date and its subclasses:
+<ul>
+<li><a title='Abandon all hope, all ye who enter here.' href='http://docs.oracle.com/javase/6/docs/api/java/util/Date.html'>java.util.Date</a>
+<li><a href='http://docs.oracle.com/javase/6/docs/api/java/sql/Date.html'>java.sql.Date</a>
+<li><a href='http://docs.oracle.com/javase/6/docs/api/java/sql/Timestamp.html'>java.sql.Timestamp</a>
+</ul>
+
+<P>The calendar and time zone classes:
+<ul>
+<li><a href='http://docs.oracle.com/javase/6/docs/api/java/util/Calendar.html'>java.util.Calendar</a>
+<li><a href='http://docs.oracle.com/javase/6/docs/api/java/util/GregorianCalendar.html'>java.util.GregorianCalendar</a>
+<li><a href='http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html'>java.util.TimeZone</a>
+<li><a href='http://docs.oracle.com/javase/6/docs/api/java/util/SimpleTimeZone.html'>java.util.SimpleTimeZone</a> (for use with the Gregorian calendar only)
+</ul>
+
+<P>The formatting and parsing classes:
+<ul>
+<li><a href='http://docs.oracle.com/javase/6/docs/api/java/text/DateFormat.html'>java.text.DateFormat</a>
+<li><a href='http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html'>java.text.SimpleDateFormat</a>
+<li><a href='http://docs.oracle.com/javase/6/docs/api/java/text/DateFormatSymbols.html'>java.text.DateFormatSymbols</a>
+</ul>
+
+
+ The problem is that the above classes are widely regarded as being of disturbingly poor quality, for various reasons:
+ <ul>
+ <li>mistakes regarding time zones are very common (see Martin Fowler's <a href='http://martinfowler.com/bliki/TimeZoneUncertainty.html'>comments</a>, for example, and this <a href='http://c2.com/cgi/wiki/wiki?JavaUtilDate'>link</a>). 
+ <li>dates are mutable, but basic 'building block' classes should be immutable. There are many advantages to being an <a href='http://www.javapractices.com/topic/TopicAction.do?Id=29'>immutable object</a>. Integer, String, BigDecimal, Boolean and so on, are all immutable. Dates should be as well. As <a href='http://www.amazon.com/gp/product/0321349601/ref=as_li_tf_tl?ie=UTF8&tag=javapractices-20&linkCode=as2&camp=217145&creative=399353&creativeASIN=0321349601'>stated</a> by Brian Goetz, <i>"[Date's mutability] was probably a mistake in the class library design."</i>
+ <li><a href='http://docs.oracle.com/javase/6/docs/api/java/util/Calendar.html'>Calendar</a> is too complex. Joshua Bloch <a href='http://java.sun.com/developer/technicalArticles/Interviews/bloch_effective_08_qa.html'>states</a>: <i>"As an extreme example of what not to do, consider the case of java.util.Calendar. Very few people understand its state-space -- I certainly don't -- and it's been a constant source of bugs for years."</i>
+ <li>January is assigned an index of 0, not 1, leading to silly off-by-one errors.
+ <li>numerous methods use JRE defaults for TimeZone and Locale. In some server environments, multiple applications can share the same JRE. Thus, the default can be changed by one application, and read by another. Such cross-talk is unacceptable.
+ <li>calculating the number of days between 2 dates isn't as simple as it should be.
+ <li>Timestamp subclasses Date, and adds a nanoseconds aspect. As stated in <i>Effective Java</i>, that makes it impossible to correctly implement the <tt>equals</tt> and <tt>hashCode</tt> methods for Timestamp.
+ <li>Calendar has two items referring to the hour of the day, HOUR and HOUR_OF_DAY. If, for example, you need to set the time portion of a Calendar object to 0, then you must set both the HOUR and HOUR_OF_DAY.
+ <li>java.sql.Date is intended to represent a date without a time, but that is not actually enforced.
+ <li>since rules for time zones and summer hours can change according to the arbitrary whims of legislators, the JRE needs to be updated, on occasion, just to reflect changes to such legislation.
+ <li>many complain that since SimpleDateFormat is not thread-safe, you cannot share instances between threads.
+ <li>numerous other minor nuisances as well.
+ </ul>
+
+
+<a name='Joda'></a>
+<h3>Joda Time</h3>
+ The <a href='http://joda-time.sourceforge.net/'>Joda Time</a> library is used by some programmers as an alternative 
+ to the JDK date classes. Although it's a significant improvement over the JDK, Joda Time is not without its own drawbacks:
+ <ul>
+ <li>Joda limits precision to milliseconds. Database timestamp values almost always have a precision of microseconds 
+ or even nanoseconds. <b>This is a serious defect: a library should never truncate your data, for any reason.</b>
+ <li>Joda allows mutable versions of classes. 
+ <li>Joda is large, with well over 100 items in its <a href='http://joda-time.sourceforge.net/api-release/index.html'>javadoc</a>. 
+  Why does a programmer need 138 classes just to model a date, and perform common operations?  Doesn't that seem excessive?
+  (If you use date4j, the number of classes you'll need to model dates in the Gregorian Calendar is exactly 1.)
+ <li>in order to stay current, Joda needs to be updated occasionally with fresh time zone data.
+ <li>Joda <a href='http://stackoverflow.com/questions/5059663/android-java-joda-date-is-slow'>can be slow on Android</a>, unless steps are taken to avoid unwanted loading of time zone data.
+ <li>Joda always coerces March 31 + 1 Month to April 30 (for example), without giving you any choice in the matter.
+ <li>some databases allow invalid date values such as '0000-00-00', but Joda Time doesn't seem to be able to handle them.
+ </ul>
+
+
+<a name='Databases'></a>
+<h3>How Databases Treat Dates</h3>
+ <b>Most databases model dates and times using the Gregorian Calendar in an aggressively simplified form</b>,
+ in which:
+ <ul>
+ <li>the Gregorian calendar is extended back in time as if it was in use previous to its
+ inception (the 'proleptic' Gregorian calendar)
+ <li>the transition between Julian and Gregorian calendars is entirely ignored
+ <li>summer hours are entirely ignored
+ <li>leap seconds are entirely ignored
+ <li>often, even time zones are ignored, in the sense that <b>the underlying database
+ column doesn't usually explicitly store any time zone information</b>. 
+ </ul>
+ 
+ 
+<h3>How Databases Treat Time Zones</h3>
+For storing time zone information, many databases don't include any data types at all. 
+<b>DB2, MySQL, and SQLServer are all in this category.</b>
+Applications which find it necessary to store explicit time zones will, when using such databases, need to create their own solution.
+Given the problems noted below, such <i>ad hoc</i> solutions are not necessarily a bad thing.
+
+<P>Some databases, such as Oracle and PostgreSQL, do indeed supply data types explicitly for handling time zones, but the implementations are a mess.
+
+<a name='OffsetsArentTimeZones'></a>
+<P>First of all, take the <a href='http://www.contrib.andrew.cmu.edu/~shadow/sql/sql1992.txt'>ANSI SQL</a> standard. Its very definition of time zone doesn't match the definition of <a href='http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html'>TimeZone</a> in Java.
+Why? Because ANSI SQL defines time zones as a fixed offset from Universal Time. 
+<b>But an offset is not a time zone.</b>
+Since they don't take into account summer hours, they don't match what most people think of as a proper time zone.
+<b>Such a glaring mismatch of fundamental abstractions is bound to be a fruitful source of error, annoyance, and widespread confusion.</b>
+
+<P><a href='http://www.postgresql.org/docs/8.0/static/datatype-datetime.html#DATATYPE-TIMEZONES'>PostgreSQL</a><br>
+
+PostgreSQL has 2 data types named <tt>TIME WITH TIME ZONE</tt> and <tt>TIMESTAMP WITH TIME ZONE</tt>. 
+These columns store time zone/offset information, right? 
+<b>Wrong. Neither a time zone nor an offset is stored in these fields.</b> From their documentation:
+
+<P><i>"All timezone-aware dates and times are stored internally in UTC. 
+They are converted to local time in the zone specified by the timezone configuration parameter before being displayed to the client."</i>
+
+<P>So, what you have here is a misrepresentation of what is being stored. 
+The name of the data type clearly implies that a time zone/offset is being stored, but that's clearly not the case.
+There is unequivocally <i>no explicit time zone/offset is stored in these columns</i>. None whatsoever. 
+Rather, an implicit offset is used, and <b>a calculation is applied to the data</b>, using particular policies defined by the database, involving the difference between 2 offsets. 
+
+
+<P><a href='http://download-uk.oracle.com/docs/cd/B19306_01/server.102/b14200/sql_elements001.htm'>Oracle</a><br>
+Oracle has 2 data types named <tt>TIMESTAMP WITH TIME ZONE</tt> and <tt>TIMESTAMP WITH LOCAL TIME ZONE</tt>. 
+
+
+<P><tt>TIMESTAMP WITH TIME ZONE</tt> stores an offset in the column. 
+Again, an offset is not the same thing as a time zone.
+
+
+<P><tt>TIMESTAMP WITH LOCAL TIME ZONE</tt> doesn't store explicit offset information at all. 
+Rather, it implicitly uses the database's offset. 
+Again, when returning this data to a client, a database-defined policy is applied (using a difference in offsets), 
+a calculation is performed, and the altered value is returned. 
+
+<P>The difference in offsets is usually (but not always) calculated using <tt>DBTIMEZONE</tt> (the database default) and <tt>SESSIONTIMEZONE</tt> (the session setting). 
+Again, such policies may or may not be relevant or appropriate for an application.
+
+<P>Oracle does mention the idea of time zones as opposed to offsets (as in 'America/Montreal'), but these items are apparently not stored anywhere in a database column.
+
+<P><b>Database Offset Calculations</b>
+<br>Clearly, databases that do attempt to manage time zones for you are applying a number of 'baked-in' policies.
+But such calculations are a major annoyance. Here's why:
+<ul>
+ <li><b>the calculations aren't time zone conversions!</b> This is because an offset is not a time zone (see <a href='#OffsetsArentTimeZones'>above</a>). 
+ <li>the settings that control the calculation of the offset difference are all over the place. 
+ Thus, controlling these settings, and understanding exactly how they interact to produce the result you're seeing, is often a pain in the butt.
+ <li>the database policies for doing offset difference calculations are just that - certain policies. 
+  But there are many applications for which these policies are irrelevant. For example, if you want to calculate an offset 
+  difference based on a user preference, then database policies are likely useless. 
+ <li>all other data types other than date-times can be returned from the database as is, without alteration. Why is an annoying exception being made in the case of date-time data?
+ <li>databases are good at storing data, but it's not clear if a database should even attempt such non-trivial transformations in the first place. 
+  Would it not be easier, simpler, and clearer to perform such transformations in the application, not in the database? 
+  Where there is access, for example, to the end user's preferences?
+</ul>
+
+
+
+<a name='Solution'></a>
+<h3>Solution</h3>
+<b>The date4j tool chooses to focus on how databases can store dates and times in a simple style (without time zone/offset), and not on modeling the arcane details of civil timekeeping.</b>
+
+<P>In summary:
+ <ul>
+ <li>its public API consists of a single public class called DateTime. That class is immutable. 
+ <li><i>it doesn't store any time zone information</i>. Most date-times are stored in columns whose type
+ does <i>not</i> include time zone information (see note <a href='#Databases'>above</a>).
+ <li><i>it ignores all non-linearities</i>: summer-hours, leap seconds, and the cutover
+ from Julian to Gregorian calendars.
+ <li>its precision matches the highest precision used by databases (nanosecond).
+ <li>it uses only the proleptic Gregorian Calendar, over the years <tt>1..9999</tt>.
+ <li>it has (very basic) support for wonky dates, such as the magic value <tt>0000-00-00</tt> used by MySQL.
+ <li>it lets you choose among 4 policies for 'day overflow' conditions during calculations.
+ </ul>
+ 
+<P>Recommendations for using date4j:
+ <ul>
+ <li>in your code, use date4j's DateTime to model date-time information.
+ <li>in your database, use columns having data types which do <i>not</i> attempt to manage time zones for you.
+ <li>if implicit time zones are sufficient for your users, consider not using your database at all for any time zone storage, or related calculations.  
+ <li>if implicit time zones are not sufficient for your users, then roll your own solution, and store them in a column of their own, separate from the date-time.
+  (To be normalized, such a solution would usually require construction of a simple time zone table, to store some or all of the time zone identifiers known to Java - 'America/Montreal', 'Asia/Jakarta', and so on.)
+ </ul>
+
+ 
+
+
+<a name='Examples'></a>
+<h3>Examples</h3>
+Here are some quick examples of using date4j's DateTime class (more examples are available <a href='examples.txt'>here</a>):
+<PRE>
+DateTime dateAndTime = new DateTime("2010-01-19 23:59:59");
+DateTime dateAndTime = new DateTime("2010-01-19T23:59:59.123456789");
+DateTime dateOnly = new DateTime("2010-01-19");
+DateTime timeOnly = new DateTime("23:59:59");
+DateTime dateOnly = DateTime.forDateOnly(2010,01,19);
+DateTime timeOnly = DateTime.forTimeOnly(23,59,59,0);
+
+DateTime dt = new DateTime("2010-01-15 13:59:15");
+boolean leap = dt.isLeapYear(); //false
+dt.getNumDaysInMonth(); //31
+dt.getStartOfMonth(); //2010-01-01, 00:00:00.000000000
+dt.getEndOfDay(); //2010-01-15, 23:59:59.999999999
+dt.format("YYYY-MM-DD"); //formats as '2010-01-15'
+dt.plusDays(30); //30 days after Jan 15
+dt.numDaysFrom(someDate); //returns an int
+dueDate.lt(someDate); //less-than
+dueDate.lteq(someDate); //less-than-or-equal-to
+</PRE>
+
+
+<P>Although DateTime carries no TimeZone information internally, there are methods that take a TimeZone as a parameter:
+<PRE>
+DateTime now = DateTime.now(someTimeZone);
+DateTime today = DateTime.today(someTimeZone);
+DateTime fromMilliseconds = DateTime.forInstant(31313121L, someTimeZone);
+birthday.isInFuture(someTimeZone);
+dt.changeTimeZone(fromOneTimeZone, toAnotherTimeZone);
+</PRE> 
+
+<h3>Explicit Time Zones</h3>
+Many protest that it shouldn't be necessary to pass the time zone explicitly to the <tt>now</tt> and <tt>today</tt> methods.
+Naturally enough, they have become used to the JDK's style, after many years of use:
+<PRE>
+Date now = new Date();
+</PRE> 
+ 
+Date4j's style of requiring the time zone is not an oversight, but a deliberate decision. 
+Here are its justifications:
+<ul>
+ <li>firstly, both the current date-time and the current date always depend on time zone. 
+  If you disagree, you're <a href='http://en.wikipedia.org/wiki/International_Date_Line'>mistaken</a>.
+ <li>default time zones can lead to errors.
+  If an application always runs in a single time zone, then there's usually no problem.
+  But what if the application evolves? What if a client and server no longer run in the same time zone?
+  Then disagreements can occur about what time it is - unless, for example, they agree explicitly on which time zone to use.
+ <li>default time zones are a hidden dependency; an explicit time zone acts as a (slightly nagging) reminder that the time zone can be important in some contexts.
+ <li>there's no compelling reason to follow the style of an API of such low quality as the JDK's date classes.
+</ul>
+
+In summary, the date4j library takes the position that passing a time zone explicitly to its <tt>now</tt> and <tt>today</tt> methods 
+helps it accomplish the main goal of a well-designed API: <i>to increase the clarity of the code, and decrease the likelihood of programmer error.</i>
+
+
+<a name='contributors'></a>
+<h3>Contributors</h3>
+The contributors to the date4j project are:
+<ul>
+ <li>John O'Hanley (Canada)
+ <li>Piero Campalani (Italy)
+ <li>Jean-Christophe Garnier (CERN - Switzerland)
+ <li>Jamie Craane (Netherlands)
+ <li>Dan J (USA)
+</ul>
+
+As of 2015-07-07, date4j resides in a <a href='https://github.com/johanley/date4j'>github repository</a>.
+
+<P>For interacting with <a href='http://www.json.org/'>JSON</a> data, Giampaolo Trapasso (Italy) 
+wrote a small 
+<a href='http://stackoverflow.com/questions/18786243/use-gson-with-date4j-datetime'>adaptor</a> 
+to make <tt>DateTime</tt> compatible with the 
+<a href='http://code.google.com/p/google-gson/'>GSON library</a>. 
+
+<a name='maven'></a>
+<h3>Maven, Gradle, Buildr Etc</h3>
+For users of tools that can source the Maven Central Repository, Ian Darwin has kindly provided the following:
+<ul>
+ <li>date4j artifacts in the <a href='http://search.maven.org/#search|ga|1|a%3A%22hirondelle-date4j%22'>Maven Central Repository</a>
+ <li>for building with Maven, a <a href='https://github.com/IanDarwin/date4j'>mavenized version</a> of the source code, with a POM file
+</ul>
+
+<a name='web4j'></a>
+<h3>WEB4J</h3>
+The date4j code was extracted out of a Java web application framework called <a href='http://www.web4j.com/'>WEB4J</a>.
+Both date4j and web4j were created by John O'Hanley.
+
+<P>In WEB4J, there is a class of the same name as in date4j, <a href='http://www.web4j.com/web4j/javadoc/hirondelle/web4j/model/DateTime.html'>DateTime</a>. 
+It's structure is almost the same as that of date4j's version. 
+The main differences are:
+<ul>
+ <li>in WEB4J, the DateTime class can return 'fake' system times, by using a configured <a href='http://www.web4j.com/web4j/javadoc/hirondelle/web4j/util/TimeSource.html'>TimeSource</a>.
+ <li>when passing a DateTime to your database, you can always pass it as a formatted String. When using WEB4J's data layer, you 
+  can also pass it directly as a DateTime object.
+</ul>
+
+
+<div id="footer" title='Version: 1.5.0 - May 18, 2013'>  
+  Copyright &copy; 2013 Hirondelle Systems. 
+  All Rights Reserved. Updated May 18, 2013 - <a href='mailto:support@web4j.com'>Contact</a>
+</div>
+
+</body>
+</html>

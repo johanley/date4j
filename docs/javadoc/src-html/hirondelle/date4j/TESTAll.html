@@ -1,0 +1,36 @@
+<HTML>
+ <HEAD>
+  <TITLE>
+TESTAll.java
+  </TITLE>
+  <LINK REL ='stylesheet' TYPE='text/css' HREF='../../../highlight.css' TITLE='Style'>
+ </HEAD>
+ <BODY>
+<PRE>
+<span class='keyword'>package</span> hirondelle.date4j;<a name=line.1></a>
+<a name=line.2></a>
+<span class='keyword'>import</span> junit.framework.Test;<a name=line.3></a>
+<span class='keyword'>import</span> junit.framework.TestSuite;<a name=line.4></a>
+<a name=line.5></a>
+<span class='comment'>/** Run all JUnit tests. */</span><a name=line.6></a>
+<span class='keyword'>public</span> <span class='keyword'>final</span> <span class='keyword'>class</span> TESTAll {<a name=line.7></a>
+<a name=line.8></a>
+  <span class='keyword'>public</span> <span class='keyword'>static</span> <span class='keyword'>void</span> main(String args[]) {<a name=line.9></a>
+    String[] testCaseName = { TESTAll.<span class='keyword'>class</span>.getName()};<a name=line.10></a>
+    junit.textui.TestRunner.main(testCaseName);<a name=line.11></a>
+ }<a name=line.12></a>
+  <a name=line.13></a>
+  <span class='keyword'>public</span> <span class='keyword'>static</span> Test suite ( ) {<a name=line.14></a>
+    TestSuite suite= <span class='keyword'>new</span> TestSuite(<span class='literal'>"All JUnit Tests"</span>);<a name=line.15></a>
+<a name=line.16></a>
+    suite.addTest(<span class='keyword'>new</span> TestSuite(TESTDateTime.<span class='keyword'>class</span>));<a name=line.17></a>
+    suite.addTest(<span class='keyword'>new</span> TestSuite(TESTDateTimeFormatter.<span class='keyword'>class</span>));<a name=line.18></a>
+    suite.addTest(<span class='keyword'>new</span> TestSuite(TESTDateTimeInterval.<span class='keyword'>class</span>));<a name=line.19></a>
+    <a name=line.20></a>
+    <span class='keyword'>return</span> suite;<a name=line.21></a>
+  }<a name=line.22></a>
+}<a name=line.23></a>
+ <a name=line.24></a>
+</PRE><a name=line.25></a>
+ </BODY><a name=line.26></a>
+<HTML><a name=line.27></a>

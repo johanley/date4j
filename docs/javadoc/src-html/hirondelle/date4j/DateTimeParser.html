@@ -1,0 +1,219 @@
+<HTML>
+ <HEAD>
+  <TITLE>
+DateTimeParser.java
+  </TITLE>
+  <LINK REL ='stylesheet' TYPE='text/css' HREF='../../../highlight.css' TITLE='Style'>
+ </HEAD>
+ <BODY>
+<PRE>
+<span class='keyword'>package</span> hirondelle.date4j;<a name=line.1></a>
+<a name=line.2></a>
+<span class='keyword'>import</span> java.util.regex.Matcher;<a name=line.3></a>
+<span class='keyword'>import</span> java.util.regex.Pattern;<a name=line.4></a>
+<a name=line.5></a>
+<span class='comment'>/**<a name=line.6></a>
+ Convert a date-time from a string into a  {@link DateTime}.<a name=line.7></a>
+ The primary use case for this class is converting date-times from a database &lt;tt&gt;ResultSet&lt;/tt&gt;<a name=line.8></a>
+ into a {@link DateTime}. It can also convert an ISO time, having a 'T' separating the date <a name=line.9></a>
+ from the time.<a name=line.10></a>
+*/</span><a name=line.11></a>
+<span class='keyword'>final</span> <span class='keyword'>class</span> DateTimeParser  {<a name=line.12></a>
+<a name=line.13></a>
+  <span class='comment'>/** <a name=line.14></a>
+   Thrown when the given string cannot be converted into a &lt;tt&gt;DateTime&lt;/tt&gt;, since it doesn't <a name=line.15></a>
+   have a format allowed by this class. <a name=line.16></a>
+   An unchecked exception.<a name=line.17></a>
+  */</span><a name=line.18></a>
+  <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>class</span> UnknownDateTimeFormat <span class='keyword'>extends</span> RuntimeException {<a name=line.19></a>
+    <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>long</span> serialVersionUID = -<span class='literal'>7179421566055773208L</span>;<a name=line.20></a>
+    UnknownDateTimeFormat(String aMessage){   <span class='keyword'>super</span>(aMessage);   }<a name=line.21></a>
+    UnknownDateTimeFormat(String aMessage, Throwable aEx){   <span class='keyword'>super</span>(aMessage, aEx);   }<a name=line.22></a>
+  }<a name=line.23></a>
+  <a name=line.24></a>
+  DateTime parse(String aDateTime) {<a name=line.25></a>
+    <span class='keyword'>if</span>(aDateTime == <span class='keyword'>null</span>){<a name=line.26></a>
+      <span class='keyword'>throw</span> <span class='keyword'>new</span> NullPointerException(<span class='literal'>"DateTime string is null"</span>);<a name=line.27></a>
+    }<a name=line.28></a>
+    String dateTime = aDateTime.trim();<a name=line.29></a>
+    Parts parts = splitIntoDateAndTime(dateTime);<a name=line.30></a>
+    <span class='keyword'>if</span> (parts.hasTwoParts()) {<a name=line.31></a>
+      parseDate(parts.datePart);<a name=line.32></a>
+      parseTime(parts.timePart);<a name=line.33></a>
+    }<a name=line.34></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span> (parts.hasDateOnly()){<a name=line.35></a>
+      parseDate(parts.datePart);<a name=line.36></a>
+    }<a name=line.37></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span> (parts.hasTimeOnly()){<a name=line.38></a>
+      parseTime(parts.timePart);<a name=line.39></a>
+    }<a name=line.40></a>
+    DateTime result = <span class='keyword'>new</span> DateTime(fYear, fMonth, fDay, fHour, fMinute, fSecond, fNanosecond);<a name=line.41></a>
+    <span class='keyword'>return</span> result;<a name=line.42></a>
+  }<a name=line.43></a>
+  <a name=line.44></a>
+  <span class='comment'>// PRIVATE<a name=line.45></a>
+</span>  <a name=line.46></a>
+  <span class='comment'>/** <a name=line.47></a>
+   Gross pattern for dates. <a name=line.48></a>
+   Detailed validation is done by DateTime.<a name=line.49></a>
+   The Group index VARIES for y-m-d according to which option is selected<a name=line.50></a>
+   Year: Group 1, 4, 6<a name=line.51></a>
+   Month: Group 2, 5<a name=line.52></a>
+   Day: Group 3 <a name=line.53></a>
+  */</span><a name=line.54></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> Pattern DATE = Pattern.compile(<span class='literal'>"(&#092;&#092;d{1,4})-(&#092;&#092;d&#092;&#092;d)-(&#092;&#092;d&#092;&#092;d)|(&#092;&#092;d{1,4})-(&#092;&#092;d&#092;&#092;d)|(&#092;&#092;d{1,4})"</span>);<a name=line.55></a>
+  <a name=line.56></a>
+  <span class='comment'>/** <a name=line.57></a>
+   Gross pattern for times. <a name=line.58></a>
+   Detailed validation is done by DateTime.   <a name=line.59></a>
+   The Group index VARIES for h-m-s-f according to which option is selected<a name=line.60></a>
+   Hour: Group 1, 5, 8, 10<a name=line.61></a>
+   Minute: Group 2, 6, 9<a name=line.62></a>
+   Second: Group 3, 7<a name=line.63></a>
+   Microsecond:  Group 4<a name=line.64></a>
+  */</span><a name=line.65></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String CL = <span class='literal'>"&#092;&#092;:"</span>; <span class='comment'>//colon is a special character<a name=line.66></a>
+</span>  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String TT = <span class='literal'>"(&#092;&#092;d&#092;&#092;d)"</span>; <span class='comment'>//colon is a special character<a name=line.67></a>
+</span>  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String NUM_DIGITS_FOR_FRACTIONAL_SECONDS = <span class='literal'>"9"</span>;<a name=line.68></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> Integer NUM_DIGITS = Integer.valueOf(NUM_DIGITS_FOR_FRACTIONAL_SECONDS);<a name=line.69></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> Pattern TIME = Pattern.compile(<span class='literal'>""</span> +<a name=line.70></a>
+      TT+CL+TT+CL+TT+ <span class='literal'>"&#092;&#092;."</span> + <span class='literal'>"(&#092;&#092;d{1,"</span> + NUM_DIGITS_FOR_FRACTIONAL_SECONDS + <span class='literal'>"})"</span> + <span class='literal'>"|"</span> + <a name=line.71></a>
+      TT+CL+TT+CL+TT+ <span class='literal'>"|"</span> + <a name=line.72></a>
+      TT+CL+TT+ <span class='literal'>"|"</span> +<a name=line.73></a>
+      TT<a name=line.74></a>
+  );<a name=line.75></a>
+  <a name=line.76></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String COLON = <span class='literal'>":"</span>;<a name=line.77></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>int</span> THIRD_POSITION = <span class='literal'>2</span>;<a name=line.78></a>
+  <a name=line.79></a>
+  <span class='keyword'>private</span> Integer fYear;<a name=line.80></a>
+  <span class='keyword'>private</span> Integer fMonth;<a name=line.81></a>
+  <span class='keyword'>private</span> Integer fDay;<a name=line.82></a>
+  <span class='keyword'>private</span> Integer fHour;<a name=line.83></a>
+  <span class='keyword'>private</span> Integer fMinute;<a name=line.84></a>
+  <span class='keyword'>private</span> Integer fSecond;<a name=line.85></a>
+  <span class='keyword'>private</span> Integer fNanosecond;<a name=line.86></a>
+  <a name=line.87></a>
+  <span class='keyword'>private</span> <span class='keyword'>class</span> Parts {<a name=line.88></a>
+    String datePart;<a name=line.89></a>
+    String timePart;<a name=line.90></a>
+    <span class='keyword'>boolean</span> hasTwoParts(){<a name=line.91></a>
+      <span class='keyword'>return</span> datePart != <span class='keyword'>null</span> &amp;&amp; timePart != <span class='keyword'>null</span>;<a name=line.92></a>
+    }<a name=line.93></a>
+    <span class='keyword'>boolean</span> hasDateOnly(){<a name=line.94></a>
+      <span class='keyword'>return</span> timePart == <span class='keyword'>null</span>;<a name=line.95></a>
+    }<a name=line.96></a>
+    <span class='keyword'>boolean</span> hasTimeOnly(){<a name=line.97></a>
+      <span class='keyword'>return</span> datePart == <span class='keyword'>null</span>;<a name=line.98></a>
+    }<a name=line.99></a>
+  }<a name=line.100></a>
+  <a name=line.101></a>
+  <span class='comment'>/** Date and time can be separated with a single space, or with a 'T' character (case-sensitive). */</span><a name=line.102></a>
+  <span class='keyword'>private</span> Parts splitIntoDateAndTime(String aDateTime){<a name=line.103></a>
+    Parts result = <span class='keyword'>new</span> Parts();<a name=line.104></a>
+    <span class='keyword'>int</span> dateTimeSeparator = getDateTimeSeparator(aDateTime);<a name=line.105></a>
+    <span class='keyword'>boolean</span> hasDateTimeSeparator = <span class='literal'>0</span> &lt; dateTimeSeparator  &amp;&amp; dateTimeSeparator &lt; aDateTime.length();<a name=line.106></a>
+    <span class='keyword'>if</span> (hasDateTimeSeparator){<a name=line.107></a>
+      result.datePart = aDateTime.substring(<span class='literal'>0</span>, dateTimeSeparator);<a name=line.108></a>
+      result.timePart = aDateTime.substring(dateTimeSeparator+<span class='literal'>1</span>);<a name=line.109></a>
+    }<a name=line.110></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span>(hasColonInThirdPlace(aDateTime)){<a name=line.111></a>
+      result.timePart = aDateTime;<a name=line.112></a>
+    }<a name=line.113></a>
+    <span class='keyword'>else</span> {<a name=line.114></a>
+      result.datePart = aDateTime;<a name=line.115></a>
+    }<a name=line.116></a>
+    <span class='keyword'>return</span> result;<a name=line.117></a>
+  }<a name=line.118></a>
+  <a name=line.119></a>
+  <span class='comment'>/** Return the index of a space character, or of a 'T' character. If not found, return -1.*/</span><a name=line.120></a>
+  <span class='keyword'>int</span> getDateTimeSeparator(String aDateTime){<a name=line.121></a>
+    String SPACE = <span class='literal'>" "</span>;<a name=line.122></a>
+    <span class='keyword'>int</span> NOT_FOUND = -<span class='literal'>1</span>;<a name=line.123></a>
+    <span class='keyword'>int</span> result = NOT_FOUND;<a name=line.124></a>
+    result = aDateTime.indexOf(SPACE);<a name=line.125></a>
+    <span class='keyword'>if</span>(result == NOT_FOUND){<a name=line.126></a>
+      result = aDateTime.indexOf(<span class='literal'>"T"</span>);<a name=line.127></a>
+    }<a name=line.128></a>
+    <span class='keyword'>return</span> result;<a name=line.129></a>
+  }<a name=line.130></a>
+  <a name=line.131></a>
+  <span class='keyword'>private</span> <span class='keyword'>boolean</span> hasColonInThirdPlace(String aDateTime){<a name=line.132></a>
+    <span class='keyword'>boolean</span> result = <span class='keyword'>false</span>;<a name=line.133></a>
+    <span class='keyword'>if</span>(aDateTime.length() >= THIRD_POSITION){<a name=line.134></a>
+      result = COLON.equals(aDateTime.substring(THIRD_POSITION,THIRD_POSITION+<span class='literal'>1</span>));<a name=line.135></a>
+    }<a name=line.136></a>
+    <span class='keyword'>return</span> result;<a name=line.137></a>
+  }<a name=line.138></a>
+  <a name=line.139></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> parseDate(String aDate) {<a name=line.140></a>
+    Matcher matcher = DATE.matcher(aDate);<a name=line.141></a>
+    <span class='keyword'>if</span> (matcher.matches()){<a name=line.142></a>
+      String year = getGroup(matcher, <span class='literal'>1</span>, <span class='literal'>4</span>, <span class='literal'>6</span>);<a name=line.143></a>
+      <span class='keyword'>if</span>(year !=<span class='keyword'>null</span> ){<a name=line.144></a>
+        fYear = Integer.valueOf(year);<a name=line.145></a>
+      }<a name=line.146></a>
+      String month = getGroup(matcher, <span class='literal'>2</span>, <span class='literal'>5</span>);<a name=line.147></a>
+      <span class='keyword'>if</span>(month !=<span class='keyword'>null</span> ){<a name=line.148></a>
+        fMonth = Integer.valueOf(month);<a name=line.149></a>
+      }<a name=line.150></a>
+      String day = getGroup(matcher, <span class='literal'>3</span>);<a name=line.151></a>
+      <span class='keyword'>if</span>(day !=<span class='keyword'>null</span> ){<a name=line.152></a>
+        fDay = Integer.valueOf(day);<a name=line.153></a>
+      }<a name=line.154></a>
+    }<a name=line.155></a>
+    <span class='keyword'>else</span> {<a name=line.156></a>
+      <span class='keyword'>throw</span> <span class='keyword'>new</span> DateTimeParser.UnknownDateTimeFormat(<span class='literal'>"Unexpected format for date:"</span> + aDate);<a name=line.157></a>
+    }<a name=line.158></a>
+  }<a name=line.159></a>
+<a name=line.160></a>
+  <span class='keyword'>private</span> String getGroup(Matcher aMatcher, <span class='keyword'>int</span>... aGroupIds){<a name=line.161></a>
+    String result = <span class='keyword'>null</span>;<a name=line.162></a>
+    <span class='keyword'>for</span>(<span class='keyword'>int</span> id: aGroupIds){<a name=line.163></a>
+      result = aMatcher.group(id);<a name=line.164></a>
+      <span class='keyword'>if</span>(result!=<span class='keyword'>null</span>) <span class='keyword'>break</span>;<a name=line.165></a>
+    }<a name=line.166></a>
+    <span class='keyword'>return</span> result;<a name=line.167></a>
+  }<a name=line.168></a>
+<a name=line.169></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> parseTime(String aTime) {<a name=line.170></a>
+    Matcher matcher = TIME.matcher(aTime);<a name=line.171></a>
+    <span class='keyword'>if</span> (matcher.matches()){<a name=line.172></a>
+      String hour = getGroup(matcher, <span class='literal'>1</span>, <span class='literal'>5</span>, <span class='literal'>8</span>, <span class='literal'>10</span>);<a name=line.173></a>
+      <span class='keyword'>if</span>(hour !=<span class='keyword'>null</span> ){<a name=line.174></a>
+        fHour = Integer.valueOf(hour);<a name=line.175></a>
+      }<a name=line.176></a>
+      String minute = getGroup(matcher, <span class='literal'>2</span>, <span class='literal'>6</span>, <span class='literal'>9</span>);<a name=line.177></a>
+      <span class='keyword'>if</span>(minute !=<span class='keyword'>null</span> ){<a name=line.178></a>
+        fMinute = Integer.valueOf(minute);<a name=line.179></a>
+      }<a name=line.180></a>
+      String second = getGroup(matcher, <span class='literal'>3</span>, <span class='literal'>7</span>);<a name=line.181></a>
+      <span class='keyword'>if</span>(second !=<span class='keyword'>null</span> ){<a name=line.182></a>
+        fSecond = Integer.valueOf(second);<a name=line.183></a>
+      }<a name=line.184></a>
+      String decimalSeconds = getGroup(matcher, <span class='literal'>4</span>);<a name=line.185></a>
+      <span class='keyword'>if</span>(decimalSeconds !=<span class='keyword'>null</span> ){<a name=line.186></a>
+        fNanosecond = Integer.valueOf(convertToNanoseconds(decimalSeconds));<a name=line.187></a>
+      }<a name=line.188></a>
+    }<a name=line.189></a>
+    <span class='keyword'>else</span> {<a name=line.190></a>
+      <span class='keyword'>throw</span> <span class='keyword'>new</span> DateTimeParser.UnknownDateTimeFormat(<span class='literal'>"Unexpected format for time:"</span> + aTime);<a name=line.191></a>
+    }<a name=line.192></a>
+  }<a name=line.193></a>
+  <a name=line.194></a>
+  <span class='comment'>/**<a name=line.195></a>
+   Convert any number of decimals (1..9) into the form it would have taken if nanos had been used, <a name=line.196></a>
+   by adding any 0's to the right side.  <a name=line.197></a>
+  */</span><a name=line.198></a>
+  <span class='keyword'>private</span> String convertToNanoseconds(String aDecimalSeconds){<a name=line.199></a>
+    StringBuilder result = <span class='keyword'>new</span> StringBuilder(aDecimalSeconds);<a name=line.200></a>
+    <span class='keyword'>while</span>( result.length( ) &lt; NUM_DIGITS ){<a name=line.201></a>
+      result.append(<span class='literal'>"0"</span>);<a name=line.202></a>
+    }<a name=line.203></a>
+    <span class='keyword'>return</span> result.toString();<a name=line.204></a>
+  }<a name=line.205></a>
+}<a name=line.206></a>
+ <a name=line.207></a>
+</PRE><a name=line.208></a>
+ </BODY><a name=line.209></a>
+<HTML><a name=line.210></a>

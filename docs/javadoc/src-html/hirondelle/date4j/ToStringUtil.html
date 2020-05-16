@@ -1,0 +1,355 @@
+<HTML>
+ <HEAD>
+  <TITLE>
+ToStringUtil.java
+  </TITLE>
+  <LINK REL ='stylesheet' TYPE='text/css' HREF='../../../highlight.css' TITLE='Style'>
+ </HEAD>
+ <BODY>
+<PRE>
+<span class='keyword'>package</span> hirondelle.date4j;<a name=line.1></a>
+<a name=line.2></a>
+<span class='keyword'>import</span> java.lang.reflect.InvocationTargetException;<a name=line.3></a>
+<span class='keyword'>import</span> java.lang.reflect.Method;<a name=line.4></a>
+<span class='keyword'>import</span> java.lang.reflect.Modifier;<a name=line.5></a>
+<span class='keyword'>import</span> java.util.ArrayList;<a name=line.6></a>
+<span class='keyword'>import</span> java.util.List;<a name=line.7></a>
+<span class='keyword'>import</span> java.util.StringTokenizer;<a name=line.8></a>
+<span class='keyword'>import</span> java.util.logging.Logger;<a name=line.9></a>
+<span class='keyword'>import</span> java.util.regex.Matcher;<a name=line.10></a>
+<span class='keyword'>import</span> java.util.regex.Pattern;<a name=line.11></a>
+<a name=line.12></a>
+<span class='comment'>/**<a name=line.13></a>
+ Implements the &lt;tt&gt;toString&lt;/tt&gt; method for some common cases.<a name=line.14></a>
+<a name=line.15></a>
+ &lt;P&gt;This class is intended only for cases where &lt;tt&gt;toString&lt;/tt&gt; is used in<a name=line.16></a>
+ an informal manner (usually for logging and stack traces). It is especially<a name=line.17></a>
+ suited for &lt;tt&gt;public&lt;/tt&gt; classes which model domain objects.<a name=line.18></a>
+<a name=line.19></a>
+ Here is an example of a return value of the {@link #getText} method :<a name=line.20></a>
+ &lt;PRE&gt;<a name=line.21></a>
+hirondelle.web4j.model.MyUser {<a name=line.22></a>
+LoginName: Bob<a name=line.23></a>
+LoginPassword: ****<a name=line.24></a>
+EmailAddress: bob@blah.com<a name=line.25></a>
+StarRating: 1<a name=line.26></a>
+FavoriteTheory: Quantum Chromodynamics<a name=line.27></a>
+SendCard: true<a name=line.28></a>
+Age: 42<a name=line.29></a>
+DesiredSalary: 42000<a name=line.30></a>
+BirthDate: Sat Feb 26 13:45:43 EST 2005<a name=line.31></a>
+}<a name=line.32></a>
+ &lt;/PRE&gt;<a name=line.33></a>
+ (Previous versions of this classes used indentation within the braces. That has <a name=line.34></a>
+ been removed, since it displays poorly when nesting occurs.)<a name=line.35></a>
+<a name=line.36></a>
+ &lt;P&gt;Here are two more examples, using classes taken from the JDK :<a name=line.37></a>
+ &lt;PRE&gt;<a name=line.38></a>
+java.util.StringTokenizer {<a name=line.39></a>
+nextElement: This<a name=line.40></a>
+hasMoreElements: true<a name=line.41></a>
+countTokens: 3<a name=line.42></a>
+nextToken: is<a name=line.43></a>
+hasMoreTokens: true<a name=line.44></a>
+}<a name=line.45></a>
+<a name=line.46></a>
+java.util.ArrayList {<a name=line.47></a>
+size: 3<a name=line.48></a>
+toArray: [blah, blah, blah]<a name=line.49></a>
+isEmpty: false<a name=line.50></a>
+}<a name=line.51></a>
+ &lt;/PRE&gt;<a name=line.52></a>
+<a name=line.53></a>
+ There are two use cases for this class. The typical use case is :<a name=line.54></a>
+ &lt;PRE&gt;<a name=line.55></a>
+  public String toString() {<a name=line.56></a>
+    return ToStringUtil.getText(this);<a name=line.57></a>
+  }<a name=line.58></a>
+ &lt;/PRE&gt;<a name=line.59></a>
+ <a name=line.60></a>
+ &lt;span class="highlight"&gt;However, there is a case where this typical style can<a name=line.61></a>
+ fail catastrophically&lt;/span&gt; : when two objects reference each other, and each <a name=line.62></a>
+ has &lt;tt&gt;toString&lt;/tt&gt; implemented as above, then the program will loop <a name=line.63></a>
+ indefinitely!<a name=line.64></a>
+<a name=line.65></a>
+ &lt;P&gt;As a remedy for this problem, the following variation is provided :<a name=line.66></a>
+ &lt;PRE&gt;<a name=line.67></a>
+  public String toString() {<a name=line.68></a>
+    return ToStringUtil.getTextAvoidCyclicRefs(this, Product.class, "getId");<a name=line.69></a>
+  }<a name=line.70></a>
+ &lt;/PRE&gt;<a name=line.71></a>
+ Here, the usual behavior is overridden for any method <a name=line.72></a>
+ which returns a &lt;tt&gt;Product&lt;/tt&gt; : instead of calling &lt;tt&gt;Product.toString&lt;/tt&gt;, <a name=line.73></a>
+ the return value of &lt;tt&gt;Product.getId()&lt;/tt&gt; is used to textually represent <a name=line.74></a>
+ the object.<a name=line.75></a>
+*/</span><a name=line.76></a>
+<span class='keyword'>final</span> <span class='keyword'>class</span> ToStringUtil {<a name=line.77></a>
+<a name=line.78></a>
+  <span class='comment'>/**<a name=line.79></a>
+   Return an informal textual description of an object. <a name=line.80></a>
+   &lt;P&gt;It is highly recommened that the caller &lt;em&gt;not&lt;/em&gt; rely on details <a name=line.81></a>
+   of the returned &lt;tt&gt;String&lt;/tt&gt;. See class description for examples of return <a name=line.82></a>
+   values.<a name=line.83></a>
+  <a name=line.84></a>
+   &lt;P&gt;&lt;span class="highlight"&gt;WARNING&lt;/span&gt;: If two classes have cyclic references <a name=line.85></a>
+   (that is, each has a reference to the other), then infinite looping will result <a name=line.86></a>
+   if &lt;em&gt;both&lt;/em&gt; call this method! To avoid this problem, use &lt;tt&gt;getText&lt;/tt&gt;<a name=line.87></a>
+   for one of the classes, and {@link #getTextAvoidCyclicRefs} for the other class.<a name=line.88></a>
+  <a name=line.89></a>
+   &lt;P&gt;The only items which contribute to the result are the class name, and all<a name=line.90></a>
+   no-argument &lt;tt&gt;public&lt;/tt&gt; methods which return a value. As well, methods<a name=line.91></a>
+   defined by the &lt;tt&gt;Object&lt;/tt&gt; class, and factory methods which return an <a name=line.92></a>
+   &lt;tt&gt;Object&lt;/tt&gt; of the native class ("&lt;tt&gt;getInstance&lt;/tt&gt;" methods) do not contribute.<a name=line.93></a>
+    <a name=line.94></a>
+   &lt;P&gt;Items are converted to a &lt;tt&gt;String&lt;/tt&gt; simply by calling their <a name=line.95></a>
+   &lt;tt&gt;toString method&lt;/tt&gt;, with these exceptions : <a name=line.96></a>
+   &lt;ul&gt;<a name=line.97></a>
+   &lt;li&gt;{@link Util#getArrayAsString(Object)} is used for arrays<a name=line.98></a>
+   &lt;li&gt;a method whose name contain the text &lt;tt&gt;"password"&lt;/tt&gt; (not case-sensitive) have <a name=line.99></a>
+   their return values hard-coded to &lt;tt&gt;"****"&lt;/tt&gt;. <a name=line.100></a>
+   &lt;/ul&gt;<a name=line.101></a>
+  <a name=line.102></a>
+   &lt;P&gt;If the method name follows the pattern &lt;tt&gt;getXXX&lt;/tt&gt;, then the word 'get'<a name=line.103></a>
+   is removed from the presented result.<a name=line.104></a>
+  <a name=line.105></a>
+   @param aObject the object for which a &lt;tt&gt;toString&lt;/tt&gt; result is required.<a name=line.106></a>
+  */</span><a name=line.107></a>
+  <span class='keyword'>static</span> String getText(Object aObject) {<a name=line.108></a>
+    <span class='keyword'>return</span> getTextAvoidCyclicRefs(aObject, <span class='keyword'>null</span>, <span class='keyword'>null</span>);<a name=line.109></a>
+  }<a name=line.110></a>
+<a name=line.111></a>
+  <span class='comment'>/**<a name=line.112></a>
+   As in {@link #getText}, but, for return values which are instances of <a name=line.113></a>
+   &lt;tt&gt;aSpecialClass&lt;/tt&gt;, then call &lt;tt&gt;aMethodName&lt;/tt&gt; instead of &lt;tt&gt;toString&lt;/tt&gt;.<a name=line.114></a>
+  <a name=line.115></a>
+   &lt;P&gt; If &lt;tt&gt;aSpecialClass&lt;/tt&gt; and &lt;tt&gt;aMethodName&lt;/tt&gt; are &lt;tt&gt;null&lt;/tt&gt;, then the <a name=line.116></a>
+   behavior is exactly the same as calling {@link #getText}.<a name=line.117></a>
+  */</span><a name=line.118></a>
+  <span class='keyword'>static</span> String getTextAvoidCyclicRefs(Object aObject, Class aSpecialClass, String aMethodName) {<a name=line.119></a>
+    StringBuilder result = <span class='keyword'>new</span> StringBuilder();<a name=line.120></a>
+    addStartLine(aObject, result);<a name=line.121></a>
+<a name=line.122></a>
+    Method[] methods =  aObject.getClass().getDeclaredMethods();<a name=line.123></a>
+    <span class='keyword'>for</span>(Method method: methods){<a name=line.124></a>
+      <span class='keyword'>if</span> ( isContributingMethod(method, aObject.getClass()) ){<a name=line.125></a>
+        addLineForGetXXXMethod(aObject, method, result, aSpecialClass, aMethodName);<a name=line.126></a>
+      }<a name=line.127></a>
+    }<a name=line.128></a>
+<a name=line.129></a>
+    addEndLine(result);<a name=line.130></a>
+    <span class='keyword'>return</span> result.toString();<a name=line.131></a>
+  }<a name=line.132></a>
+  <a name=line.133></a>
+  <span class='comment'>// PRIVATE //<a name=line.134></a>
+</span><a name=line.135></a>
+  <span class='comment'>/*<a name=line.136></a>
+   Names of methods in the &lt;tt&gt;Object&lt;/tt&gt; class which are ignored.<a name=line.137></a>
+  */</span><a name=line.138></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String fGET_CLASS = <span class='literal'>"getClass"</span>;<a name=line.139></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String fCLONE = <span class='literal'>"clone"</span>;<a name=line.140></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String fHASH_CODE = <span class='literal'>"hashCode"</span>;<a name=line.141></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String fTO_STRING = <span class='literal'>"toString"</span>;<a name=line.142></a>
+  <a name=line.143></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String fGET = <span class='literal'>"get"</span>;<a name=line.144></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> Object[] fNO_ARGS = <span class='keyword'>new</span> Object[<span class='literal'>0</span>];<a name=line.145></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> Class[] fNO_PARAMS = <span class='keyword'>new</span> Class[<span class='literal'>0</span>];<a name=line.146></a>
+  <span class='comment'>/*<a name=line.147></a>
+   Previous versions of this class indented the data within a block. <a name=line.148></a>
+   That style breaks when one object references another. The indentation<a name=line.149></a>
+   has been removed, but this variable has been retained, since others might <a name=line.150></a>
+   prefer the indentation anyway.<a name=line.151></a>
+  */</span><a name=line.152></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String fINDENT = <span class='literal'>""</span>;<a name=line.153></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String fAVOID_CIRCULAR_REFERENCES = <span class='literal'>"[circular reference]"</span>;<a name=line.154></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> Logger fLogger = Util.getLogger(ToStringUtil.<span class='keyword'>class</span>);<a name=line.155></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> String NEW_LINE = System.getProperty(<span class='literal'>"line.separator"</span>);<a name=line.156></a>
+<a name=line.157></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> Pattern PASSWORD_PATTERN = Pattern.compile(<span class='literal'>"password"</span>, Pattern.CASE_INSENSITIVE);<a name=line.158></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> String HIDDEN_PASSWORD_VALUE = <span class='literal'>"****"</span>;<a name=line.159></a>
+<a name=line.160></a>
+  <span class='comment'>//prevent construction by the caller<a name=line.161></a>
+</span>  <span class='keyword'>private</span> ToStringUtil() {<a name=line.162></a>
+    <span class='comment'>//empty<a name=line.163></a>
+</span>  }<a name=line.164></a>
+  <a name=line.165></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>void</span> addStartLine(Object aObject, StringBuilder aResult){<a name=line.166></a>
+    aResult.append( aObject.getClass().getName() );<a name=line.167></a>
+    aResult.append(<span class='literal'>" {"</span>);<a name=line.168></a>
+    aResult.append(NEW_LINE);<a name=line.169></a>
+  }<a name=line.170></a>
+<a name=line.171></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>void</span> addEndLine(StringBuilder aResult){<a name=line.172></a>
+    aResult.append(<span class='literal'>"}"</span>);<a name=line.173></a>
+    aResult.append(NEW_LINE);<a name=line.174></a>
+  }<a name=line.175></a>
+<a name=line.176></a>
+  <span class='comment'>/**<a name=line.177></a>
+   Return &lt;tt&gt;true&lt;/tt&gt; only if &lt;tt&gt;aMethod&lt;/tt&gt; is public, takes no args, <a name=line.178></a>
+   returns a value whose class is not the native class, is not a method of <a name=line.179></a>
+   &lt;tt&gt;Object&lt;/tt&gt;.<a name=line.180></a>
+  */</span><a name=line.181></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>boolean</span> isContributingMethod(Method aMethod, Class aNativeClass){<a name=line.182></a>
+    <span class='keyword'>boolean</span> isPublic = Modifier.isPublic( aMethod.getModifiers() );<a name=line.183></a>
+    <span class='keyword'>boolean</span> hasNoArguments = aMethod.getParameterTypes().length == <span class='literal'>0</span>;<a name=line.184></a>
+    <span class='keyword'>boolean</span> hasReturnValue = aMethod.getReturnType() != Void.TYPE;<a name=line.185></a>
+    <span class='keyword'>boolean</span> returnsNativeObject = aMethod.getReturnType() == aNativeClass;<a name=line.186></a>
+    <span class='keyword'>boolean</span> isMethodOfObjectClass = <a name=line.187></a>
+      aMethod.getName().equals(fCLONE) || <a name=line.188></a>
+      aMethod.getName().equals(fGET_CLASS) || <a name=line.189></a>
+      aMethod.getName().equals(fHASH_CODE) || <a name=line.190></a>
+      aMethod.getName().equals(fTO_STRING)<a name=line.191></a>
+   ;<a name=line.192></a>
+    <span class='keyword'>return</span> <a name=line.193></a>
+      isPublic &amp;&amp; <a name=line.194></a>
+      hasNoArguments &amp;&amp; <a name=line.195></a>
+      hasReturnValue &amp;&amp; <a name=line.196></a>
+      ! isMethodOfObjectClass &amp;&amp; <a name=line.197></a>
+      ! returnsNativeObject;<a name=line.198></a>
+  }<a name=line.199></a>
+<a name=line.200></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>void</span> addLineForGetXXXMethod(<a name=line.201></a>
+    Object aObject,<a name=line.202></a>
+    Method aMethod,<a name=line.203></a>
+    StringBuilder aResult,<a name=line.204></a>
+    Class aCircularRefClass, <a name=line.205></a>
+    String aCircularRefMethodName<a name=line.206></a>
+  ){<a name=line.207></a>
+    aResult.append(fINDENT);<a name=line.208></a>
+    aResult.append( getMethodNameMinusGet(aMethod) );<a name=line.209></a>
+    aResult.append(<span class='literal'>": "</span>);<a name=line.210></a>
+    Object returnValue = getMethodReturnValue(aObject, aMethod);<a name=line.211></a>
+    <span class='keyword'>if</span> ( returnValue != <span class='keyword'>null</span> &amp;&amp; returnValue.getClass().isArray() ) {<a name=line.212></a>
+      aResult.append( Util.getArrayAsString(returnValue) );<a name=line.213></a>
+    }<a name=line.214></a>
+    <span class='keyword'>else</span> {<a name=line.215></a>
+      <span class='keyword'>if</span> (aCircularRefClass == <span class='keyword'>null</span>) {<a name=line.216></a>
+        aResult.append( returnValue );<a name=line.217></a>
+      }<a name=line.218></a>
+      <span class='keyword'>else</span> {<a name=line.219></a>
+        <span class='keyword'>if</span> (aCircularRefClass == returnValue.getClass()) {<a name=line.220></a>
+          Method method = getMethodFromName(aCircularRefClass, aCircularRefMethodName);<a name=line.221></a>
+          <span class='keyword'>if</span> ( isContributingMethod(method, aCircularRefClass)){<a name=line.222></a>
+            returnValue = getMethodReturnValue(returnValue, method);<a name=line.223></a>
+            aResult.append( returnValue );<a name=line.224></a>
+          }<a name=line.225></a>
+          <span class='keyword'>else</span> {<a name=line.226></a>
+            aResult.append(fAVOID_CIRCULAR_REFERENCES);<a name=line.227></a>
+          }<a name=line.228></a>
+        }<a name=line.229></a>
+      }<a name=line.230></a>
+    }<a name=line.231></a>
+    aResult.append( NEW_LINE );<a name=line.232></a>
+  }<a name=line.233></a>
+<a name=line.234></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> String getMethodNameMinusGet(Method aMethod){<a name=line.235></a>
+    String result = aMethod.getName();<a name=line.236></a>
+    <span class='keyword'>if</span> (result.startsWith(fGET) ) {<a name=line.237></a>
+      result = result.substring(fGET.length());<a name=line.238></a>
+    }<a name=line.239></a>
+    <span class='keyword'>return</span> result;<a name=line.240></a>
+  }<a name=line.241></a>
+<a name=line.242></a>
+  <span class='comment'>/** Return value is possibly-null.  */</span><a name=line.243></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> Object getMethodReturnValue(Object aObject, Method aMethod){<a name=line.244></a>
+    Object result = <span class='keyword'>null</span>;<a name=line.245></a>
+    <span class='keyword'>try</span> {<a name=line.246></a>
+      result = aMethod.invoke(aObject, fNO_ARGS);<a name=line.247></a>
+    }<a name=line.248></a>
+    <span class='keyword'>catch</span> (IllegalAccessException ex){<a name=line.249></a>
+      vomit(aObject, aMethod);<a name=line.250></a>
+    }<a name=line.251></a>
+    <span class='keyword'>catch</span> (InvocationTargetException ex){<a name=line.252></a>
+      vomit(aObject, aMethod);<a name=line.253></a>
+    }<a name=line.254></a>
+    result = dontShowPasswords(result, aMethod);<a name=line.255></a>
+    <span class='keyword'>return</span> result;<a name=line.256></a>
+  }<a name=line.257></a>
+  <a name=line.258></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> Method getMethodFromName(Class aSpecialClass, String aMethodName){<a name=line.259></a>
+    Method result = <span class='keyword'>null</span>;<a name=line.260></a>
+    <span class='keyword'>try</span> {<a name=line.261></a>
+      result = aSpecialClass.getMethod(aMethodName, fNO_PARAMS);<a name=line.262></a>
+    }<a name=line.263></a>
+    <span class='keyword'>catch</span> ( NoSuchMethodException ex){<a name=line.264></a>
+      vomit(aSpecialClass, aMethodName);<a name=line.265></a>
+    }<a name=line.266></a>
+    <span class='keyword'>return</span> result;<a name=line.267></a>
+  }<a name=line.268></a>
+  <a name=line.269></a>
+<a name=line.270></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>void</span> vomit(Object aObject, Method aMethod){<a name=line.271></a>
+    fLogger.severe(<a name=line.272></a>
+      <span class='literal'>"Cannot get return value using reflection. Class: "</span> +<a name=line.273></a>
+      aObject.getClass().getName() +<a name=line.274></a>
+      <span class='literal'>" Method: "</span> +<a name=line.275></a>
+      aMethod.getName()<a name=line.276></a>
+    );<a name=line.277></a>
+  }<a name=line.278></a>
+  <a name=line.279></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>void</span> vomit(Class aSpecialClass, String aMethodName){<a name=line.280></a>
+    fLogger.severe(<a name=line.281></a>
+      <span class='literal'>"Reflection fails to get no-arg method named: "</span> +<a name=line.282></a>
+      Util.quote(aMethodName) +<a name=line.283></a>
+      <span class='literal'>" for class: "</span> +<a name=line.284></a>
+      aSpecialClass.getName()<a name=line.285></a>
+    );<a name=line.286></a>
+  }<a name=line.287></a>
+  <a name=line.288></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> Object dontShowPasswords(Object aReturnValue, Method aMethod){<a name=line.289></a>
+    Object result = aReturnValue;<a name=line.290></a>
+    Matcher matcher = PASSWORD_PATTERN.matcher(aMethod.getName());<a name=line.291></a>
+    <span class='keyword'>if</span> ( matcher.find()) {<a name=line.292></a>
+      result = HIDDEN_PASSWORD_VALUE;<a name=line.293></a>
+    }<a name=line.294></a>
+    <span class='keyword'>return</span> result;<a name=line.295></a>
+  }<a name=line.296></a>
+  <a name=line.297></a>
+  <span class='comment'>/*<a name=line.298></a>
+   Two informal classes with cyclic references, used for testing. <a name=line.299></a>
+  */</span><a name=line.300></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>class</span> Ping {<a name=line.301></a>
+    <span class='keyword'>public</span> <span class='keyword'>void</span> setPong(Pong aPong){fPong = aPong; }<a name=line.302></a>
+    <span class='keyword'>public</span> Pong getPong(){ <span class='keyword'>return</span> fPong; }<a name=line.303></a>
+    <span class='keyword'>public</span> Integer getId() { <span class='keyword'>return</span> <span class='keyword'>new</span> Integer(<span class='literal'>123</span>); }<a name=line.304></a>
+    <span class='keyword'>public</span> String getUserPassword(){ <span class='keyword'>return</span> <span class='literal'>"blah"</span>; }<a name=line.305></a>
+    <span class='keyword'>public</span> String toString() {<a name=line.306></a>
+      <span class='keyword'>return</span> getText(<span class='keyword'>this</span>);<a name=line.307></a>
+    }<a name=line.308></a>
+    <span class='keyword'>private</span> Pong fPong;<a name=line.309></a>
+  }<a name=line.310></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>class</span> Pong {<a name=line.311></a>
+    <span class='keyword'>public</span> <span class='keyword'>void</span> setPing(Ping aPing){ fPing = aPing; }<a name=line.312></a>
+    <span class='keyword'>public</span> Ping getPing() { <span class='keyword'>return</span> fPing; }<a name=line.313></a>
+    <span class='keyword'>public</span> String toString() {<a name=line.314></a>
+      <span class='keyword'>return</span> getTextAvoidCyclicRefs(<span class='keyword'>this</span>, Ping.<span class='keyword'>class</span>, <span class='literal'>"getId"</span>);<a name=line.315></a>
+      <span class='comment'>//to see the infinite looping, use this instead :<a name=line.316></a>
+</span>      <span class='comment'>//return getText(this);<a name=line.317></a>
+</span>    }<a name=line.318></a>
+    <span class='keyword'>private</span> Ping fPing;<a name=line.319></a>
+  }<a name=line.320></a>
+  <a name=line.321></a>
+  <span class='comment'>/**<a name=line.322></a>
+   Informal test harness.<a name=line.323></a>
+  */</span><a name=line.324></a>
+  <span class='keyword'>public</span> <span class='keyword'>static</span> <span class='keyword'>void</span> main (String... args) {<a name=line.325></a>
+    List&lt;String&gt; list = <span class='keyword'>new</span> ArrayList&lt;String&gt;();<a name=line.326></a>
+    list.add(<span class='literal'>"blah"</span>);<a name=line.327></a>
+    list.add(<span class='literal'>"blah"</span>);<a name=line.328></a>
+    list.add(<span class='literal'>"blah"</span>);<a name=line.329></a>
+    System.out.println( ToStringUtil.getText(list) );<a name=line.330></a>
+    <a name=line.331></a>
+    StringTokenizer parser = <span class='keyword'>new</span> StringTokenizer(<span class='literal'>"This is the end."</span>);<a name=line.332></a>
+    System.out.println( ToStringUtil.getText(parser) );<a name=line.333></a>
+    <a name=line.334></a>
+    Ping ping = <span class='keyword'>new</span> Ping();<a name=line.335></a>
+    Pong pong = <span class='keyword'>new</span> Pong();<a name=line.336></a>
+    ping.setPong(pong);<a name=line.337></a>
+    pong.setPing(ping);<a name=line.338></a>
+    System.out.println( ping );<a name=line.339></a>
+    System.out.println( pong );<a name=line.340></a>
+  }<a name=line.341></a>
+}<a name=line.342></a>
+ <a name=line.343></a>
+</PRE><a name=line.344></a>
+ </BODY><a name=line.345></a>
+<HTML><a name=line.346></a>

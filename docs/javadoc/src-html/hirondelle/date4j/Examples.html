@@ -1,0 +1,189 @@
+<HTML>
+ <HEAD>
+  <TITLE>
+Examples.java
+  </TITLE>
+  <LINK REL ='stylesheet' TYPE='text/css' HREF='../../../highlight.css' TITLE='Style'>
+ </HEAD>
+ <BODY>
+<PRE>
+<span class='keyword'>package</span> hirondelle.date4j;<a name=line.1></a>
+<a name=line.2></a>
+<span class='keyword'>import</span> java.util.Locale;<a name=line.3></a>
+<span class='keyword'>import</span> java.util.TimeZone;<a name=line.4></a>
+<a name=line.5></a>
+<span class='comment'>/** Examples of how to use date4j. */</span><a name=line.6></a>
+<span class='keyword'>public</span> <span class='keyword'>final</span> <span class='keyword'>class</span> Examples {<a name=line.7></a>
+<a name=line.8></a>
+  <span class='comment'>/** <a name=line.9></a>
+   Run the examples, and output to the console. <a name=line.10></a>
+   <a name=line.11></a>
+  &lt;P&gt;Example output when you run this class: <a name=line.12></a>
+  &lt;PRE&gt;<a name=line.13></a>
+   Current date-time in default time zone : 2011-10-24 08:05:59<a name=line.14></a>
+   Current date-time in Cairo : 2011-10-24 13:06:00 (Monday)<a name=line.15></a>
+   Age of someone born May 16, 1995 is : 16<a name=line.16></a>
+   The 3rd Friday of this month is : 2011-10-21<a name=line.17></a>
+   Number of days till Christmas : 62<a name=line.18></a>
+   90 days from today is : 2012-01-22<a name=line.19></a>
+   3 months and 5 days from today is : 2012-01-29<a name=line.20></a>
+   Numbers of hours difference between Paris and Perth : 6<a name=line.21></a>
+   The number of weeks since Sep 6, 2010 : 59<a name=line.22></a>
+   This many seconds till midnight : 57240<a name=line.23></a>
+   Output using an ISO format: 2011-10-24T08:06:00<a name=line.24></a>
+   The first day of this week is : 2011-10-23<a name=line.25></a>
+   The number of years the JDK date-time API has been suctorial : 15<a name=line.26></a>
+  &lt;/PRE&gt;  <a name=line.27></a>
+  */</span><a name=line.28></a>
+  <span class='keyword'>public</span> <span class='keyword'>static</span> <span class='keyword'>void</span> main(String... aArgs){<a name=line.29></a>
+    Examples examples = <span class='keyword'>new</span> Examples();<a name=line.30></a>
+    examples.currentDateTime();<a name=line.31></a>
+    examples.currentDateTimeInCairo();<a name=line.32></a>
+    examples.ageIfBornOnCertainDate();<a name=line.33></a>
+    examples.optionsExpiry();<a name=line.34></a>
+    examples.daysTillChristmas();<a name=line.35></a>
+    examples.whenIs90DaysFromToday();<a name=line.36></a>
+    examples.whenIs3Months5DaysFromToday();<a name=line.37></a>
+    examples.hoursDifferenceBetweenParisAndPerth();<a name=line.38></a>
+    examples.weeksSinceStart();<a name=line.39></a>
+    examples.timeTillMidnight();<a name=line.40></a>
+    examples.imitateISOFormat();<a name=line.41></a>
+    examples.firstDayOfThisWeek();<a name=line.42></a>
+    examples.jdkDatesSuctorial();<a name=line.43></a>
+  }<a name=line.44></a>
+  <a name=line.45></a>
+  <span class='comment'>// PRIVATE<a name=line.46></a>
+</span>  <a name=line.47></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>void</span> log(Object aMsg){<a name=line.48></a>
+    System.out.println(String.valueOf(aMsg));<a name=line.49></a>
+  }<a name=line.50></a>
+  <a name=line.51></a>
+  <span class='comment'>/** What is the current date-time in the JRE's default time zone? */</span><a name=line.52></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> currentDateTime(){<a name=line.53></a>
+    DateTime now = DateTime.now(TimeZone.getDefault());<a name=line.54></a>
+    String result = now.format(<span class='literal'>"YYYY-MM-DD hh:mm:ss"</span>);<a name=line.55></a>
+    log(<span class='literal'>"Current date-time in default time zone : "</span> + result);<a name=line.56></a>
+  }<a name=line.57></a>
+  <a name=line.58></a>
+  <span class='comment'>/** What is the current date-time in Cairo (include weekday)? */</span><a name=line.59></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> currentDateTimeInCairo(){<a name=line.60></a>
+    DateTime now = DateTime.now(TimeZone.getTimeZone(<span class='literal'>"Africa/Cairo"</span>));<a name=line.61></a>
+    String result = now.format(<span class='literal'>"YYYY-MM-DD hh:mm:ss (WWWW)"</span>, Locale.getDefault());<a name=line.62></a>
+    log(<span class='literal'>"Current date-time in Cairo : "</span> + result);<a name=line.63></a>
+  }<a name=line.64></a>
+  <a name=line.65></a>
+  <span class='comment'>/** What's the age of someone born May 16, 1995? */</span><a name=line.66></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> ageIfBornOnCertainDate(){<a name=line.67></a>
+    DateTime today = DateTime.today(TimeZone.getDefault());<a name=line.68></a>
+    DateTime birthdate = DateTime.forDateOnly(<span class='literal'>1995</span>, <span class='literal'>5</span>, <span class='literal'>16</span>);<a name=line.69></a>
+    <span class='keyword'>int</span> age = today.getYear() - birthdate.getYear();<a name=line.70></a>
+    <span class='keyword'>if</span>(today.getDayOfYear() &lt; birthdate.getDayOfYear()){<a name=line.71></a>
+      age = age - <span class='literal'>1</span>; <a name=line.72></a>
+    }<a name=line.73></a>
+    log(<span class='literal'>"Age of someone born May 16, 1995 is : "</span> + age);<a name=line.74></a>
+  }<a name=line.75></a>
+  <a name=line.76></a>
+  <span class='comment'>/** Stock options expire on the 3rd Friday of this month. What day of the month is that? */</span><a name=line.77></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> optionsExpiry(){<a name=line.78></a>
+    DateTime today = DateTime.today(TimeZone.getDefault());<a name=line.79></a>
+    DateTime firstOfMonth = today.getStartOfMonth();<a name=line.80></a>
+    <span class='keyword'>int</span> result = <span class='literal'>0</span>;<a name=line.81></a>
+    <span class='keyword'>if</span> (firstOfMonth.getWeekDay() == <span class='literal'>7</span>){<a name=line.82></a>
+      result = <span class='literal'>21</span>;<a name=line.83></a>
+    }<a name=line.84></a>
+    <span class='keyword'>else</span> {<a name=line.85></a>
+       result = <span class='literal'>21</span> - firstOfMonth.getWeekDay();<a name=line.86></a>
+    }<a name=line.87></a>
+    DateTime thirdFriday = DateTime.forDateOnly(firstOfMonth.getYear(), firstOfMonth.getMonth(), result);<a name=line.88></a>
+    log(<span class='literal'>"The 3rd Friday of this month is : "</span> + thirdFriday.format(<span class='literal'>"YYYY-MM-DD"</span>));<a name=line.89></a>
+  }<a name=line.90></a>
+  <a name=line.91></a>
+  <span class='comment'>/** How many days till the next December 25? */</span><a name=line.92></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> daysTillChristmas(){<a name=line.93></a>
+    DateTime today = DateTime.today(TimeZone.getDefault());<a name=line.94></a>
+    DateTime christmas = DateTime.forDateOnly(today.getYear(), <span class='literal'>12</span>, <span class='literal'>25</span>);<a name=line.95></a>
+    <span class='keyword'>int</span> result = <span class='literal'>0</span>;<a name=line.96></a>
+    <span class='keyword'>if</span>(today.isSameDayAs(christmas)){<a name=line.97></a>
+      <span class='comment'>// do nothing<a name=line.98></a>
+</span>    }<a name=line.99></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span> (today.lt(christmas)){<a name=line.100></a>
+      result = today.numDaysFrom(christmas);<a name=line.101></a>
+    }<a name=line.102></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span> (today.gt(christmas)){<a name=line.103></a>
+      DateTime christmasNextYear = DateTime.forDateOnly(today.getYear() + <span class='literal'>1</span>, <span class='literal'>12</span>, <span class='literal'>25</span>);<a name=line.104></a>
+      result = today.numDaysFrom(christmasNextYear);<a name=line.105></a>
+    }<a name=line.106></a>
+    log(<span class='literal'>"Number of days till Christmas : "</span> + result);<a name=line.107></a>
+  }<a name=line.108></a>
+  <a name=line.109></a>
+  <span class='comment'>/** What day is 90 days from today? */</span><a name=line.110></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> whenIs90DaysFromToday(){<a name=line.111></a>
+    DateTime today = DateTime.today(TimeZone.getDefault());<a name=line.112></a>
+    log(<span class='literal'>"90 days from today is : "</span> + today.plusDays(<span class='literal'>90</span>).format(<span class='literal'>"YYYY-MM-DD"</span>));<a name=line.113></a>
+  }<a name=line.114></a>
+<a name=line.115></a>
+  <span class='comment'>/** What day is 3 months and 5 days from today? */</span><a name=line.116></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> whenIs3Months5DaysFromToday(){<a name=line.117></a>
+    DateTime today = DateTime.today(TimeZone.getDefault());<a name=line.118></a>
+    DateTime result = today.plus(<span class='literal'>0</span>,<span class='literal'>3</span>,<span class='literal'>5</span>,<span class='literal'>0</span>,<span class='literal'>0</span>,<span class='literal'>0</span>,<span class='literal'>0</span>,DateTime.DayOverflow.FirstDay);<a name=line.119></a>
+    log(<span class='literal'>"3 months and 5 days from today is : "</span> + result.format(<span class='literal'>"YYYY-MM-DD"</span>));<a name=line.120></a>
+  }<a name=line.121></a>
+  <a name=line.122></a>
+  <span class='comment'>/** Current number of hours difference between Paris, France and Perth, Australia. */</span><a name=line.123></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> hoursDifferenceBetweenParisAndPerth(){<a name=line.124></a>
+    <span class='comment'>//this assumes the time diff is a whole number of hours; other styles are possible<a name=line.125></a>
+</span>    DateTime paris = DateTime.now(TimeZone.getTimeZone(<span class='literal'>"Europe/Paris"</span>));<a name=line.126></a>
+    DateTime perth = DateTime.now(TimeZone.getTimeZone(<span class='literal'>"Australia/Perth"</span>));<a name=line.127></a>
+    <span class='keyword'>int</span> result = perth.getHour() - paris.getHour();<a name=line.128></a>
+    <span class='keyword'>if</span>( result &lt; <span class='literal'>0</span> ) {<a name=line.129></a>
+      result = result + <span class='literal'>24</span>;<a name=line.130></a>
+    }<a name=line.131></a>
+    log(<span class='literal'>"Numbers of hours difference between Paris and Perth : "</span> + result);<a name=line.132></a>
+  }<a name=line.133></a>
+  <a name=line.134></a>
+  <span class='comment'>/** How many weeks is it since Sep 6, 2010? */</span><a name=line.135></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> weeksSinceStart(){<a name=line.136></a>
+    DateTime today = DateTime.today(TimeZone.getDefault());<a name=line.137></a>
+    DateTime startOfProject = DateTime.forDateOnly(<span class='literal'>2010</span>, <span class='literal'>9</span>, <span class='literal'>6</span>);<a name=line.138></a>
+    <span class='keyword'>int</span> result = today.getWeekIndex() - startOfProject.getWeekIndex();<a name=line.139></a>
+    log(<span class='literal'>"The number of weeks since Sep 6, 2010 : "</span> + result);<a name=line.140></a>
+  }<a name=line.141></a>
+  <a name=line.142></a>
+  <span class='comment'>/** How much time till midnight? */</span><a name=line.143></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> timeTillMidnight(){<a name=line.144></a>
+    DateTime now = DateTime.now(TimeZone.getDefault());<a name=line.145></a>
+    DateTime midnight = now.plusDays(<span class='literal'>1</span>).getStartOfDay();<a name=line.146></a>
+    <span class='keyword'>long</span> result = now.numSecondsFrom(midnight);<a name=line.147></a>
+    log(<span class='literal'>"This many seconds till midnight : "</span> + result);<a name=line.148></a>
+  }<a name=line.149></a>
+  <a name=line.150></a>
+  <span class='comment'>/** Format using ISO style. */</span><a name=line.151></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> imitateISOFormat(){<a name=line.152></a>
+    DateTime now = DateTime.now(TimeZone.getDefault());<a name=line.153></a>
+    log(<span class='literal'>"Output using an ISO format: "</span> + now.format(<span class='literal'>"YYYY-MM-DDThh:mm:ss"</span>));<a name=line.154></a>
+  }<a name=line.155></a>
+<a name=line.156></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> firstDayOfThisWeek(){<a name=line.157></a>
+    DateTime today = DateTime.today(TimeZone.getDefault()); <a name=line.158></a>
+    DateTime firstDayThisWeek = today; <span class='comment'>//start value <a name=line.159></a>
+</span>    <span class='keyword'>int</span> todaysWeekday = today.getWeekDay();<a name=line.160></a>
+    <span class='keyword'>int</span> SUNDAY = <span class='literal'>1</span>;<a name=line.161></a>
+    <span class='keyword'>if</span>(todaysWeekday &gt; SUNDAY){<a name=line.162></a>
+      <span class='keyword'>int</span> numDaysFromSunday = todaysWeekday - SUNDAY;<a name=line.163></a>
+      firstDayThisWeek = today.minusDays(numDaysFromSunday);<a name=line.164></a>
+    }<a name=line.165></a>
+    log(<span class='literal'>"The first day of this week is : "</span> + firstDayThisWeek);<a name=line.166></a>
+  }<a name=line.167></a>
+  <a name=line.168></a>
+  <span class='comment'>/** For how many years has the JDK date-time API been suctorial? */</span><a name=line.169></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> jdkDatesSuctorial(){<a name=line.170></a>
+    DateTime today = DateTime.today(TimeZone.getDefault());<a name=line.171></a>
+    DateTime jdkFirstPublished = DateTime.forDateOnly(<span class='literal'>1996</span>, <span class='literal'>1</span>, <span class='literal'>23</span>);<a name=line.172></a>
+    <span class='keyword'>int</span> result = today.getYear() - jdkFirstPublished.getYear();<a name=line.173></a>
+    log(<span class='literal'>"The number of years the JDK date-time API has been suctorial : "</span> + result);<a name=line.174></a>
+  }<a name=line.175></a>
+  <a name=line.176></a>
+} <a name=line.177></a>
+</PRE><a name=line.178></a>
+ </BODY><a name=line.179></a>
+<HTML><a name=line.180></a>

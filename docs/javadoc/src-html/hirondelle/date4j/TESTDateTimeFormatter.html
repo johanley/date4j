@@ -1,0 +1,228 @@
+<HTML>
+ <HEAD>
+  <TITLE>
+TESTDateTimeFormatter.java
+  </TITLE>
+  <LINK REL ='stylesheet' TYPE='text/css' HREF='../../../highlight.css' TITLE='Style'>
+ </HEAD>
+ <BODY>
+<PRE>
+<span class='keyword'>package</span> hirondelle.date4j;<a name=line.1></a>
+<a name=line.2></a>
+<span class='keyword'>import</span> java.text.ParseException;<a name=line.3></a>
+<span class='keyword'>import</span> java.text.SimpleDateFormat;<a name=line.4></a>
+<span class='keyword'>import</span> java.util.Arrays;<a name=line.5></a>
+<span class='keyword'>import</span> java.util.Date;<a name=line.6></a>
+<span class='keyword'>import</span> java.util.List;<a name=line.7></a>
+<span class='keyword'>import</span> java.util.Locale;<a name=line.8></a>
+<a name=line.9></a>
+<span class='keyword'>import</span> junit.framework.TestCase;<a name=line.10></a>
+<a name=line.11></a>
+<span class='comment'>/** JUnit tests. */</span><a name=line.12></a>
+<span class='keyword'>public</span> <span class='keyword'>final</span> <span class='keyword'>class</span> TESTDateTimeFormatter   <span class='keyword'>extends</span> TestCase   {<a name=line.13></a>
+<a name=line.14></a>
+  <span class='comment'>/** Run the test cases.  */</span><a name=line.15></a>
+  <span class='keyword'>public</span> <span class='keyword'>static</span> <span class='keyword'>void</span> main(String args[]) {<a name=line.16></a>
+    String[] testCaseName = { TESTDateTimeFormatter.<span class='keyword'>class</span>.getName() };<a name=line.17></a>
+    junit.textui.TestRunner.main(testCaseName);<a name=line.18></a>
+  }<a name=line.19></a>
+<a name=line.20></a>
+  <span class='keyword'>public</span> TESTDateTimeFormatter(String aName) {<a name=line.21></a>
+    <span class='keyword'>super</span>(aName);<a name=line.22></a>
+  }<a name=line.23></a>
+<a name=line.24></a>
+   <span class='comment'>// TEST CASES //<a name=line.25></a>
+</span><a name=line.26></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testSpeed(){<a name=line.27></a>
+      <span class='comment'>//.046<a name=line.28></a>
+</span>      testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"YYYY-MM-DD h12:mm:ss"</span>, <span class='literal'>"2009-10-28 1:59:01"</span>);<a name=line.29></a>
+  }<a name=line.30></a>
+  <a name=line.31></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testSpeedJDK() <span class='keyword'>throws</span> ParseException {    <a name=line.32></a>
+    String dateTime =  <span class='literal'>"2009-10-28 01:59:01"</span>;<a name=line.33></a>
+    <span class='comment'>//.063 - slower than my classes - at least in this simple test<a name=line.34></a>
+</span>    SimpleDateFormat format = <span class='keyword'>new</span> SimpleDateFormat(<span class='literal'>"yyyy-MM-dd hh:mm:ss"</span>);<a name=line.35></a>
+    Date result = format.parse(dateTime);<a name=line.36></a>
+     String dateResurrected = format.format(result);<a name=line.37></a>
+  }<a name=line.38></a>
+  <a name=line.39></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testDate(){<a name=line.40></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28"</span>, <span class='literal'>"YYYY-MM-DD"</span>, <span class='literal'>"2009-10-28"</span>);<a name=line.41></a>
+    testDate(SUCCESS, <span class='literal'>"2009-01-28"</span>, <span class='literal'>"YYYY-MM-DD"</span>, <span class='literal'>"2009-01-28"</span>);<a name=line.42></a>
+    testDate(SUCCESS, <span class='literal'>"2009-12-01"</span>, <span class='literal'>"YYYY-MM-DD"</span>, <span class='literal'>"2009-12-01"</span>);<a name=line.43></a>
+    testDate(SUCCESS, <span class='literal'>"2009-01-01"</span>, <span class='literal'>"YYYY-MM-DD"</span>, <span class='literal'>"2009-01-01"</span>);<a name=line.44></a>
+    <a name=line.45></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28"</span>, <span class='literal'>"YYYY-M-D"</span>, <span class='literal'>"2009-10-28"</span>);<a name=line.46></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-03"</span>, <span class='literal'>"YYYY-M-D"</span>, <span class='literal'>"2009-10-3"</span>);<a name=line.47></a>
+    testDate(SUCCESS, <span class='literal'>"2009-05-28"</span>, <span class='literal'>"YYYY-M-D"</span>, <span class='literal'>"2009-5-28"</span>);<a name=line.48></a>
+    <a name=line.49></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28"</span>, <span class='literal'>"YYYY-MM-D"</span>, <span class='literal'>"2009-10-28"</span>);<a name=line.50></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-03"</span>, <span class='literal'>"YYYY-MM-D"</span>, <span class='literal'>"2009-10-3"</span>);<a name=line.51></a>
+    testDate(SUCCESS, <span class='literal'>"2009-05-28"</span>, <span class='literal'>"YYYY-MM-D"</span>, <span class='literal'>"2009-05-28"</span>);<a name=line.52></a>
+    <a name=line.53></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28"</span>, <span class='literal'>"YYYY-M-DD"</span>, <span class='literal'>"2009-10-28"</span>);<a name=line.54></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-03"</span>, <span class='literal'>"YYYY-M-DD"</span>, <span class='literal'>"2009-10-03"</span>);<a name=line.55></a>
+    testDate(SUCCESS, <span class='literal'>"2009-05-28"</span>, <span class='literal'>"YYYY-M-DD"</span>, <span class='literal'>"2009-5-28"</span>);<a name=line.56></a>
+    <a name=line.57></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28"</span>, <span class='literal'>"YY-M-DD"</span>, <span class='literal'>"09-10-28"</span>);<a name=line.58></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-03"</span>, <span class='literal'>"YY-M-DD"</span>, <span class='literal'>"09-10-03"</span>);<a name=line.59></a>
+    testDate(SUCCESS, <span class='literal'>"2099-05-28"</span>, <span class='literal'>"YY-M-DD"</span>, <span class='literal'>"99-5-28"</span>);<a name=line.60></a>
+<a name=line.61></a>
+    testDate(SUCCESS, <span class='literal'>"2099-05-28"</span>, <span class='literal'>"YYYYMMDD"</span>, <span class='literal'>"20990528"</span>);<a name=line.62></a>
+    testDate(SUCCESS, <span class='literal'>"2099-11-28"</span>, <span class='literal'>"WWW MMM DD, YYYY"</span>, Locale.CANADA, <span class='literal'>"Sat Nov 28, 2099"</span>);<a name=line.63></a>
+    testDate(SUCCESS, <span class='literal'>"2099-11-28"</span>, <span class='literal'>"WWW-DD|th|"</span>, Locale.CANADA, <span class='literal'>"Sat-28th"</span>);<a name=line.64></a>
+<a name=line.65></a>
+    testDate(SUCCESS, <span class='literal'>"2009-12-31"</span>, <span class='literal'>"MM-DD-YYYY"</span>, <span class='literal'>"12-31-2009"</span>);<a name=line.66></a>
+    <a name=line.67></a>
+    testDate(SUCCESS, <span class='literal'>"2009-12-31"</span>, <span class='literal'>"***YYYY-MM-DD"</span>, <span class='literal'>"***2009-12-31"</span>);<a name=line.68></a>
+    testDate(SUCCESS, <span class='literal'>"2009-12-31"</span>, <span class='literal'>"***YYYY-MM-DD*"</span>, <span class='literal'>"***2009-12-31*"</span>);<a name=line.69></a>
+    testDate(SUCCESS, <span class='literal'>"2009-12-31"</span>, <span class='literal'>"*  YYYY-MM-DD *"</span>, <span class='literal'>"*  2009-12-31 *"</span>);<a name=line.70></a>
+    <a name=line.71></a>
+    testDate(SUCCESS, <span class='literal'>"2009-12-31"</span>, <span class='literal'>"WWWW, MMM D, YYYY"</span>, Locale.CANADA, <span class='literal'>"Thursday, Dec 31, 2009"</span>);<a name=line.72></a>
+    testDate(SUCCESS, <span class='literal'>"2009-12-31"</span>, <span class='literal'>"WWW, MMM D, YYYY"</span>, Locale.CANADA, <span class='literal'>"Thu, Dec 31, 2009"</span>);<a name=line.73></a>
+    <a name=line.74></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:59"</span>, <span class='literal'>"hh:mm:ss"</span>, <span class='literal'>"01:59:59"</span>);<a name=line.75></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:59"</span>, <span class='literal'>"h:mm:ss"</span>, <span class='literal'>"1:59:59"</span>);<a name=line.76></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:59"</span>, <span class='literal'>"hh:m:ss"</span>, <span class='literal'>"01:59:59"</span>);<a name=line.77></a>
+    testDate(SUCCESS, <span class='literal'>"01:01:59"</span>, <span class='literal'>"hh:m:ss"</span>, <span class='literal'>"01:1:59"</span>);<a name=line.78></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:59"</span>, <span class='literal'>"hh:mm:s"</span>, <span class='literal'>"01:59:59"</span>);<a name=line.79></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01"</span>, <span class='literal'>"hh:mm:s"</span>, <span class='literal'>"01:59:1"</span>);<a name=line.80></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.123456789"</span>, <span class='literal'>"hh:mm:ss"</span>, <span class='literal'>"01:59:01"</span>);<a name=line.81></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.123456789"</span>, <span class='literal'>"hh:mm:ss.f"</span>, <span class='literal'>"01:59:01.1"</span>);<a name=line.82></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.123456789"</span>, <span class='literal'>"hh:mm:ss.ff"</span>, <span class='literal'>"01:59:01.12"</span>);<a name=line.83></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.123456789"</span>, <span class='literal'>"hh:mm:ss.fff"</span>, <span class='literal'>"01:59:01.123"</span>);<a name=line.84></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.123456789"</span>, <span class='literal'>"hh:mm:ss.ffff"</span>, <span class='literal'>"01:59:01.1234"</span>);<a name=line.85></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.123456789"</span>, <span class='literal'>"hh:mm:ss.fffff"</span>, <span class='literal'>"01:59:01.12345"</span>);<a name=line.86></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.123456789"</span>, <span class='literal'>"hh:mm:ss.ffffff"</span>, <span class='literal'>"01:59:01.123456"</span>);<a name=line.87></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.123456789"</span>, <span class='literal'>"hh:mm:ss.fffffff"</span>, <span class='literal'>"01:59:01.1234567"</span>);<a name=line.88></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.123456789"</span>, <span class='literal'>"hh:mm:ss.ffffffff"</span>, <span class='literal'>"01:59:01.12345678"</span>);<a name=line.89></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.123456789"</span>, <span class='literal'>"hh:mm:ss.fffffffff"</span>, <span class='literal'>"01:59:01.123456789"</span>);<a name=line.90></a>
+    <a name=line.91></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01"</span>, <span class='literal'>"hh"</span>, <span class='literal'>"01"</span>);<a name=line.92></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01"</span>, <span class='literal'>"mm"</span>, <span class='literal'>"59"</span>);<a name=line.93></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01"</span>, <span class='literal'>"ss"</span>, <span class='literal'>"01"</span>);<a name=line.94></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01"</span>, <span class='literal'>"hh "</span>, <span class='literal'>"01 "</span>);<a name=line.95></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01"</span>, <span class='literal'>"hh:mm"</span>, <span class='literal'>"01:59"</span>);<a name=line.96></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01"</span>, <span class='literal'>"h:mm"</span>, <span class='literal'>"1:59"</span>);<a name=line.97></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01"</span>, <span class='literal'>"mm:ss"</span>, <span class='literal'>"59:01"</span>);<a name=line.98></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01"</span>, <span class='literal'>"mm:s"</span>, <span class='literal'>"59:1"</span>);<a name=line.99></a>
+    <a name=line.100></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"YYYY-MM-DD hh:mm:ss"</span>, <span class='literal'>"2009-10-28 01:59:01"</span>);<a name=line.101></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"YYYYMMDDThh:mm:ss"</span>, <span class='literal'>"20091028T01:59:01"</span>);<a name=line.102></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"YYYY-MMM-DD hh:mm:ss"</span>, Locale.CANADA, <span class='literal'>"2009-Oct-28 01:59:01"</span>);<a name=line.103></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"YYYY-MMM-DD"</span>, Locale.CANADA, <span class='literal'>"2009-Oct-28"</span>);<a name=line.104></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>":hh:mm:ss:"</span>, <span class='literal'>":01:59:01:"</span>);<a name=line.105></a>
+    testDate(SUCCESS, <span class='literal'>"2009-04-28 13:59:01"</span>, <span class='literal'>"DD MMM, YYYY hh:mm:ss"</span>, Locale.CANADA_FRENCH, <span class='literal'>"28 avr, 2009 13:59:01"</span>);<a name=line.106></a>
+<a name=line.107></a>
+<a name=line.108></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.01"</span>, <span class='literal'>"hh:mm:ss.ff"</span>, <span class='literal'>"01:59:01.01"</span>);<a name=line.109></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.01"</span>, <span class='literal'>"hh:mm:ss.fff"</span>, <span class='literal'>"01:59:01.010"</span>);<a name=line.110></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.01"</span>, <span class='literal'>"hh:mm:ss.ffff"</span>, <span class='literal'>"01:59:01.0100"</span>);<a name=line.111></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.01"</span>, <span class='literal'>"hh:mm:ss.fffff"</span>, <span class='literal'>"01:59:01.01000"</span>);<a name=line.112></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.01"</span>, <span class='literal'>"hh:mm:ss.ffffff"</span>, <span class='literal'>"01:59:01.010000"</span>);<a name=line.113></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.01"</span>, <span class='literal'>"hh:mm:ss.fffffff"</span>, <span class='literal'>"01:59:01.0100000"</span>);<a name=line.114></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.01"</span>, <span class='literal'>"hh:mm:ss.ffffffff"</span>, <span class='literal'>"01:59:01.01000000"</span>);<a name=line.115></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.01"</span>, <span class='literal'>"hh:mm:ss.fffffffff"</span>, <span class='literal'>"01:59:01.010000000"</span>);<a name=line.116></a>
+    <a name=line.117></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.000000001"</span>, <span class='literal'>"hh:mm:ss"</span>, <span class='literal'>"01:59:01"</span>);<a name=line.118></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.000000001"</span>, <span class='literal'>"hh:mm:ss.f"</span>, <span class='literal'>"01:59:01.0"</span>);<a name=line.119></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.000000001"</span>, <span class='literal'>"hh:mm:ss.ff"</span>, <span class='literal'>"01:59:01.00"</span>);<a name=line.120></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.000000001"</span>, <span class='literal'>"hh:mm:ss.fff"</span>, <span class='literal'>"01:59:01.000"</span>);<a name=line.121></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.000000001"</span>, <span class='literal'>"hh:mm:ss.ffff"</span>, <span class='literal'>"01:59:01.0000"</span>);<a name=line.122></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.000000001"</span>, <span class='literal'>"hh:mm:ss.fffff"</span>, <span class='literal'>"01:59:01.00000"</span>);<a name=line.123></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.000000001"</span>, <span class='literal'>"hh:mm:ss.ffffff"</span>, <span class='literal'>"01:59:01.000000"</span>);<a name=line.124></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.000000001"</span>, <span class='literal'>"hh:mm:ss.fffffff"</span>, <span class='literal'>"01:59:01.0000000"</span>);<a name=line.125></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.000000001"</span>, <span class='literal'>"hh:mm:ss.ffffffff"</span>, <span class='literal'>"01:59:01.00000000"</span>);<a name=line.126></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.000000001"</span>, <span class='literal'>"hh:mm:ss.fffffffff"</span>, <span class='literal'>"01:59:01.000000001"</span>);<a name=line.127></a>
+    <a name=line.128></a>
+    testDate(SUCCESS, <span class='literal'>"01:59:01.000000000"</span>, <span class='literal'>"hh:mm:ss.fffffffff"</span>, <span class='literal'>"01:59:01.000000000"</span>);<a name=line.129></a>
+<a name=line.130></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"YYYY-MM-DD h12:mm:ss"</span>, <span class='literal'>"2009-10-28 1:59:01"</span>);<a name=line.131></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 13:59:01"</span>, <span class='literal'>"YYYY-MM-DD h12:mm:ss"</span>, <span class='literal'>"2009-10-28 1:59:01"</span>);<a name=line.132></a>
+<a name=line.133></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"YYYY-MM-DD hh12:mm:ss"</span>, <span class='literal'>"2009-10-28 01:59:01"</span>);<a name=line.134></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 12:59:01"</span>, <span class='literal'>"YYYY-MM-DD hh12:mm:ss"</span>, <span class='literal'>"2009-10-28 12:59:01"</span>);<a name=line.135></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 13:59:01"</span>, <span class='literal'>"YYYY-MM-DD hh12:mm:ss"</span>, <span class='literal'>"2009-10-28 01:59:01"</span>);<a name=line.136></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 23:59:01"</span>, <span class='literal'>"YYYY-MM-DD hh12:mm:ss"</span>, <span class='literal'>"2009-10-28 11:59:01"</span>);<a name=line.137></a>
+    <a name=line.138></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"YYYY-MM-DD h12:mm:ss a"</span>, Locale.CANADA, <span class='literal'>"2009-10-28 1:59:01 AM"</span>);<a name=line.139></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 13:59:01"</span>, <span class='literal'>"YYYY-MM-DD h12:mm:ss a"</span>, Locale.CANADA, <span class='literal'>"2009-10-28 1:59:01 PM"</span>);<a name=line.140></a>
+    <a name=line.141></a>
+    <span class='comment'>//WRONG : <a name=line.142></a>
+</span>     <span class='comment'>//this fails - tokens cannot appear next to each other:<a name=line.143></a>
+</span>    <span class='comment'>//testDate(SUCCESS, "2009-10-28 13:59:01", "YYYY-MM-DD h12:mm:ssa", Locale.CANADA, "2009-10-28 1:59:01PM");<a name=line.144></a>
+</span>    <span class='comment'>//the workaround for the above is to use the escape character, with nothing in between:<a name=line.145></a>
+</span>    testDate(SUCCESS, <span class='literal'>"2009-10-28 13:59:01"</span>, <span class='literal'>"YYYY-MM-DD h12:mm:ss||a"</span>, Locale.CANADA, <span class='literal'>"2009-10-28 1:59:01PM"</span>);<a name=line.146></a>
+  }<a name=line.147></a>
+  <a name=line.148></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testEscapeChar(){<a name=line.149></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"|Date:|YYYY-MM-DD |Time:|hh12:mm:ss"</span>, <span class='literal'>"Date:2009-10-28 Time:01:59:01"</span>);<a name=line.150></a>
+    testDate(SUCCESS, <span class='literal'>"15:59:59"</span>, <span class='literal'>"h12| o'clock| a"</span>, Locale.CANADA, <span class='literal'>"3 o'clock PM"</span>);<a name=line.151></a>
+    <span class='comment'>//inside escaped regions, the tokens are uninterpreted :<a name=line.152></a>
+</span>    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"|Date(YYYY-MM-DD):|YYYY-MM-DD |Timehh12:mm:ss:|hh12:mm:ss"</span>, <span class='literal'>"Date(YYYY-MM-DD):2009-10-28 Timehh12:mm:ss:01:59:01"</span>);<a name=line.153></a>
+  }<a name=line.154></a>
+<a name=line.155></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testCustomFormats() {<a name=line.156></a>
+    List&lt;String&gt; months = Arrays.asList(<span class='literal'>"J"</span>, <span class='literal'>"F"</span>, <span class='literal'>"M"</span>, <span class='literal'>"A"</span>, <span class='literal'>"M"</span>, <span class='literal'>"J"</span>, <span class='literal'>"J"</span>, <span class='literal'>"A"</span>, <span class='literal'>"S"</span>, <span class='literal'>"O"</span>, <span class='literal'>"N"</span>, <span class='literal'>"D"</span>);<a name=line.157></a>
+    List&lt;String&gt; weekdays = Arrays.asList(<span class='literal'>"sunday"</span>, <span class='literal'>"monday"</span>, <span class='literal'>"tuesday"</span>, <span class='literal'>"humpday"</span>, <span class='literal'>"thursday"</span>, <span class='literal'>"friday"</span>, <span class='literal'>"saturday"</span>);<a name=line.158></a>
+    List&lt;String&gt; amPm = Arrays.asList(<span class='literal'>"am"</span>, <span class='literal'>"pm"</span>);<a name=line.159></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"YYYY-MM-DD hh:mm:ss a"</span>, months, weekdays, amPm, <span class='literal'>"2009-10-28 01:59:01 am"</span>);<a name=line.160></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 16:59:01"</span>, <span class='literal'>"YYYY-MM-DD h12:mm:ss a"</span>, months, weekdays, amPm, <span class='literal'>"2009-10-28 4:59:01 pm"</span>);<a name=line.161></a>
+    <a name=line.162></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"YYYY-MMMM-DD hh:mm:ss a"</span>, months, weekdays, amPm, <span class='literal'>"2009-O-28 01:59:01 am"</span>);<a name=line.163></a>
+    testDate(SUCCESS, <span class='literal'>"2009-10-28 01:59:01"</span>, <span class='literal'>"YYYY-MM-DD WWWW hh:mm:ss a"</span>, months, weekdays, amPm, <span class='literal'>"2009-10-28 humpday 01:59:01 am"</span>);<a name=line.164></a>
+  }<a name=line.165></a>
+  <a name=line.166></a>
+  <span class='comment'>// PRIVATE<a name=line.167></a>
+</span>  <a name=line.168></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>boolean</span> SUCCESS = <span class='keyword'>true</span>;<a name=line.169></a>
+  <a name=line.170></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testDate(<span class='keyword'>boolean</span> aSuccess, String aDate , String aFormat, String aExpectedResult){<a name=line.171></a>
+    DateTimeParser parser = <span class='keyword'>new</span> DateTimeParser();<a name=line.172></a>
+    DateTime dateTime = parser.parse(aDate);<a name=line.173></a>
+    DateTimeFormatter formatter = <span class='keyword'>new</span> DateTimeFormatter(aFormat);<a name=line.174></a>
+    String result = formatter.format(dateTime);<a name=line.175></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.176></a>
+      <span class='keyword'>if</span>(! result.equals(aExpectedResult)){<a name=line.177></a>
+        <span class='keyword'>throw</span> <span class='keyword'>new</span> AssertionError(<span class='literal'>"Expected:"</span> + aExpectedResult + <span class='literal'>", but result was:"</span> + result);<a name=line.178></a>
+      }<a name=line.179></a>
+    }<a name=line.180></a>
+    <span class='keyword'>else</span> {<a name=line.181></a>
+      assertFalse(result.equals(aExpectedResult));<a name=line.182></a>
+    }<a name=line.183></a>
+  }<a name=line.184></a>
+  <a name=line.185></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testDate(<span class='keyword'>boolean</span> aSuccess, String aDate , String aFormat, Locale aLocale, String aExpectedResult){<a name=line.186></a>
+    DateTimeParser parser = <span class='keyword'>new</span> DateTimeParser();<a name=line.187></a>
+    DateTime dateTime = parser.parse(aDate);<a name=line.188></a>
+    DateTimeFormatter formatter = <span class='keyword'>new</span> DateTimeFormatter(aFormat, aLocale);<a name=line.189></a>
+    String result = formatter.format(dateTime);<a name=line.190></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.191></a>
+      <span class='keyword'>if</span>(! result.equals(aExpectedResult)){<a name=line.192></a>
+        <span class='keyword'>throw</span> <span class='keyword'>new</span> AssertionError(<span class='literal'>"Expected:"</span> + aExpectedResult + <span class='literal'>", but result was:"</span> + result);<a name=line.193></a>
+      }<a name=line.194></a>
+    }<a name=line.195></a>
+    <span class='keyword'>else</span> {<a name=line.196></a>
+      assertFalse(result.equals(aExpectedResult));<a name=line.197></a>
+    }<a name=line.198></a>
+  }<a name=line.199></a>
+  <a name=line.200></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testDate(<span class='keyword'>boolean</span> aSuccess, String aDate , String aFormat, List&lt;String&gt; aMonths, List&lt;String&gt; aWeekdays, List&lt;String&gt; aAmPm,  String aExpectedResult){<a name=line.201></a>
+    DateTimeParser parser = <span class='keyword'>new</span> DateTimeParser();<a name=line.202></a>
+    DateTime dateTime = parser.parse(aDate);<a name=line.203></a>
+    DateTimeFormatter formatter = <span class='keyword'>new</span> DateTimeFormatter(aFormat, aMonths, aWeekdays, aAmPm);<a name=line.204></a>
+    String result = formatter.format(dateTime);<a name=line.205></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.206></a>
+      <span class='keyword'>if</span>(! result.equals(aExpectedResult)){<a name=line.207></a>
+        <span class='keyword'>throw</span> <span class='keyword'>new</span> AssertionError(<span class='literal'>"Expected:"</span> + aExpectedResult + <span class='literal'>", but result was:"</span> + result);<a name=line.208></a>
+      }<a name=line.209></a>
+    }<a name=line.210></a>
+    <span class='keyword'>else</span> {<a name=line.211></a>
+      assertFalse(result.equals(aExpectedResult));<a name=line.212></a>
+    }<a name=line.213></a>
+  }<a name=line.214></a>
+}<a name=line.215></a>
+ <a name=line.216></a>
+</PRE><a name=line.217></a>
+ </BODY><a name=line.218></a>
+<HTML><a name=line.219></a>

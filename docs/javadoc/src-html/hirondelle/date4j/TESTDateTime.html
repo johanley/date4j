@@ -1,0 +1,1185 @@
+<HTML>
+ <HEAD>
+  <TITLE>
+TESTDateTime.java
+  </TITLE>
+  <LINK REL ='stylesheet' TYPE='text/css' HREF='../../../highlight.css' TITLE='Style'>
+ </HEAD>
+ <BODY>
+<PRE>
+<span class='keyword'>package</span> hirondelle.date4j;<a name=line.1></a>
+<a name=line.2></a>
+<span class='keyword'>import</span> java.util.TimeZone;<a name=line.3></a>
+<span class='keyword'>import</span> junit.framework.TestCase;<a name=line.4></a>
+<a name=line.5></a>
+<span class='comment'>/** JUnit tests. */</span><a name=line.6></a>
+<span class='keyword'>public</span> <span class='keyword'>final</span> <span class='keyword'>class</span> TESTDateTime  <span class='keyword'>extends</span> TestCase  {<a name=line.7></a>
+<a name=line.8></a>
+  <span class='comment'>/** Run the test cases.  */</span><a name=line.9></a>
+  <span class='keyword'>public</span> <span class='keyword'>static</span> <span class='keyword'>void</span> main(String args[]) {<a name=line.10></a>
+    String[] testCaseName = { TESTDateTime.<span class='keyword'>class</span>.getName() };<a name=line.11></a>
+    junit.textui.TestRunner.main(testCaseName);<a name=line.12></a>
+  }<a name=line.13></a>
+<a name=line.14></a>
+  <span class='keyword'>public</span> TESTDateTime( String aName) {<a name=line.15></a>
+    <span class='keyword'>super</span>(aName);<a name=line.16></a>
+  }<a name=line.17></a>
+<a name=line.18></a>
+  <span class='comment'>// TEST CASES <a name=line.19></a>
+</span>  <a name=line.20></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testCtorWithStringStandardFormat(){<a name=line.21></a>
+    <span class='comment'>//note that you can pass just about anything to the constructor - except null<a name=line.22></a>
+</span>    testStandardFormatCtorSuccess(<span class='literal'>"A"</span>);<a name=line.23></a>
+    testStandardFormatCtorSuccess(<span class='literal'>"ABC"</span>);<a name=line.24></a>
+    testStandardFormatCtorSuccess(<span class='literal'>""</span>);<a name=line.25></a>
+    testStandardFormatCtorSuccess(<span class='literal'>"  "</span>);<a name=line.26></a>
+    testStandardFormatCtorSuccess(<span class='literal'>"2009"</span>);<a name=line.27></a>
+    testStandardFormatCtorSuccess(<span class='literal'>"2009-01"</span>);<a name=line.28></a>
+    testStandardFormatCtorSuccess(<span class='literal'>"2009-01-01"</span>);<a name=line.29></a>
+    testStandardFormatCtorSuccess(<span class='literal'>"2009-01-01 23"</span>);<a name=line.30></a>
+    testStandardFormatCtorSuccess(<span class='literal'>"2009-01-01 23:40"</span>);<a name=line.31></a>
+    testStandardFormatCtorSuccess(<span class='literal'>"2009-01-01 23:40:19"</span>);<a name=line.32></a>
+    testStandardFormatCtorSuccess(<span class='literal'>"2009-01-01 23:40:19.123456789"</span>);<a name=line.33></a>
+    testStandardFormatCtorFail(<span class='keyword'>null</span>);<a name=line.34></a>
+<a name=line.35></a>
+    <span class='comment'>//accepts with (ISO-8601) AND without (human hand) leading zeroes.<a name=line.36></a>
+</span>    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"0009-01-01 23:40:19.123456789"</span>, <span class='literal'>9</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456789</span>) ;<a name=line.37></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"9-01-01 23:40:19.123456789"</span>, <span class='literal'>9</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456789</span>) ;<a name=line.38></a>
+<a name=line.39></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23:40:19.123456789"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456789</span>) ;<a name=line.40></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23:40:19.12345678"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456780</span>) ;<a name=line.41></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23:40:19.1234567"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456700</span>) ;<a name=line.42></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23:40:19.123456"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456000</span>) ;<a name=line.43></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23:40:19.12345"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='literal'>123450000</span>);<a name=line.44></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23:40:19.1234"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='literal'>123400000</span>);<a name=line.45></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23:40:19.123"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='literal'>123000000</span>);<a name=line.46></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23:40:19.12"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='literal'>120000000</span>);<a name=line.47></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23:40:19.1"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='literal'>100000000</span>);<a name=line.48></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23:40:19"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='keyword'>null</span>);<a name=line.49></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23:40"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>);<a name=line.50></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01 23"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>);<a name=line.51></a>
+    <a name=line.52></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>);<a name=line.53></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>);<a name=line.54></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009"</span>, <span class='literal'>2009</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>);<a name=line.55></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"1"</span>, <span class='literal'>1</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>);<a name=line.56></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"0001"</span>, <span class='literal'>1</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>);<a name=line.57></a>
+    <a name=line.58></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"23:40:19.123456789"</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456789</span>) ;<a name=line.59></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"23:40:19.12345678"</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456780</span>) ;<a name=line.60></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"23:40:19.1234567"</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456700</span>) ;<a name=line.61></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"23:40:19.123456"</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456000</span>) ;<a name=line.62></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"23:40:19.12345"</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123450000</span>) ;<a name=line.63></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"23:40:19.1234"</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123400000</span>) ;<a name=line.64></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"23:40:19.123"</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123000000</span>) ;<a name=line.65></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"23:40:19.12"</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>120000000</span>) ;<a name=line.66></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"23:40:19.1"</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>100000000</span>) ;<a name=line.67></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"23:40:19"</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='keyword'>null</span>) ;<a name=line.68></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"23:40"</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>) ;<a name=line.69></a>
+    <a name=line.70></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"A"</span>) ;<a name=line.71></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>" "</span>) ;<a name=line.72></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>""</span>) ;<a name=line.73></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"thisisgarbage"</span>) ;<a name=line.74></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"ABCD"</span>) ;<a name=line.75></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"12345-01-01 23:40:19.123456"</span>) ;<a name=line.76></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"0-01-01 23:40:19.123456"</span>) ;<a name=line.77></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 12h:40:19.123456"</span>) ;<a name=line.78></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 12 pm"</span>) ;<a name=line.79></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 45:40:60"</span>) ;<a name=line.80></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 16:40:19.1234567890"</span>) ;<a name=line.81></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 24:40:19.123456"</span>) ;<a name=line.82></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 16:60:19.123456"</span>) ;<a name=line.83></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-13-01 16:40:19.123456"</span>) ;<a name=line.84></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-32 16:40:19.123456"</span>) ;<a name=line.85></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"-1-01-01 16:40:19.123456"</span>) ;<a name=line.86></a>
+    <a name=line.87></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-1-01 16:40:19.123456"</span>) ;<a name=line.88></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-1 16:40:19.123456"</span>) ;<a name=line.89></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 6:40:19.123456"</span>) ;<a name=line.90></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 16:0:19.123456"</span>) ;<a name=line.91></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 16:40:1.123456"</span>) ;<a name=line.92></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"A2009-01-01 16:40:01.123456789"</span>);<a name=line.93></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 16:40:01.123456789A"</span>);<a name=line.94></a>
+  }<a name=line.95></a>
+<a name=line.96></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testCtorWithStringStandardFormatWithT(){<a name=line.97></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23:40:19.123456789"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456789</span>) ;<a name=line.98></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23:40:19.12345678"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456780</span>) ;<a name=line.99></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23:40:19.1234567"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456700</span>) ;<a name=line.100></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23:40:19.123456"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456000</span>) ;<a name=line.101></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23:40:19.12345"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='literal'>123450000</span>);<a name=line.102></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23:40:19.1234"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='literal'>123400000</span>);<a name=line.103></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23:40:19.123"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='literal'>123000000</span>);<a name=line.104></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23:40:19.12"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='literal'>120000000</span>);<a name=line.105></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23:40:19.1"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='literal'>100000000</span>);<a name=line.106></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23:40:19"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='literal'>19</span>,<span class='keyword'>null</span>);<a name=line.107></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23:40"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>);<a name=line.108></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"2009-01-01T23"</span>, <span class='literal'>2009</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>);<a name=line.109></a>
+<a name=line.110></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"0009-01-01T23:40:19.123456789"</span>, <span class='literal'>9</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456789</span>) ;<a name=line.111></a>
+    testStandardFormatCtorPlusParseSuccess(<span class='literal'>"9-01-01T23:40:19.123456789"</span>, <span class='literal'>9</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='literal'>23</span>, <span class='literal'>40</span>, <span class='literal'>19</span>, <span class='literal'>123456789</span>) ;<a name=line.112></a>
+    <a name=line.113></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01A23:40:19.123456789"</span>) ;<a name=line.114></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"12345-01-01T23:40:19.123456"</span>) ;<a name=line.115></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"0-01-01T23:40:19.123456"</span>) ;<a name=line.116></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01T12h:40:19.123456"</span>) ;<a name=line.117></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01T12 pm"</span>) ;<a name=line.118></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01T45:40:60"</span>) ;<a name=line.119></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01T16:40:19.1234567890"</span>) ;<a name=line.120></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01T24:40:19.123456"</span>) ;<a name=line.121></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01T16:60:19.123456"</span>) ;<a name=line.122></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-13-01T16:40:19.123456"</span>) ;<a name=line.123></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-32T16:40:19.123456"</span>) ;<a name=line.124></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"-1-01-01T16:40:19.123456"</span>) ;<a name=line.125></a>
+    <a name=line.126></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-1-01 16:40:19.123456"</span>) ;<a name=line.127></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-1 16:40:19.123456"</span>) ;<a name=line.128></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 6:40:19.123456"</span>) ;<a name=line.129></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 16:0:19.123456"</span>) ;<a name=line.130></a>
+   testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-01 16:40:1.123456"</span>) ;<a name=line.131></a>
+  }<a name=line.132></a>
+  <a name=line.133></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testParseable(){<a name=line.134></a>
+    testParseable(SUCCESS, <span class='literal'>"2000-01-01 01:01:01.000000000"</span>);<a name=line.135></a>
+    testParseable(SUCCESS, <span class='literal'>"2000-01-01"</span>);<a name=line.136></a>
+    testParseable(SUCCESS, <span class='literal'>"01:01:01.000000000"</span>);<a name=line.137></a>
+    <a name=line.138></a>
+<a name=line.139></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-12-31 00:00:00.123456789"</span>);<a name=line.140></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-12-31T00:00:00.123456789"</span>);<a name=line.141></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-12-31 00:00:00.12345678"</span>);<a name=line.142></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-12-31 00:00:00.1234567"</span>);<a name=line.143></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-12-31 00:00:00.123456"</span>);<a name=line.144></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-12-31 23:59:59.12345"</span>);<a name=line.145></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-01-31 16:01:01.1234"</span>);<a name=line.146></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-01-01 16:59:00.123"</span>);<a name=line.147></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-01-01 16:00:01.12"</span>);<a name=line.148></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-02-28 16:25:17.1"</span>);<a name=line.149></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-01-01 00:01:01"</span>);<a name=line.150></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-01-01T00:01:01"</span>);<a name=line.151></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-01-01 16:01"</span>);<a name=line.152></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-01-01 16"</span>);<a name=line.153></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-01-01"</span>);<a name=line.154></a>
+    testParseable(SUCCESS, <span class='literal'>"2009-01"</span>);<a name=line.155></a>
+    testParseable(SUCCESS, <span class='literal'>"2009"</span>);<a name=line.156></a>
+    testParseable(SUCCESS, <span class='literal'>"0009"</span>);<a name=line.157></a>
+    testParseable(SUCCESS, <span class='literal'>"9"</span>);<a name=line.158></a>
+    testParseable(SUCCESS, <span class='literal'>"00:00:00.123456789"</span>);<a name=line.159></a>
+    testParseable(SUCCESS, <span class='literal'>"00:00:00.12345678"</span>);<a name=line.160></a>
+    testParseable(SUCCESS, <span class='literal'>"00:00:00.1234567"</span>);<a name=line.161></a>
+    testParseable(SUCCESS, <span class='literal'>"00:00:00.123456"</span>);<a name=line.162></a>
+    testParseable(SUCCESS, <span class='literal'>"23:59:59.12345"</span>);<a name=line.163></a>
+    testParseable(SUCCESS, <span class='literal'>"01:59:59.1234"</span>);<a name=line.164></a>
+    testParseable(SUCCESS, <span class='literal'>"23:01:59.123"</span>);<a name=line.165></a>
+    testParseable(SUCCESS, <span class='literal'>"00:00:00.12"</span>);<a name=line.166></a>
+    testParseable(SUCCESS, <span class='literal'>"00:59:59.1"</span>);<a name=line.167></a>
+    testParseable(SUCCESS, <span class='literal'>"23:59:00"</span>);<a name=line.168></a>
+    testParseable(SUCCESS, <span class='literal'>"23:00:10"</span>);<a name=line.169></a>
+    testParseable(SUCCESS, <span class='literal'>"00:59"</span>); <a name=line.170></a>
+    testParseable(SUCCESS, <span class='literal'>"9999-12-31 23:59:59.999999999"</span>);<a name=line.171></a>
+    testParseable(SUCCESS, <span class='literal'>"0001-01-01 00:00:00.000000000"</span>);<a name=line.172></a>
+    testParseable(SUCCESS, <span class='literal'>"0001-01-01 00:00:00.000000000 "</span>); <span class='comment'>// extra trailing/leading spaces<a name=line.173></a>
+</span>    testParseable(SUCCESS, <span class='literal'>" 0001-01-01 00:00:00.000000000 "</span>); <a name=line.174></a>
+    testParseable(SUCCESS, <span class='literal'>" 0001-01-01 00:00:00.000000000"</span>);<a name=line.175></a>
+    testParseable(SUCCESS, <span class='literal'>"              0001-01-01 00:00:00.000000000"</span>);<a name=line.176></a>
+    <a name=line.177></a>
+    testParseable(FAIL, <span class='literal'>"0000-01-01 00:00:00.000000000"</span>);<a name=line.178></a>
+    testParseable(FAIL, <span class='literal'>"19999-01-01 00:00:00.000000000"</span>);<a name=line.179></a>
+    testParseable(FAIL, <span class='literal'>"10000-01-01 00:00:00.000000000"</span>);<a name=line.180></a>
+    <a name=line.181></a>
+    testParseable(FAIL, <span class='literal'>"02000-01-01 01:01:01.000000000"</span>);<a name=line.182></a>
+    testParseable(FAIL, <span class='literal'>""</span>);<a name=line.183></a>
+    testParseable(FAIL, <span class='literal'>" "</span>);<a name=line.184></a>
+    testParseable(FAIL, <span class='literal'>"blah"</span>);<a name=line.185></a>
+    testParseable(FAIL, <span class='literal'>"A2000-01-01 01:01:01.000000000"</span>);<a name=line.186></a>
+    testParseable(FAIL, <span class='literal'>"2000-01-01 01:01:01.000000000A"</span>);<a name=line.187></a>
+    testParseable(FAIL, <span class='literal'>"2000-01-01A"</span>);<a name=line.188></a>
+    testParseable(FAIL, <span class='literal'>"A2000-01-01"</span>);<a name=line.189></a>
+  }<a name=line.190></a>
+  <a name=line.191></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testRangeYear(){<a name=line.192></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01"</span>);<a name=line.193></a>
+    testRange(SUCCESS, <span class='literal'>"1-01-01"</span>);<a name=line.194></a>
+    testRange(SUCCESS, <span class='literal'>"01-01-01"</span>);<a name=line.195></a>
+    testRange(SUCCESS, <span class='literal'>"0001-01-01"</span>);<a name=line.196></a>
+    testRange(SUCCESS, <span class='literal'>"0010-01-01"</span>);<a name=line.197></a>
+    testRange(SUCCESS, <span class='literal'>"10-01-01"</span>);<a name=line.198></a>
+    testRange(SUCCESS, <span class='literal'>"100-01-01"</span>);<a name=line.199></a>
+    testRange(SUCCESS, <span class='literal'>"0100-01-01"</span>);<a name=line.200></a>
+    testRange(SUCCESS, <span class='literal'>"9999-01-01"</span>);<a name=line.201></a>
+    testRange(SUCCESS, <span class='literal'>"2300-01-01"</span>);<a name=line.202></a>
+    testRange(SUCCESS, <span class='literal'>"7998-01-01"</span>);<a name=line.203></a>
+    <a name=line.204></a>
+    testRange(FAIL, <span class='literal'>"99999-01-01"</span>);<a name=line.205></a>
+    testRange(FAIL, <span class='literal'>"0-01-01"</span>);<a name=line.206></a>
+    testRange(FAIL, <span class='literal'>"10000-01-01"</span>);<a name=line.207></a>
+    testRange(FAIL, <span class='literal'>"10001-01-01"</span>);<a name=line.208></a>
+  }<a name=line.209></a>
+  <a name=line.210></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testRangeMonth(){<a name=line.211></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01"</span>);<a name=line.212></a>
+    testRange(SUCCESS, <span class='literal'>"2009-02-01"</span>);<a name=line.213></a>
+    testRange(SUCCESS, <span class='literal'>"2009-10-01"</span>);<a name=line.214></a>
+    testRange(SUCCESS, <span class='literal'>"2009-11-01"</span>);<a name=line.215></a>
+    testRange(SUCCESS, <span class='literal'>"2009-12-01"</span>);<a name=line.216></a>
+    <a name=line.217></a>
+    testRange(FAIL, <span class='literal'>"2009-00-01"</span>);<a name=line.218></a>
+    testRange(FAIL, <span class='literal'>"2009-13-01"</span>);<a name=line.219></a>
+    testRange(FAIL, <span class='literal'>"2009-99-01"</span>);<a name=line.220></a>
+  }<a name=line.221></a>
+<a name=line.222></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testRangeDay(){<a name=line.223></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01"</span>);<a name=line.224></a>
+    testRange(SUCCESS, <span class='literal'>"2009-02-02"</span>);<a name=line.225></a>
+    testRange(SUCCESS, <span class='literal'>"2009-10-10"</span>);<a name=line.226></a>
+    testRange(SUCCESS, <span class='literal'>"2009-11-30"</span>);<a name=line.227></a>
+    testRange(SUCCESS, <span class='literal'>"2009-12-31"</span>);<a name=line.228></a>
+    <a name=line.229></a>
+    testRange(FAIL, <span class='literal'>"2009-10-00"</span>);<a name=line.230></a>
+    testRange(FAIL, <span class='literal'>"2009-10-32"</span>);<a name=line.231></a>
+  }<a name=line.232></a>
+  <a name=line.233></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testRangeHour(){<a name=line.234></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 00:01:01"</span>);<a name=line.235></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 01:01:01"</span>);<a name=line.236></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 23:01:01"</span>);<a name=line.237></a>
+    <a name=line.238></a>
+    testRange(FAIL, <span class='literal'>"2009-01-01 24:01:01"</span>);<a name=line.239></a>
+    testRange(FAIL, <span class='literal'>"2009-01-01 99:01:01"</span>);<a name=line.240></a>
+  }<a name=line.241></a>
+  <a name=line.242></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testRangeMinute(){<a name=line.243></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 00:00:01"</span>);<a name=line.244></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 01:01:01"</span>);<a name=line.245></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 23:59:01"</span>);<a name=line.246></a>
+    <a name=line.247></a>
+    testRange(FAIL, <span class='literal'>"2009-01-01 23:60:01"</span>);<a name=line.248></a>
+    testRange(FAIL, <span class='literal'>"2009-01-01 23:99:01"</span>);<a name=line.249></a>
+  }<a name=line.250></a>
+<a name=line.251></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testRangeSecond(){<a name=line.252></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 00:00:00"</span>);<a name=line.253></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 01:01:01"</span>);<a name=line.254></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 23:59:59"</span>);<a name=line.255></a>
+    <a name=line.256></a>
+    testRange(FAIL, <span class='literal'>"2009-01-01 23:59:60"</span>);<a name=line.257></a>
+    testRange(FAIL, <span class='literal'>"2009-01-01 23:59:99"</span>);<a name=line.258></a>
+  }<a name=line.259></a>
+  <a name=line.260></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testRangeNanosecond(){<a name=line.261></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 00:00:00.000000000"</span>);<a name=line.262></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 01:01:01.000000001"</span>);<a name=line.263></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 01:01:01.000001000"</span>);<a name=line.264></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 23:59:59.123456789"</span>);<a name=line.265></a>
+    testRange(SUCCESS, <span class='literal'>"2009-01-01 23:59:59.999999999"</span>);<a name=line.266></a>
+    <a name=line.267></a>
+    testRange(FAIL, <span class='literal'>"2009-01-01 23:59:59.9999999999"</span>);<a name=line.268></a>
+    testRange(FAIL, <span class='literal'>"2009-01-01 23:59:59.0000000000"</span>);<a name=line.269></a>
+    testRange(FAIL, <span class='literal'>"2009-01-01 23:59:59.0000010000"</span>);<a name=line.270></a>
+    testRange(FAIL, <span class='literal'>"2009-01-01 23:59:59.1234567890"</span>);<a name=line.271></a>
+  }<a name=line.272></a>
+  <a name=line.273></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testMonthOverflow(){<a name=line.274></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-01-32 23:40:19.123456789"</span>) ;<a name=line.275></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-02-29 23:40:19.123456789"</span>) ;<a name=line.276></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-03-32 23:40:19.123456789"</span>) ;<a name=line.277></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-04-31 23:40:19.123456789"</span>) ;<a name=line.278></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-05-32 23:40:19.123456789"</span>) ;<a name=line.279></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-06-31 23:40:19.123456789"</span>) ;<a name=line.280></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-07-32 23:40:19.123456789"</span>) ;<a name=line.281></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-08-32 23:40:19.123456789"</span>) ;<a name=line.282></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-09-31 23:40:19.123456789"</span>) ;<a name=line.283></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-10-32 23:40:19.123456789"</span>) ;<a name=line.284></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-11-31 23:40:19.123456789"</span>) ;<a name=line.285></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2009-12-32 23:40:19.123456789"</span>) ;<a name=line.286></a>
+    <a name=line.287></a>
+    testStandardFormatCtorPlusParseFail(<span class='literal'>"2008-02-30 23:40:19.123456789"</span>) ; <span class='comment'>//leap year<a name=line.288></a>
+</span>  }<a name=line.289></a>
+  <a name=line.290></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testLeapYear(){<a name=line.291></a>
+    testLeapYear(SUCCESS, <span class='literal'>"2008-01-01"</span>) ;<a name=line.292></a>
+    testLeapYear(SUCCESS, <span class='literal'>"2004-01-01"</span>) ;<a name=line.293></a>
+    testLeapYear(SUCCESS, <span class='literal'>"1996-01-01"</span>) ;<a name=line.294></a>
+    testLeapYear(SUCCESS, <span class='literal'>"2000-01-01"</span>) ;<a name=line.295></a>
+    testLeapYear(SUCCESS, <span class='literal'>"1600-01-01"</span>) ;<a name=line.296></a>
+    testLeapYear(SUCCESS, <span class='literal'>"1200-01-01"</span>) ;<a name=line.297></a>
+    testLeapYear(SUCCESS, <span class='literal'>"800-01-01"</span>) ;<a name=line.298></a>
+    testLeapYear(SUCCESS, <span class='literal'>"400-01-01"</span>) ;<a name=line.299></a>
+    <a name=line.300></a>
+    testLeapYear(FAIL, <span class='literal'>"2009-01-01"</span>) ;<a name=line.301></a>
+    testLeapYear(FAIL, <span class='literal'>"1900-01-01"</span>) ;<a name=line.302></a>
+    testLeapYear(FAIL, <span class='literal'>"1800-01-01"</span>) ;<a name=line.303></a>
+    testLeapYear(FAIL, <span class='literal'>"1700-01-01"</span>) ;<a name=line.304></a>
+    testLeapYear(FAIL, <span class='literal'>"1900-01-01"</span>) ;<a name=line.305></a>
+    testLeapYear(FAIL, <span class='literal'>"1500-01-01"</span>) ;<a name=line.306></a>
+    testLeapYear(FAIL, <span class='literal'>"1400-01-01"</span>) ;<a name=line.307></a>
+    testLeapYear(FAIL, <span class='literal'>"1300-01-01"</span>) ;<a name=line.308></a>
+    testLeapYear(FAIL, <span class='literal'>"1100-01-01"</span>) ;<a name=line.309></a>
+    testLeapYear(FAIL, <span class='literal'>"1000-01-01"</span>) ;<a name=line.310></a>
+    testLeapYear(FAIL, <span class='literal'>"900-01-01"</span>) ;<a name=line.311></a>
+    testLeapYear(FAIL, <span class='literal'>"700-01-01"</span>) ;<a name=line.312></a>
+    testLeapYear(FAIL, <span class='literal'>"600-01-01"</span>) ;<a name=line.313></a>
+    testLeapYear(FAIL, <span class='literal'>"500-01-01"</span>) ;<a name=line.314></a>
+    testLeapYear(FAIL, <span class='literal'>"300-01-01"</span>) ;<a name=line.315></a>
+    testLeapYear(FAIL, <span class='literal'>"200-01-01"</span>) ;<a name=line.316></a>
+    testLeapYear(FAIL, <span class='literal'>"100-01-01"</span>) ;<a name=line.317></a>
+    <a name=line.318></a>
+    testLeapYearFails(<span class='literal'>"11:18:.16.23"</span>);<a name=line.319></a>
+  }<a name=line.320></a>
+  <a name=line.321></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testToString(){<a name=line.322></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12:34:56.123456789"</span>, <span class='literal'>"2001-01-01 12:34:56.123456789"</span>);<a name=line.323></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12:34:56.12345678"</span>, <span class='literal'>"2001-01-01 12:34:56.12345678"</span>);<a name=line.324></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12:34:56.1234567"</span>, <span class='literal'>"2001-01-01 12:34:56.1234567"</span>);<a name=line.325></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12:34:56.123456"</span>, <span class='literal'>"2001-01-01 12:34:56.123456"</span>);<a name=line.326></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12:34:56.12345"</span>, <span class='literal'>"2001-01-01 12:34:56.12345"</span>);<a name=line.327></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12:34:56.1234"</span>, <span class='literal'>"2001-01-01 12:34:56.1234"</span>);<a name=line.328></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12:34:56.123"</span>, <span class='literal'>"2001-01-01 12:34:56.123"</span>);<a name=line.329></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12:34:56.12"</span>, <span class='literal'>"2001-01-01 12:34:56.12"</span>);<a name=line.330></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12:34:56.1"</span>, <span class='literal'>"2001-01-01 12:34:56.1"</span>);<a name=line.331></a>
+    <a name=line.332></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12:34:56"</span>, <span class='literal'>"2001-01-01 12:34:56"</span>);<a name=line.333></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12:34"</span>, <span class='literal'>"2001-01-01 12:34"</span>);<a name=line.334></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01 12"</span>, <span class='literal'>"2001-01-01 12"</span>);<a name=line.335></a>
+    testToString(SUCCESS, <span class='literal'>"2001-01-01"</span>, <span class='literal'>"2001-01-01"</span>);<a name=line.336></a>
+    testToString(SUCCESS, <span class='literal'>"2001-12"</span>, <span class='literal'>"2001-12"</span>);<a name=line.337></a>
+    testToString(SUCCESS, <span class='literal'>"2001"</span>, <span class='literal'>"2001"</span>);<a name=line.338></a>
+    <a name=line.339></a>
+    <span class='comment'>// The String constructor is lenient in the extreme:<a name=line.340></a>
+</span>    testToString(SUCCESS, <span class='literal'>"BLAH"</span>, <span class='literal'>"BLAH"</span>);<a name=line.341></a>
+    testToString(SUCCESS, <span class='literal'>"Humpday Jan 1, 2001 12:34:56.1234567890123456"</span>, <span class='literal'>"Humpday Jan 1, 2001 12:34:56.1234567890123456"</span>);<a name=line.342></a>
+    <a name=line.343></a>
+    testToString(FAIL, <span class='literal'>"2001-01-01"</span>, <span class='literal'>"2001-01-01 "</span>);<a name=line.344></a>
+    testToString(FAIL, <span class='literal'>"2001-12-01"</span>, <span class='literal'>" 2001-12-01 "</span>);<a name=line.345></a>
+    <a name=line.346></a>
+    <span class='comment'>//date only<a name=line.347></a>
+</span>    testToString(SUCCESS, <span class='literal'>2001</span>, <span class='literal'>1</span>, <span class='literal'>1</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>"2001-01-01"</span>);<a name=line.348></a>
+    testToString(SUCCESS, <span class='literal'>2001</span>, <span class='literal'>1</span>, <span class='literal'>31</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>"2001-01-31"</span>);<a name=line.349></a>
+    testToString(SUCCESS, <span class='literal'>2001</span>, <span class='literal'>11</span>, <span class='literal'>30</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>"2001-11-30"</span>);<a name=line.350></a>
+    testToString(SUCCESS, <span class='literal'>1</span>, <span class='literal'>11</span>, <span class='literal'>30</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>"1-11-30"</span>);<a name=line.351></a>
+    testToString(SUCCESS, <span class='literal'>2001</span>, <span class='literal'>1</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>"2001-01"</span>);<a name=line.352></a>
+    testToString(SUCCESS, <span class='literal'>2001</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>"2001"</span>);<a name=line.353></a>
+    <span class='comment'>//date and time<a name=line.354></a>
+</span>    testToString(SUCCESS, <span class='literal'>2001</span>, <span class='literal'>1</span>, <span class='literal'>31</span>, <span class='literal'>13</span>, <span class='literal'>30</span>, <span class='literal'>59</span>, <span class='literal'>123456789</span>, <span class='literal'>"2001-01-31 13:30:59.123456789"</span>);<a name=line.355></a>
+    testToString(SUCCESS, <span class='literal'>2001</span>, <span class='literal'>1</span>, <span class='literal'>31</span>, <span class='literal'>13</span>, <span class='literal'>30</span>, <span class='literal'>59</span>, <span class='literal'>12</span>, <span class='literal'>"2001-01-31 13:30:59.000000012"</span>);<a name=line.356></a>
+    testToString(SUCCESS, <span class='literal'>2001</span>, <span class='literal'>1</span>, <span class='literal'>31</span>, <span class='literal'>13</span>, <span class='literal'>30</span>, <span class='literal'>59</span>, <span class='keyword'>null</span>, <span class='literal'>"2001-01-31 13:30:59"</span>);<a name=line.357></a>
+    testToString(SUCCESS, <span class='literal'>2001</span>, <span class='literal'>1</span>, <span class='literal'>31</span>, <span class='literal'>13</span>, <span class='literal'>30</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>"2001-01-31 13:30"</span>);<a name=line.358></a>
+    testToString(SUCCESS, <span class='literal'>2001</span>, <span class='literal'>1</span>, <span class='literal'>31</span>, <span class='literal'>13</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>"2001-01-31 13"</span>);<a name=line.359></a>
+    <span class='comment'>//time only<a name=line.360></a>
+</span>    testToString(SUCCESS, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>13</span>, <span class='literal'>30</span>, <span class='literal'>59</span>, <span class='literal'>123456789</span>, <span class='literal'>"13:30:59.123456789"</span>);<a name=line.361></a>
+    testToString(SUCCESS, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='keyword'>null</span>, <span class='literal'>13</span>, <span class='literal'>30</span>, <span class='literal'>59</span>, <span class='keyword'>null</span>, <span class='literal'>"13:30:59"</span>);<a name=line.362></a>
+    <a name=line.363></a>
+    <span class='comment'>//bizarre combination of formats<a name=line.364></a>
+</span>    testToString(SUCCESS, <span class='literal'>2001</span>, <span class='literal'>1</span>, <span class='literal'>31</span>, <span class='literal'>13</span>, <span class='keyword'>null</span>, <span class='literal'>59</span>, <span class='literal'>123456789</span>, <span class='literal'>"Y:2001 M:1 D:31 h:13 m:null s:59 f:123456789"</span>);<a name=line.365></a>
+<a name=line.366></a>
+    <span class='comment'>//extra trailing space<a name=line.367></a>
+</span>    testToString(FAIL, <span class='literal'>2001</span>, <span class='literal'>1</span>, <span class='literal'>31</span>, <span class='literal'>13</span>, <span class='literal'>30</span>, <span class='literal'>59</span>, <span class='literal'>123456789</span>, <span class='literal'>"2001-01-31 13:30:59.123456789 "</span>);<a name=line.368></a>
+  }<a name=line.369></a>
+  <a name=line.370></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testDayOfWeek(){<a name=line.371></a>
+    testDayOfWeek(SUCCESS, <span class='literal'>"2009-01-01"</span>, <span class='literal'>5</span>);<a name=line.372></a>
+    testDayOfWeek(SUCCESS, <span class='literal'>"2009-01-02"</span>, <span class='literal'>6</span>);<a name=line.373></a>
+    testDayOfWeek(SUCCESS, <span class='literal'>"2009-01-03"</span>, <span class='literal'>7</span>);<a name=line.374></a>
+    testDayOfWeek(SUCCESS, <span class='literal'>"2009-01-04"</span>, <span class='literal'>1</span>);<a name=line.375></a>
+    testDayOfWeek(SUCCESS, <span class='literal'>"2009-01-05"</span>, <span class='literal'>2</span>);<a name=line.376></a>
+    testDayOfWeek(SUCCESS, <span class='literal'>"2009-01-06"</span>, <span class='literal'>3</span>);<a name=line.377></a>
+    testDayOfWeek(SUCCESS, <span class='literal'>"2012-02-28"</span>, <span class='literal'>3</span>);<a name=line.378></a>
+    testDayOfWeek(SUCCESS, <span class='literal'>"2012-02-29"</span>, <span class='literal'>4</span>);<a name=line.379></a>
+    testDayOfWeek(SUCCESS, <span class='literal'>"1921-11-03"</span>, <span class='literal'>5</span>);<a name=line.380></a>
+    testDayOfWeek(SUCCESS, <span class='literal'>"1928-05-29"</span>, <span class='literal'>3</span>);<a name=line.381></a>
+    testDayOfWeek(SUCCESS, <span class='literal'>"1954-06-30"</span>, <span class='literal'>4</span>);<a name=line.382></a>
+    testDayOfWeek(FAIL, <span class='literal'>"1954-06"</span>, <span class='literal'>4</span>);<a name=line.383></a>
+    testDayOfWeek(FAIL, <span class='literal'>"1954"</span>, <span class='literal'>4</span>);<a name=line.384></a>
+    testDayOfWeek(FAIL, <span class='literal'>"11:05:13"</span>, <span class='literal'>4</span>);<a name=line.385></a>
+  }<a name=line.386></a>
+  <a name=line.387></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testDayOfYear(){<a name=line.388></a>
+    testDayOfYear(SUCCESS, <span class='literal'>"1978-11-14"</span>, <span class='literal'>318</span>);<a name=line.389></a>
+    testDayOfYear(SUCCESS, <span class='literal'>"1988-04-22"</span>, <span class='literal'>113</span>);<a name=line.390></a>
+    testDayOfYear(SUCCESS, <span class='literal'>"1978-01-01"</span>, <span class='literal'>1</span>);<a name=line.391></a>
+    testDayOfYear(SUCCESS, <span class='literal'>"1962-12-31"</span>, <span class='literal'>365</span>);<a name=line.392></a>
+    testDayOfYear(SUCCESS, <span class='literal'>"1960-12-31"</span>, <span class='literal'>366</span>);<a name=line.393></a>
+    testDayOfYear(FAIL, <span class='literal'>"1988-04"</span>, <span class='literal'>113</span>);<a name=line.394></a>
+    testDayOfYear(FAIL, <span class='literal'>"1988"</span>, <span class='literal'>113</span>);<a name=line.395></a>
+    testDayOfYear(FAIL, <span class='literal'>"11:13:59.123"</span>, <span class='literal'>113</span>);<a name=line.396></a>
+  }<a name=line.397></a>
+  <a name=line.398></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testSameDayAs(){<a name=line.399></a>
+    testSameDayAs(SUCCESS, <span class='literal'>"1955-04-30"</span>, <span class='literal'>"1955-04-30"</span>);<a name=line.400></a>
+    testSameDayAs(SUCCESS, <span class='literal'>"1955-04-30 01:23:15"</span>, <span class='literal'>"1955-04-30"</span>);<a name=line.401></a>
+    testSameDayAs(SUCCESS, <span class='literal'>"1955-04-30 01:23:15"</span>, <span class='literal'>"1955-04-30 16:56:07"</span>);<a name=line.402></a>
+    testSameDayAs(SUCCESS, <span class='literal'>"1955-04-30 01:23"</span>, <span class='literal'>"1955-04-30 16:56:07"</span>);<a name=line.403></a>
+    testSameDayAs(SUCCESS, <span class='literal'>"1955-04-30 01"</span>, <span class='literal'>"1955-04-30 16:56:07"</span>);<a name=line.404></a>
+    testSameDayAs(SUCCESS, <span class='literal'>"1955-04-30 01:23:15"</span>, <span class='literal'>"1955-04-30 16:56:07.23"</span>);<a name=line.405></a>
+    testSameDayAs(SUCCESS, <span class='literal'>"1955-04-30 16:56:07.23321"</span>, <span class='literal'>"1955-04-30 16:56:07.23"</span>);<a name=line.406></a>
+    <a name=line.407></a>
+    testSameDayAs(FAIL, <span class='literal'>"1955-04-30"</span>, <span class='literal'>"1955-05-30"</span>);<a name=line.408></a>
+    testSameDayAs(FAIL, <span class='literal'>"1955-04-30"</span>, <span class='literal'>"1955-04-03"</span>);<a name=line.409></a>
+  }<a name=line.410></a>
+<a name=line.411></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testCompare(){<a name=line.412></a>
+    testCompare(<span class='literal'>"1959-05-08"</span>, <span class='literal'>"1965-08-01"</span>, LESS);  <a name=line.413></a>
+    testCompare(<span class='literal'>"1965-08-01"</span>, <span class='literal'>"1965-08-02"</span>, LESS);  <a name=line.414></a>
+    testCompare(<span class='literal'>"1965-08-01"</span>, <span class='literal'>"1965-08-30"</span>, LESS);  <a name=line.415></a>
+    testCompare(<span class='literal'>"1965-08-01"</span>, <span class='literal'>"1965-12-01"</span>, LESS);  <a name=line.416></a>
+    testCompare(<span class='literal'>"1965-08-01"</span>, <span class='literal'>"1966-08-01"</span>, LESS);<a name=line.417></a>
+    testCompare(<span class='literal'>"1959-05-08 13:13:59"</span>, <span class='literal'>"1965-08-01"</span>, LESS);  <a name=line.418></a>
+    testCompare(<span class='literal'>"1959-05-08"</span>, <span class='literal'>"1959-05-08 13:13:59"</span>, LESS);  <a name=line.419></a>
+    testCompare(<span class='literal'>"1959-05-08"</span>, <span class='literal'>"1959-05-08 00:00:00"</span>, LESS);  <a name=line.420></a>
+    testCompare(<span class='literal'>"1959-05-08"</span>, <span class='literal'>"1959-05-08 00:00"</span>, LESS);  <a name=line.421></a>
+    testCompare(<span class='literal'>"1959-05-08"</span>, <span class='literal'>"1959-05-08 00"</span>, LESS);  <a name=line.422></a>
+    <a name=line.423></a>
+    testCompare(<span class='literal'>"1965-08-01"</span>, <span class='literal'>"1959-05-08"</span>, MORE);<a name=line.424></a>
+    testCompare(<span class='literal'>"900-12-31"</span>, <span class='literal'>"1-01-01"</span>, MORE); <a name=line.425></a>
+    testCompare(<span class='literal'>"1900-12-31"</span>, <span class='literal'>"1801-01-01"</span>, MORE); <a name=line.426></a>
+    testCompare(<span class='literal'>"5000-12-31"</span>, <span class='literal'>"1801-01-01"</span>, MORE); <a name=line.427></a>
+  }<a name=line.428></a>
+  <a name=line.429></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testBefore(){<a name=line.430></a>
+    testBefore(<span class='literal'>"1579-05-31"</span>, <span class='literal'>"5856-03-01"</span>);<a name=line.431></a>
+    testBefore(<span class='literal'>"1579-05-31"</span>, <span class='literal'>"1579-06-01"</span>);<a name=line.432></a>
+    testBefore(<span class='literal'>"900-05-01"</span>, <span class='literal'>"1578-05-01"</span>);<a name=line.433></a>
+  }<a name=line.434></a>
+<a name=line.435></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testAfter(){<a name=line.436></a>
+    testAfter(<span class='literal'>"5856-03-01"</span>, <span class='literal'>"1579-05-31"</span> );<a name=line.437></a>
+    testAfter(<span class='literal'>"1579-06-01"</span>, <span class='literal'>"1579-05-31"</span>);<a name=line.438></a>
+    testAfter(<span class='literal'>"1901-05-01"</span>, <span class='literal'>"1579-05-01"</span>);<a name=line.439></a>
+  }<a name=line.440></a>
+  <a name=line.441></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testTruncate(){<a name=line.442></a>
+    testTruncate(SUCCESS, <span class='literal'>"1999-05-15 11:34:19.123456789"</span>, <span class='literal'>"1999-05-15 11:34:19"</span>, DateTime.Unit.SECOND);<a name=line.443></a>
+    testTruncate(SUCCESS, <span class='literal'>"1999-05-15 11:34:19.123456789"</span>, <span class='literal'>"1999-05-15 11:34"</span>, DateTime.Unit.MINUTE);<a name=line.444></a>
+    testTruncate(SUCCESS, <span class='literal'>"1999-05-15 11:34:19.123456789"</span>, <span class='literal'>"1999-05-15 11"</span>, DateTime.Unit.HOUR);<a name=line.445></a>
+    testTruncate(SUCCESS, <span class='literal'>"1999-05-15 11:34:19.123456789"</span>, <span class='literal'>"1999-05-15"</span>, DateTime.Unit.DAY);<a name=line.446></a>
+    testTruncate(SUCCESS, <span class='literal'>"1999-05-15 11:34:19.123456789"</span>, <span class='literal'>"1999-05"</span>, DateTime.Unit.MONTH);<a name=line.447></a>
+    testTruncate(SUCCESS, <span class='literal'>"1999-05-15 11:34:19.123456789"</span>, <span class='literal'>"1999"</span>, DateTime.Unit.YEAR);<a name=line.448></a>
+  }<a name=line.449></a>
+  <a name=line.450></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testNumDaysInMonth(){<a name=line.451></a>
+    testNumDaysInMonth(<span class='literal'>"2001-01-01"</span>, <span class='literal'>31</span>);<a name=line.452></a>
+    testNumDaysInMonth(<span class='literal'>"2001-02-01"</span>, <span class='literal'>28</span>);<a name=line.453></a>
+    testNumDaysInMonth(<span class='literal'>"2001-03-01"</span>, <span class='literal'>31</span>);<a name=line.454></a>
+    testNumDaysInMonth(<span class='literal'>"2001-04-01"</span>, <span class='literal'>30</span>);<a name=line.455></a>
+    testNumDaysInMonth(<span class='literal'>"2001-05-01"</span>, <span class='literal'>31</span>);<a name=line.456></a>
+    testNumDaysInMonth(<span class='literal'>"2001-06-01"</span>, <span class='literal'>30</span>);<a name=line.457></a>
+    testNumDaysInMonth(<span class='literal'>"2001-07-01"</span>, <span class='literal'>31</span>);<a name=line.458></a>
+    testNumDaysInMonth(<span class='literal'>"2001-08-01"</span>, <span class='literal'>31</span>);<a name=line.459></a>
+    testNumDaysInMonth(<span class='literal'>"2001-09-01"</span>, <span class='literal'>30</span>);<a name=line.460></a>
+    testNumDaysInMonth(<span class='literal'>"2001-10-01"</span>, <span class='literal'>31</span>);<a name=line.461></a>
+    testNumDaysInMonth(<span class='literal'>"2001-11-01"</span>, <span class='literal'>30</span>);<a name=line.462></a>
+    testNumDaysInMonth(<span class='literal'>"2001-12-01"</span>, <span class='literal'>31</span>);<a name=line.463></a>
+    <a name=line.464></a>
+    testNumDaysInMonth(<span class='literal'>"2000-01-01"</span>, <span class='literal'>31</span>);<a name=line.465></a>
+    testNumDaysInMonth(<span class='literal'>"2000-02-01"</span>, <span class='literal'>29</span>);<a name=line.466></a>
+    testNumDaysInMonth(<span class='literal'>"2000-03-01"</span>, <span class='literal'>31</span>);<a name=line.467></a>
+    testNumDaysInMonth(<span class='literal'>"2000-04-01"</span>, <span class='literal'>30</span>);<a name=line.468></a>
+    testNumDaysInMonth(<span class='literal'>"2000-05-01"</span>, <span class='literal'>31</span>);<a name=line.469></a>
+    testNumDaysInMonth(<span class='literal'>"2000-06-01"</span>, <span class='literal'>30</span>);<a name=line.470></a>
+    testNumDaysInMonth(<span class='literal'>"2000-07-01"</span>, <span class='literal'>31</span>);<a name=line.471></a>
+    testNumDaysInMonth(<span class='literal'>"2000-08-01"</span>, <span class='literal'>31</span>);<a name=line.472></a>
+    testNumDaysInMonth(<span class='literal'>"2000-09-01"</span>, <span class='literal'>30</span>);<a name=line.473></a>
+    testNumDaysInMonth(<span class='literal'>"2000-10-01"</span>, <span class='literal'>31</span>);<a name=line.474></a>
+    testNumDaysInMonth(<span class='literal'>"2000-11-01"</span>, <span class='literal'>30</span>);<a name=line.475></a>
+    testNumDaysInMonth(<span class='literal'>"2000-12-01"</span>, <span class='literal'>31</span>);<a name=line.476></a>
+    <a name=line.477></a>
+    testNumDaysInMonth(<span class='literal'>"1960-01-01"</span>, <span class='literal'>31</span>);<a name=line.478></a>
+    testNumDaysInMonth(<span class='literal'>"1960-02-01"</span>, <span class='literal'>29</span>);<a name=line.479></a>
+    testNumDaysInMonth(<span class='literal'>"1960-03-01"</span>, <span class='literal'>31</span>);<a name=line.480></a>
+    testNumDaysInMonth(<span class='literal'>"1960-04-01"</span>, <span class='literal'>30</span>);<a name=line.481></a>
+    testNumDaysInMonth(<span class='literal'>"1960-05-01"</span>, <span class='literal'>31</span>);<a name=line.482></a>
+    testNumDaysInMonth(<span class='literal'>"1960-06-01"</span>, <span class='literal'>30</span>);<a name=line.483></a>
+    testNumDaysInMonth(<span class='literal'>"1960-07-01"</span>, <span class='literal'>31</span>);<a name=line.484></a>
+    testNumDaysInMonth(<span class='literal'>"1960-08-01"</span>, <span class='literal'>31</span>);<a name=line.485></a>
+    testNumDaysInMonth(<span class='literal'>"1960-09-01"</span>, <span class='literal'>30</span>);<a name=line.486></a>
+    testNumDaysInMonth(<span class='literal'>"1960-10-01"</span>, <span class='literal'>31</span>);<a name=line.487></a>
+    testNumDaysInMonth(<span class='literal'>"1960-11-01"</span>, <span class='literal'>30</span>);<a name=line.488></a>
+    testNumDaysInMonth(<span class='literal'>"1960-12-01"</span>, <span class='literal'>31</span>);<a name=line.489></a>
+  }<a name=line.490></a>
+<a name=line.491></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testModifiedJulianDate(){<a name=line.492></a>
+    testModifiedJD(<span class='literal'>"1858-11-17"</span>, <span class='literal'>0</span> );<a name=line.493></a>
+    testModifiedJD(<span class='literal'>"2004-01-01"</span>, <span class='literal'>53005</span>);<a name=line.494></a>
+    testModifiedJD(<span class='literal'>"1900-12-15"</span>, <span class='literal'>15368</span>);<a name=line.495></a>
+    testModifiedJD(<span class='literal'>"1995-09-27"</span>, <span class='literal'>49987</span> );<a name=line.496></a>
+    testModifiedJD(<span class='literal'>"1858-11-17"</span>, <span class='literal'>0</span> );<a name=line.497></a>
+    testModifiedJD(<span class='literal'>"1858-11-18"</span>, <span class='literal'>1</span> );<a name=line.498></a>
+    testModifiedJD(<span class='literal'>"1858-11-16"</span>, -<span class='literal'>1</span> );<a name=line.499></a>
+    testModifiedJD(<span class='literal'>"1858-11-01"</span>, -<span class='literal'>16</span> );<a name=line.500></a>
+    testModifiedJD(<span class='literal'>"2005-05-24"</span>, <span class='literal'>53514</span>);<a name=line.501></a>
+    testModifiedJD(<span class='literal'>"2006-12-19"</span>, <span class='literal'>54088</span>);<a name=line.502></a>
+    testModifiedJD(<span class='literal'>"1834-12-15"</span>, -<span class='literal'>8738</span>); <a name=line.503></a>
+    testModifiedJD(<span class='literal'>"1957-10-05"</span>, <span class='literal'>36116</span>);<a name=line.504></a>
+    testModifiedJD(<span class='literal'>"2000-01-01"</span>, <span class='literal'>51544</span>);<a name=line.505></a>
+    testModifiedJD(<span class='literal'>"1987-01-27"</span>, <span class='literal'>46822</span>);<a name=line.506></a>
+    testModifiedJD(<span class='literal'>"1987-06-19"</span>, <span class='literal'>46965</span>);<a name=line.507></a>
+    testModifiedJD(<span class='literal'>"1988-01-27"</span>, <span class='literal'>47187</span>);<a name=line.508></a>
+    testModifiedJD(<span class='literal'>"1988-06-19"</span>, <span class='literal'>47331</span>);<a name=line.509></a>
+    testModifiedJD(<span class='literal'>"1900-01-01"</span>, <span class='literal'>15020</span>);<a name=line.510></a>
+    testModifiedJD(<span class='literal'>"1600-01-01"</span>, -<span class='literal'>94553</span>);<a name=line.511></a>
+    testModifiedJD(<span class='literal'>"1600-12-31"</span>, -<span class='literal'>94188</span>);<a name=line.512></a>
+    testModifiedJD(<span class='literal'>"837-04-10"</span>, -<span class='literal'>373133</span>); <span class='comment'>//Proleptic Gregorian (B=-4), not Julian (B=0)<a name=line.513></a>
+</span>  }<a name=line.514></a>
+  <a name=line.515></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testStartOfDay(){<a name=line.516></a>
+    testStartOfDay(<span class='literal'>"2005-08-13 13:15:58"</span>, <span class='literal'>"2005-08-13 00:00:00.0"</span>);<a name=line.517></a>
+    testStartOfDay(<span class='literal'>"2005-08-13 00:00:00"</span>, <span class='literal'>"2005-08-13 00:00:00.0"</span>);<a name=line.518></a>
+    testStartOfDay(<span class='literal'>"2005-08-13 00:00:00.0"</span>, <span class='literal'>"2005-08-13 00:00:00.0"</span>);<a name=line.519></a>
+    testStartOfDay(<span class='literal'>"2005-08-13 00:00:00.000000000"</span>, <span class='literal'>"2005-08-13 00:00:00.0"</span>);<a name=line.520></a>
+    testStartOfDay(<span class='literal'>"2005-08-13"</span>, <span class='literal'>"2005-08-13 00:00:00.0"</span>);<a name=line.521></a>
+  }<a name=line.522></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testEndOfDay(){<a name=line.523></a>
+    testEndOfDay(<span class='literal'>"2005-08-13 13:15:58"</span>, <span class='literal'>"2005-08-13 23:59:59.999999999"</span>);<a name=line.524></a>
+    testEndOfDay(<span class='literal'>"2005-08-13"</span>, <span class='literal'>"2005-08-13 23:59:59.999999999"</span>);<a name=line.525></a>
+  }<a name=line.526></a>
+  <a name=line.527></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testStartOfMonth(){<a name=line.528></a>
+    testStartOfMonth(<span class='literal'>"2005-08-13 13:15:58"</span>, <span class='literal'>"2005-08-01 00:00:00.0"</span>);<a name=line.529></a>
+    testStartOfMonth(<span class='literal'>"2005-08-13"</span>, <span class='literal'>"2005-08-01 00:00:00.0"</span>);<a name=line.530></a>
+  }<a name=line.531></a>
+  <a name=line.532></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testEndOfMonth(){<a name=line.533></a>
+    testEndOfMonth(<span class='literal'>"2005-08-13 13:15:58"</span>, <span class='literal'>"2005-08-31 23:59:59.999999999"</span>);<a name=line.534></a>
+    testEndOfMonth(<span class='literal'>"2005-01-13 13:15:58"</span>, <span class='literal'>"2005-01-31 23:59:59.999999999"</span>);<a name=line.535></a>
+    testEndOfMonth(<span class='literal'>"2005-02-13 13:15:58"</span>, <span class='literal'>"2005-02-28 23:59:59.999999999"</span>);<a name=line.536></a>
+    testEndOfMonth(<span class='literal'>"2005-02-13"</span>, <span class='literal'>"2005-02-28 23:59:59.999999999"</span>);<a name=line.537></a>
+    testEndOfMonth(<span class='literal'>"2005-02-13 13:15"</span>, <span class='literal'>"2005-02-28 23:59:59.999999999"</span>);<a name=line.538></a>
+    testEndOfMonth(<span class='literal'>"2005-02-13 13:15:12.23"</span>, <span class='literal'>"2005-02-28 23:59:59.999999999"</span>);<a name=line.539></a>
+  }<a name=line.540></a>
+  <a name=line.541></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testDateFromJD(){<a name=line.542></a>
+    <span class='comment'>//http://isotropic.org/cgi-bin/date.pl?date=333-01-27<a name=line.543></a>
+</span>    <a name=line.544></a>
+    testDateFromJD(<span class='literal'>"2000-01-01"</span>, <span class='literal'>2451545</span>);<a name=line.545></a>
+    testDateFromJD(<span class='literal'>"1957-10-04"</span>, <span class='literal'>2436116</span>);<a name=line.546></a>
+    testDateFromJD(<span class='literal'>"1987-06-19"</span>, <span class='literal'>2446966</span>);<a name=line.547></a>
+    testDateFromJD(<span class='literal'>"1988-06-19"</span>, <span class='literal'>2447332</span>);<a name=line.548></a>
+    testDateFromJD(<span class='literal'>"1988-06-19"</span>, <span class='literal'>2447332</span>);<a name=line.549></a>
+    testDateFromJD(<span class='literal'>"2009-12-23"</span>, <span class='literal'>2455189</span>);<a name=line.550></a>
+    testDateFromJD(<span class='literal'>"1987-01-27"</span>, <span class='literal'>2446823</span>);<a name=line.551></a>
+    <a name=line.552></a>
+    testDateFromJD(<span class='literal'>"1582-10-16"</span>, <span class='literal'>2299162</span>);<a name=line.553></a>
+    testDateFromJD(<span class='literal'>"1582-10-15"</span>, <span class='literal'>2299161</span>);<a name=line.554></a>
+    testDateFromJD(<span class='literal'>"1582-10-14"</span>, <span class='literal'>2299160</span>);<a name=line.555></a>
+    testDateFromJD(<span class='literal'>"1582-10-13"</span>, <span class='literal'>2299159</span>);<a name=line.556></a>
+       <a name=line.557></a>
+    testDateFromJD(<span class='literal'>"333-01-27"</span>, <span class='literal'>1842712</span>); <a name=line.558></a>
+  }<a name=line.559></a>
+  <a name=line.560></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testNow(){<a name=line.561></a>
+    TimeZone tz = TimeZone.getTimeZone(<span class='literal'>"America/Halifax"</span>);<a name=line.562></a>
+    DateTime now = DateTime.now(tz);<a name=line.563></a>
+    <span class='comment'>//log(now);<a name=line.564></a>
+</span><a name=line.565></a>
+    DateTime today = DateTime.today(tz);<a name=line.566></a>
+    <span class='comment'>//log(today);<a name=line.567></a>
+</span>    <a name=line.568></a>
+    DateTime future = <span class='keyword'>new</span> DateTime(<span class='literal'>"2500-01-31"</span>);<a name=line.569></a>
+    assertTrue(future.isInTheFuture(tz));<a name=line.570></a>
+    <a name=line.571></a>
+    DateTime past = <span class='keyword'>new</span> DateTime(<span class='literal'>"1900-01-31"</span>);<a name=line.572></a>
+    assertTrue(past.isInThePast(tz));<a name=line.573></a>
+  }<a name=line.574></a>
+  <a name=line.575></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testEquals(){<a name=line.576></a>
+    testEquals(<span class='literal'>"1938-01-31"</span>, <span class='literal'>"1938-01-31"</span>, SUCCESS);<a name=line.577></a>
+    testEquals(<span class='literal'>"1938-01-31 18:13:15"</span>, <span class='literal'>"1938-01-31 18:13:15"</span>, SUCCESS);<a name=line.578></a>
+    testEquals(<span class='literal'>"1938-01-31 18:13:15.0"</span>, <span class='literal'>"1938-01-31 18:13:15.0"</span>, SUCCESS);<a name=line.579></a>
+    testEquals(<span class='literal'>"1938-01-31 18:13:15.123"</span>, <span class='literal'>"1938-01-31 18:13:15.123"</span>, SUCCESS);<a name=line.580></a>
+    testEquals(<span class='literal'>"1938-01-31 18:13:15.123456"</span>, <span class='literal'>"1938-01-31 18:13:15.123456"</span>, SUCCESS);<a name=line.581></a>
+    testEquals(<span class='literal'>"1938-01-31 18:13:15.123456789"</span>, <span class='literal'>"1938-01-31 18:13:15.123456789"</span>, SUCCESS);<a name=line.582></a>
+    testEquals(<span class='literal'>"18:13:15.123456789"</span>, <span class='literal'>"18:13:15.123456789"</span>, SUCCESS);<a name=line.583></a>
+    testEquals(<span class='literal'>"18:13:15.1"</span>, <span class='literal'>"18:13:15.1"</span>, SUCCESS);<a name=line.584></a>
+    testEquals(<span class='literal'>"18:13:15"</span>, <span class='literal'>"18:13:15"</span>, SUCCESS);<a name=line.585></a>
+    testEquals(<span class='literal'>"18:13"</span>, <span class='literal'>"18:13"</span>, SUCCESS);<a name=line.586></a>
+    <a name=line.587></a>
+    testEquals(<span class='literal'>"1938-01-31 00:00:00"</span>, <span class='literal'>"1938-01-31"</span>, FAIL);<a name=line.588></a>
+    testEquals(<span class='literal'>"1938-01-31 18:31:25"</span>, <span class='literal'>"1938-01-31"</span>, FAIL);<a name=line.589></a>
+    <a name=line.590></a>
+    testEquals(<span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>, <span class='literal'>3</span>, <span class='literal'>18</span>,<span class='literal'>31</span>,<span class='literal'>25</span>,<span class='literal'>0</span>), <span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>,<span class='literal'>3</span>,<span class='literal'>18</span>,<span class='literal'>31</span>,<span class='literal'>25</span>,<span class='literal'>0</span>), SUCCESS);<a name=line.591></a>
+    testEquals(<span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>, <span class='literal'>3</span>, <span class='literal'>18</span>,<span class='literal'>31</span>,<span class='literal'>25</span>,<span class='keyword'>null</span>), <span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>,<span class='literal'>3</span>,<span class='literal'>18</span>,<span class='literal'>31</span>,<span class='literal'>25</span>,<span class='keyword'>null</span>), SUCCESS);<a name=line.592></a>
+    testEquals(<span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>, <span class='literal'>3</span>, <span class='literal'>18</span>,<span class='literal'>31</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>), <span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>,<span class='literal'>3</span>,<span class='literal'>18</span>,<span class='literal'>31</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>), SUCCESS);<a name=line.593></a>
+    testEquals(<span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>, <span class='literal'>3</span>, <span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>), <span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>,<span class='literal'>3</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>), SUCCESS);<a name=line.594></a>
+    <a name=line.595></a>
+    testEquals(<span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>, <span class='literal'>3</span>, <span class='literal'>18</span>,<span class='literal'>31</span>,<span class='literal'>25</span>,<span class='keyword'>null</span>), <span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>,<span class='literal'>3</span>,<span class='literal'>18</span>,<span class='literal'>31</span>,<span class='literal'>25</span>,<span class='literal'>0</span>), FAIL);<a name=line.596></a>
+    testEquals(<span class='keyword'>new</span> DateTime(<span class='keyword'>null</span>, <span class='literal'>1</span>, <span class='literal'>3</span>, <span class='literal'>18</span>,<span class='literal'>31</span>,<span class='literal'>25</span>,<span class='literal'>0</span>), <span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>,<span class='literal'>3</span>,<span class='literal'>18</span>,<span class='literal'>31</span>,<span class='literal'>25</span>,<span class='literal'>0</span>), FAIL);<a name=line.597></a>
+    testEquals(<span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>, <span class='literal'>3</span>, <span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>,<span class='keyword'>null</span>), <span class='keyword'>new</span> DateTime(<span class='literal'>2156</span>, <span class='literal'>1</span>,<span class='literal'>3</span>,<span class='literal'>18</span>,<span class='literal'>31</span>,<span class='literal'>25</span>,<span class='literal'>0</span>), FAIL);<a name=line.598></a>
+  }<a name=line.599></a>
+  <a name=line.600></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testChangeTimeZone(){<a name=line.601></a>
+    TimeZone from = TimeZone.getTimeZone(<span class='literal'>"America/Halifax"</span>);<a name=line.602></a>
+    TimeZone to = TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>);<a name=line.603></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 18:13:59.123456789"</span>, <span class='literal'>"2010-01-15 17:13:59.123456789"</span>, from, to);<a name=line.604></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 18:13:59.1"</span>, <span class='literal'>"2010-01-15 17:13:59.1"</span>, from, to);<a name=line.605></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 18:13:59"</span>, <span class='literal'>"2010-01-15 17:13:59"</span>, from, to);<a name=line.606></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 01:13:59"</span>, <span class='literal'>"2010-01-15 00:13:59"</span>, from, to);<a name=line.607></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 00:13:59"</span>, <span class='literal'>"2010-01-14 23:13:59"</span>, from, to);<a name=line.608></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 23:13:59"</span>, <span class='literal'>"2010-01-15 22:13:59"</span>, from, to);<a name=line.609></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 18:13"</span>, <span class='literal'>"2010-01-15 17:13"</span>, from, to);<a name=line.610></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 18"</span>, <span class='literal'>"2010-01-15 17"</span>, from, to);<a name=line.611></a>
+    <a name=line.612></a>
+    from = TimeZone.getTimeZone(<span class='literal'>"Europe/London"</span>);<a name=line.613></a>
+    to = TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>);<a name=line.614></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 18:00"</span>, <span class='literal'>"2010-01-15 13:00"</span>, from, to);<a name=line.615></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 23:00"</span>, <span class='literal'>"2010-01-15 18:00"</span>, from, to);<a name=line.616></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-16 00:00"</span>, <span class='literal'>"2010-01-15 19:00"</span>, from, to);<a name=line.617></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-16 01:00"</span>, <span class='literal'>"2010-01-15 20:00"</span>, from, to);<a name=line.618></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-16 02:00"</span>, <span class='literal'>"2010-01-15 21:00"</span>, from, to);<a name=line.619></a>
+    <a name=line.620></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-15 18:00"</span>, <span class='literal'>"2010-08-15 13:00"</span>, from, to);<a name=line.621></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-15 23:00"</span>, <span class='literal'>"2010-08-15 18:00"</span>, from, to);<a name=line.622></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-16 00:00"</span>, <span class='literal'>"2010-08-15 19:00"</span>, from, to);<a name=line.623></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-16 01:00"</span>, <span class='literal'>"2010-08-15 20:00"</span>, from, to);<a name=line.624></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-16 02:00"</span>, <span class='literal'>"2010-08-15 21:00"</span>, from, to);<a name=line.625></a>
+<a name=line.626></a>
+    from = TimeZone.getTimeZone(<span class='literal'>"Europe/London"</span>);<a name=line.627></a>
+    to = TimeZone.getTimeZone(<span class='literal'>"Asia/Jakarta"</span>); <span class='comment'>//+7 hours, no summer hour in Indonesia<a name=line.628></a>
+</span>    testChangeTimeZone(<span class='literal'>"2010-01-15 15:00"</span>, <span class='literal'>"2010-01-15 22:00"</span>, from, to);<a name=line.629></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 16:00"</span>, <span class='literal'>"2010-01-15 23:00"</span>, from, to);<a name=line.630></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 17:00"</span>, <span class='literal'>"2010-01-16 00:00"</span>, from, to);<a name=line.631></a>
+    testChangeTimeZone(<span class='literal'>"2010-01-15 18:00"</span>, <span class='literal'>"2010-01-16 01:00"</span>, from, to);<a name=line.632></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-15 15:00"</span>, <span class='literal'>"2010-08-15 21:00"</span>, from, to);<a name=line.633></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-15 16:00"</span>, <span class='literal'>"2010-08-15 22:00"</span>, from, to);<a name=line.634></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-15 17:00"</span>, <span class='literal'>"2010-08-15 23:00"</span>, from, to);<a name=line.635></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-15 18:00"</span>, <span class='literal'>"2010-08-16 00:00"</span>, from, to);<a name=line.636></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-15 19:00"</span>, <span class='literal'>"2010-08-16 01:00"</span>, from, to);<a name=line.637></a>
+    <a name=line.638></a>
+    from = TimeZone.getTimeZone(<span class='literal'>"Europe/London"</span>);<a name=line.639></a>
+    to = TimeZone.getTimeZone(<span class='literal'>"America/St_Johns"</span>); <span class='comment'>//-3h30m, Newfoundland is offset by a non-integral number of hours<a name=line.640></a>
+</span>    testChangeTimeZone(<span class='literal'>"2010-01-15 15:00"</span>, <span class='literal'>"2010-01-15 11:30"</span>, from, to);<a name=line.641></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-15 15:00"</span>, <span class='literal'>"2010-08-15 11:30"</span>, from, to);<a name=line.642></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-15 23:00"</span>, <span class='literal'>"2010-08-15 19:30"</span>, from, to);<a name=line.643></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-16 00:00"</span>, <span class='literal'>"2010-08-15 20:30"</span>, from, to);<a name=line.644></a>
+    testChangeTimeZone(<span class='literal'>"2010-08-16 01:00"</span>, <span class='literal'>"2010-08-15 21:30"</span>, from, to);<a name=line.645></a>
+    <a name=line.646></a>
+    testChangeTimeZoneFails(<span class='literal'>"2010-01-15"</span>, <span class='literal'>"2010-01-15"</span>, from, to);<a name=line.647></a>
+    testChangeTimeZoneFails(<span class='literal'>"2010-01-15"</span>, <span class='literal'>"2010-01-14"</span>, from, to);<a name=line.648></a>
+    testChangeTimeZoneFails(<span class='literal'>"2010-01"</span>, <span class='literal'>"2010-01"</span>, from, to);<a name=line.649></a>
+    testChangeTimeZoneFails(<span class='literal'>"2010"</span>, <span class='literal'>"2010"</span>, from, to);<a name=line.650></a>
+  }<a name=line.651></a>
+  <a name=line.652></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testGetMilliseconds(){<a name=line.653></a>
+    testGetMillis(<span class='literal'>"1970-01-01"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), <span class='literal'>0</span>);<a name=line.654></a>
+    testGetMillis(<span class='literal'>"1970-01-02"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), <span class='literal'>86400000</span>);<a name=line.655></a>
+    testGetMillis(<span class='literal'>"1969-12-31"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), -<span class='literal'>86400000</span>);<a name=line.656></a>
+    testGetMillis(<span class='literal'>"1970-01-01 00:00:00.0"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), <span class='literal'>0</span>);<a name=line.657></a>
+    testGetMillis(<span class='literal'>"1970-01-01 00:00:00.001"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), <span class='literal'>1</span>);<a name=line.658></a>
+    testGetMillis(<span class='literal'>"1970-01-01 00:00:00.1"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), <span class='literal'>100</span>);<a name=line.659></a>
+    testGetMillis(<span class='literal'>"1970-01-01 00:00:01.0"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), <span class='literal'>1000</span>);<a name=line.660></a>
+    testGetMillis(<span class='literal'>"1970-01-02 00:00:00.0"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), <span class='literal'>86400000</span>);<a name=line.661></a>
+    testGetMillis(<span class='literal'>"1969-12-31 00:00:00.0"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), -<span class='literal'>86400000</span>);<a name=line.662></a>
+    testGetMillis(<span class='literal'>"1970-01-01 01:00"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), <span class='literal'>3600000</span>);<a name=line.663></a>
+    <a name=line.664></a>
+    testGetMillis(<span class='literal'>"1970-01-01 00:00:00.0"</span>, TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>), <span class='literal'>18000000</span>);<a name=line.665></a>
+    <a name=line.666></a>
+    <span class='comment'>//nanos are truncated, not rounded<a name=line.667></a>
+</span>    testGetMillis(<span class='literal'>"1970-01-01 00:00:00.0001"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), <span class='literal'>0</span>);<a name=line.668></a>
+    testGetMillis(<span class='literal'>"1970-01-01 00:00:00.000000001"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), <span class='literal'>0</span>);<a name=line.669></a>
+    testGetMillis(<span class='literal'>"1970-01-01 00:00:00.001999"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>), <span class='literal'>1</span>);<a name=line.670></a>
+  }<a name=line.671></a>
+  <a name=line.672></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testInterConversion(){<a name=line.673></a>
+    testInterConversion(<span class='literal'>"2010-01-15 19:53:22.123"</span>, TimeZone.getTimeZone(<span class='literal'>"UTC"</span>));<a name=line.674></a>
+    testInterConversion(<span class='literal'>"2010-01-15 19:53:22.123"</span>, TimeZone.getTimeZone(<span class='literal'>"Asia/Jakarta"</span>));<a name=line.675></a>
+    testInterConversion(<span class='literal'>"2010-01-15 19:53:22.123"</span>, TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>));<a name=line.676></a>
+    testInterConversion(<span class='literal'>"2010-09-15 19:53:22.123"</span>, TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>));<a name=line.677></a>
+    testInterConversion(<span class='literal'>"2010-09-15 19:53:22.1"</span>, TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>));<a name=line.678></a>
+    testInterConversion(<span class='literal'>"1802-09-15 19:53:22.1"</span>, TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>));<a name=line.679></a>
+    testInterConversion(<span class='literal'>"9875-09-15 19:53:22.1"</span>, TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>));<a name=line.680></a>
+  }<a name=line.681></a>
+  <a name=line.682></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testForInstant(){<a name=line.683></a>
+    TimeZone utc = TimeZone.getTimeZone(<span class='literal'>"UTC"</span>);<a name=line.684></a>
+    testForInstant(<span class='literal'>0</span>, utc, <span class='literal'>"1970-01-01 00:00:00.000000000"</span>);<a name=line.685></a>
+    testForInstant(<span class='literal'>86400000</span>, utc, <span class='literal'>"1970-01-02 00:00:00.000000000"</span>);<a name=line.686></a>
+    testForInstant(-<span class='literal'>86400000</span>, utc,  <span class='literal'>"1969-12-31 00:00:00.000000000"</span>);<a name=line.687></a>
+    testForInstant(<span class='literal'>1</span>, utc, <span class='literal'>"1970-01-01 00:00:00.00100000"</span>);<a name=line.688></a>
+    testForInstant(<span class='literal'>100</span>, utc, <span class='literal'>"1970-01-01 00:00:00.100000000"</span>);<a name=line.689></a>
+    testForInstant(<span class='literal'>1000</span>, utc, <span class='literal'>"1970-01-01 00:00:01.000000000"</span>);<a name=line.690></a>
+    testForInstant(<span class='literal'>3600000</span>, utc, <span class='literal'>"1970-01-01 01:00:00.000000000"</span>);<a name=line.691></a>
+    testForInstant(<span class='literal'>18000000</span>,  TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>), <span class='literal'>"1970-01-01 00:00:00.000000000"</span>);<a name=line.692></a>
+  }<a name=line.693></a>
+  <a name=line.694></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testForInstantNanos(){<a name=line.695></a>
+    TimeZone utc = TimeZone.getTimeZone(<span class='literal'>"UTC"</span>);<a name=line.696></a>
+    testForInstantNanos(<span class='literal'>0</span>, utc, <span class='literal'>"1970-01-01 00:00:00.000000000"</span>);<a name=line.697></a>
+    testForInstantNanos(<span class='literal'>1</span>, utc, <span class='literal'>"1970-01-01 00:00:00.000000001"</span>);<a name=line.698></a>
+    testForInstantNanos(<span class='literal'>1000</span>, utc, <span class='literal'>"1970-01-01 00:00:00.000001000"</span>);<a name=line.699></a>
+    testForInstantNanos(<span class='literal'>1000000</span>, utc, <span class='literal'>"1970-01-01 00:00:00.001000000"</span>);<a name=line.700></a>
+    testForInstantNanos(-<span class='literal'>1</span>, utc, <span class='literal'>"1969-12-31 23:59:59.999999999"</span>);<a name=line.701></a>
+    testForInstantNanos(-<span class='literal'>2</span>, utc, <span class='literal'>"1969-12-31 23:59:59.999999998"</span>);<a name=line.702></a>
+    testForInstantNanos(-<span class='literal'>1000</span>, utc, <span class='literal'>"1969-12-31 23:59:59.999999000"</span>);<a name=line.703></a>
+    testForInstantNanos(-<span class='literal'>1001</span>, utc, <span class='literal'>"1969-12-31 23:59:59.999998999"</span>);<a name=line.704></a>
+    testForInstantNanos(-<span class='literal'>1000000</span>, utc, <span class='literal'>"1969-12-31 23:59:59.999000000"</span>);<a name=line.705></a>
+    testForInstantNanos(<span class='literal'>86400000000000L</span>, utc, <span class='literal'>"1970-01-02 00:00:00.000000000"</span>);<a name=line.706></a>
+    testForInstantNanos(-<span class='literal'>86400000000000L</span>, utc,  <span class='literal'>"1969-12-31 00:00:00.000000000"</span>);<a name=line.707></a>
+    testForInstantNanos(<span class='literal'>1000000L</span>, utc, <span class='literal'>"1970-01-01 00:00:00.00100000"</span>);<a name=line.708></a>
+    testForInstantNanos(<span class='literal'>100000000L</span>, utc, <span class='literal'>"1970-01-01 00:00:00.100000000"</span>);<a name=line.709></a>
+    testForInstantNanos(<span class='literal'>1000000000L</span>, utc, <span class='literal'>"1970-01-01 00:00:01.000000000"</span>);<a name=line.710></a>
+    testForInstantNanos(<span class='literal'>3600000000000L</span>, utc, <span class='literal'>"1970-01-01 01:00:00.000000000"</span>);<a name=line.711></a>
+    testForInstantNanos(<span class='literal'>18000000000000L</span>,  TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>), <span class='literal'>"1970-01-01 00:00:00.000000000"</span>);<a name=line.712></a>
+    testForInstantNanos(<span class='literal'>18000000000001L</span>,  TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>), <span class='literal'>"1970-01-01 00:00:00.000000001"</span>);<a name=line.713></a>
+    testForInstantNanos(<span class='literal'>17999999999999L</span>,  TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>), <span class='literal'>"1969-12-31 23:59:59.999999999"</span>);<a name=line.714></a>
+  }<a name=line.715></a>
+  <a name=line.716></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testGetNanosecondsFromEpoch(){<a name=line.717></a>
+    TimeZone utc = TimeZone.getTimeZone(<span class='literal'>"UTC"</span>);<a name=line.718></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1970-01-01 00:00:00.000000000"</span>, utc, <span class='literal'>0L</span>);<a name=line.719></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1970-01-01 00:00:00.000000001"</span>, utc, <span class='literal'>1L</span>);<a name=line.720></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1970-01-01 00:00:00.000001000"</span>, utc, <span class='literal'>1000L</span>);<a name=line.721></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1970-01-01 00:00:00.001000000"</span>, utc, <span class='literal'>1000000L</span>);<a name=line.722></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1970-01-01 00:00:01.000000000"</span>, utc, <span class='literal'>1000000000L</span>);<a name=line.723></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1970-01-01 00:01:00.000000000"</span>, utc, <span class='literal'>60</span>*<span class='literal'>1000000000L</span>);<a name=line.724></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1970-01-01 01:00:00.000000000"</span>, utc, <span class='literal'>60</span>*<span class='literal'>60</span>*<span class='literal'>1000000000L</span>);<a name=line.725></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1970-01-02 00:00:00.000000000"</span>, utc, <span class='literal'>24</span>*<span class='literal'>60</span>*<span class='literal'>60</span>*<span class='literal'>1000000000L</span>);<a name=line.726></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1970-01-02 00:00:00.000000001"</span>, utc, <span class='literal'>24</span>*<span class='literal'>60</span>*<span class='literal'>60</span>*<span class='literal'>1000000000L</span> + <span class='literal'>1</span>);<a name=line.727></a>
+<a name=line.728></a>
+    TimeZone montreal = TimeZone.getTimeZone(<span class='literal'>"America/Montreal"</span>);<a name=line.729></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1970-01-01 00:00:00.000000000"</span>, montreal, <span class='literal'>5</span>*<span class='literal'>60</span>*<span class='literal'>60</span>*<span class='literal'>1000000000L</span>);<a name=line.730></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1970-01-01 00:00:00.000000001"</span>, montreal, <span class='literal'>5</span>*<span class='literal'>60</span>*<span class='literal'>60</span>*<span class='literal'>1000000000L</span> + <span class='literal'>1</span>);<a name=line.731></a>
+<a name=line.732></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1969-12-31 23:59:59.999999999"</span>, utc, -<span class='literal'>1L</span>);<a name=line.733></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1969-12-31 23:59:59.999999000"</span>, utc, -<span class='literal'>1000L</span>);<a name=line.734></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1969-12-31 23:59:59.000000000"</span>, utc, -<span class='literal'>1000000000L</span>);<a name=line.735></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1969-12-31 23:59:00.000000000"</span>, utc, -<span class='literal'>1000000000L</span>*<span class='literal'>60</span>);<a name=line.736></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1969-12-31 23:00:00.000000000"</span>, utc, -<span class='literal'>1000000000L</span>*<span class='literal'>60</span>*<span class='literal'>60</span>);<a name=line.737></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1969-12-31 00:00:00.000000000"</span>, utc, (-<span class='literal'>1000000000L</span>)*<span class='literal'>60</span>*<span class='literal'>60</span>*<span class='literal'>24</span>);<a name=line.738></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1969-12-31 00:00:00.000000001"</span>, utc, (-<span class='literal'>1000000000L</span>)*<span class='literal'>60</span>*<span class='literal'>60</span>*<span class='literal'>24</span> + <span class='literal'>1</span>);<a name=line.739></a>
+    testGetNanosecondsFromEpoch(<span class='literal'>"1969-12-30 23:59:59.999999999"</span>, utc, (-<span class='literal'>1000000000L</span>)*<span class='literal'>60</span>*<span class='literal'>60</span>*<span class='literal'>24</span> -<span class='literal'>1</span>);<a name=line.740></a>
+  }<a name=line.741></a>
+  <a name=line.742></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testNanosecondRange(){<a name=line.743></a>
+    testNanosecondRange(<span class='literal'>"0001-01-01 00:00:00.000000000"</span>);<a name=line.744></a>
+    testNanosecondRange(<span class='literal'>"9999-12-31 23:59:59.999999999"</span>);<a name=line.745></a>
+  }<a name=line.746></a>
+<a name=line.747></a>
+  <span class='keyword'>public</span> <span class='keyword'>void</span> testNumSecondsFrom(){<a name=line.748></a>
+    testNumSecondsFrom(<span class='literal'>"16:00"</span>, <span class='literal'>"16:15"</span>, <span class='literal'>15</span>*<span class='literal'>60</span>);<a name=line.749></a>
+    testNumSecondsFrom(<span class='literal'>"16:00"</span>, <span class='literal'>"16:00"</span>, <span class='literal'>0</span>*<span class='literal'>60</span>);<a name=line.750></a>
+    testNumSecondsFrom(<span class='literal'>"16:15"</span>, <span class='literal'>"16:00"</span>, -<span class='literal'>15</span>*<span class='literal'>60</span>);<a name=line.751></a>
+    <span class='keyword'>long</span> DAY = <span class='literal'>60</span>*<span class='literal'>60</span>*<span class='literal'>24</span>;<a name=line.752></a>
+    testNumSecondsFrom(<span class='literal'>"2013-01-01"</span>, <span class='literal'>"2013-01-02"</span>,DAY);<a name=line.753></a>
+    testNumSecondsFrom(<span class='literal'>"2013-01-01"</span>, <span class='literal'>"2013-01-03"</span>,<span class='literal'>2</span>*DAY);<a name=line.754></a>
+    testNumSecondsFrom(<span class='literal'>"2013-01-03"</span>, <span class='literal'>"2013-01-02"</span>,-DAY);<a name=line.755></a>
+    testNumSecondsFrom(<span class='literal'>"2013-01-01"</span>, <span class='literal'>"2013-01-01"</span>,<span class='literal'>0</span>*DAY);<a name=line.756></a>
+    testNumSecondsFrom(<span class='literal'>"2013-01-01 00:00:00"</span>, <span class='literal'>"2013-01-02 00:00:01"</span>,DAY+<span class='literal'>1</span>);<a name=line.757></a>
+    testNumSecondsFrom(<span class='literal'>"2013-01-01 00:00:00"</span>, <span class='literal'>"2013-01-01 23:59:59"</span>,DAY-<span class='literal'>1</span>);<a name=line.758></a>
+  }<a name=line.759></a>
+<a name=line.760></a>
+  <span class='comment'>// PRIVATE<a name=line.761></a>
+</span>  <a name=line.762></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>boolean</span> SUCCESS = <span class='keyword'>true</span>;<a name=line.763></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>boolean</span> FAIL = <span class='keyword'>false</span>;<a name=line.764></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>boolean</span> LESS = <span class='keyword'>true</span>;<a name=line.765></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>final</span> <span class='keyword'>boolean</span> MORE = <span class='keyword'>false</span>;<a name=line.766></a>
+  <a name=line.767></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>void</span> log(Object aThing){<a name=line.768></a>
+    System.out.println(String.valueOf(aThing));<a name=line.769></a>
+  }<a name=line.770></a>
+  <a name=line.771></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testStandardFormatCtorSuccess(String aDate){<a name=line.772></a>
+    <span class='keyword'>try</span> {<a name=line.773></a>
+       DateTime dateTime = <span class='keyword'>new</span> DateTime(aDate);<a name=line.774></a>
+    }<a name=line.775></a>
+    <span class='keyword'>catch</span> (Throwable ex){<a name=line.776></a>
+      fail(<span class='literal'>"Cannot construct using standard format: "</span> + Util.quote(aDate));<a name=line.777></a>
+    }<a name=line.778></a>
+  }<a name=line.779></a>
+  <a name=line.780></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testStandardFormatCtorPlusParseSuccess(String aDate, Integer y, Integer m, Integer d, Integer h, Integer min, Integer sec, Integer frac){<a name=line.781></a>
+    <span class='keyword'>try</span> {<a name=line.782></a>
+      DateTime dt = <span class='keyword'>new</span> DateTime(aDate);<a name=line.783></a>
+      assertTrue(<span class='literal'>"y"</span>, eq(dt.getYear(), y));<a name=line.784></a>
+      assertTrue(<span class='literal'>"m"</span>, eq(dt.getMonth(), m));<a name=line.785></a>
+      assertTrue(<span class='literal'>"d"</span>, eq(dt.getDay(), d));<a name=line.786></a>
+      assertTrue(<span class='literal'>"h"</span>, eq(dt.getHour(), h));<a name=line.787></a>
+      assertTrue(<span class='literal'>"min"</span>, eq(dt.getMinute(), min));<a name=line.788></a>
+      assertTrue(<span class='literal'>"sec"</span>, eq(dt.getSecond(), sec));<a name=line.789></a>
+      assertTrue(<span class='literal'>"frac"</span>, eq(dt.getNanoseconds(), frac));<a name=line.790></a>
+    }<a name=line.791></a>
+    <span class='keyword'>catch</span> (Throwable ex){<a name=line.792></a>
+      fail(<span class='literal'>"Cannot construct/parse using standard format: "</span> + Util.quote(aDate) + ex);<a name=line.793></a>
+    }<a name=line.794></a>
+  }<a name=line.795></a>
+  <a name=line.796></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testStandardFormatCtorPlusParseFail(String aDate){<a name=line.797></a>
+    <span class='keyword'>try</span> {<a name=line.798></a>
+      DateTime dt = <span class='keyword'>new</span> DateTime(aDate);<a name=line.799></a>
+      dt.ensureParsed();<a name=line.800></a>
+      fail(<span class='literal'>"Expected failure to parse: "</span> + Util.quote(aDate));<a name=line.801></a>
+    }<a name=line.802></a>
+    <span class='keyword'>catch</span> (DateTime.ItemOutOfRange ex){<a name=line.803></a>
+      <span class='comment'>//good branch<a name=line.804></a>
+</span>    }<a name=line.805></a>
+    <span class='keyword'>catch</span> (DateTimeParser.UnknownDateTimeFormat ex){<a name=line.806></a>
+      <span class='comment'>//good branch<a name=line.807></a>
+</span>    }<a name=line.808></a>
+  }<a name=line.809></a>
+  <a name=line.810></a>
+  <span class='keyword'>private</span> <span class='keyword'>boolean</span> eq(Integer aThis, Integer aThat){<a name=line.811></a>
+    <span class='keyword'>boolean</span> result = <span class='keyword'>false</span>;<a name=line.812></a>
+    <span class='keyword'>if</span>(aThis == <span class='keyword'>null</span> &amp;&amp; aThat == <span class='keyword'>null</span>){<a name=line.813></a>
+      result = <span class='keyword'>true</span>;<a name=line.814></a>
+    }<a name=line.815></a>
+    <span class='keyword'>else</span> <span class='keyword'>if</span> (aThis != <span class='keyword'>null</span> &amp;&amp; aThat != <span class='keyword'>null</span>){<a name=line.816></a>
+      result = aThis.equals(aThat);      <a name=line.817></a>
+    }<a name=line.818></a>
+    <span class='keyword'>else</span> {<a name=line.819></a>
+      log(<span class='literal'>"At least one is null"</span>);<a name=line.820></a>
+    }<a name=line.821></a>
+    <span class='keyword'>return</span> result;<a name=line.822></a>
+  }<a name=line.823></a>
+  <a name=line.824></a>
+  <span class='keyword'>private</span> <span class='keyword'>static</span> <span class='keyword'>void</span> log(String aMsg) {<a name=line.825></a>
+    System.out.println(aMsg);<a name=line.826></a>
+  }<a name=line.827></a>
+  <a name=line.828></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testStandardFormatCtorFail(String aDate){<a name=line.829></a>
+    <span class='keyword'>try</span> {<a name=line.830></a>
+      DateTime dateTime = <span class='keyword'>new</span> DateTime(aDate);<a name=line.831></a>
+      fail(<span class='literal'>"Expected failure didn't happen."</span>);<a name=line.832></a>
+    }<a name=line.833></a>
+    <span class='keyword'>catch</span> (Throwable ex){<a name=line.834></a>
+      <span class='comment'>//good branch<a name=line.835></a>
+</span>    }<a name=line.836></a>
+  }<a name=line.837></a>
+  <a name=line.838></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testRange(<span class='keyword'>boolean</span> aSuccess, String aDateTime){<a name=line.839></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.840></a>
+      <span class='keyword'>try</span> {<a name=line.841></a>
+        DateTime dateTime = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.842></a>
+        dateTime.ensureParsed();<a name=line.843></a>
+      }<a name=line.844></a>
+      <span class='keyword'>catch</span> (IllegalArgumentException ex){<a name=line.845></a>
+        fail(<span class='literal'>"Item out of range:"</span> + aDateTime);        <a name=line.846></a>
+      }<a name=line.847></a>
+      <span class='keyword'>catch</span> (DateTimeParser.UnknownDateTimeFormat ex){<a name=line.848></a>
+        fail(<span class='literal'>"Unknown format:"</span> + aDateTime);        <a name=line.849></a>
+      }<a name=line.850></a>
+    }<a name=line.851></a>
+    <span class='keyword'>if</span>(!aSuccess){<a name=line.852></a>
+      <span class='keyword'>try</span> {<a name=line.853></a>
+        DateTime dateTime = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.854></a>
+        dateTime.ensureParsed(); <a name=line.855></a>
+        fail(<span class='literal'>"Item out of range?:"</span> + aDateTime);        <a name=line.856></a>
+      }<a name=line.857></a>
+      <span class='keyword'>catch</span> (DateTime.ItemOutOfRange ex){<a name=line.858></a>
+        <span class='comment'>//do nothing - expected<a name=line.859></a>
+</span>      }<a name=line.860></a>
+      <span class='keyword'>catch</span> (DateTimeParser.UnknownDateTimeFormat ex){<a name=line.861></a>
+        <span class='comment'>//do nothing - expected<a name=line.862></a>
+</span>      }<a name=line.863></a>
+    }<a name=line.864></a>
+  }<a name=line.865></a>
+  <a name=line.866></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testLeapYear(<span class='keyword'>boolean</span> aSuccess, String aDate) {<a name=line.867></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDate);<a name=line.868></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.869></a>
+      <span class='keyword'>if</span>(! dt.isLeapYear()){<a name=line.870></a>
+        fail(<span class='literal'>"Expected leap year, but isn't"</span>);<a name=line.871></a>
+      }<a name=line.872></a>
+    }<a name=line.873></a>
+    <span class='keyword'>else</span> {<a name=line.874></a>
+      <span class='keyword'>if</span> (dt.isLeapYear()){<a name=line.875></a>
+        fail(<span class='literal'>"Expected non-leap year, but actually is a leap year."</span>);<a name=line.876></a>
+      }<a name=line.877></a>
+    }<a name=line.878></a>
+  }<a name=line.879></a>
+  <a name=line.880></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testLeapYearFails(String aDate) {<a name=line.881></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDate);<a name=line.882></a>
+    <span class='keyword'>try</span> {<a name=line.883></a>
+      dt.isLeapYear();<a name=line.884></a>
+      fail();<a name=line.885></a>
+    }<a name=line.886></a>
+    <span class='keyword'>catch</span> (RuntimeException ex){<a name=line.887></a>
+      <span class='comment'>//OK - expected branch<a name=line.888></a>
+</span>    }<a name=line.889></a>
+  }<a name=line.890></a>
+  <a name=line.891></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testToString(<span class='keyword'>boolean</span> aSuccess, String aDate, String aExpected) {<a name=line.892></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDate);<a name=line.893></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.894></a>
+      <span class='keyword'>if</span>(!dt.toString().equals(aExpected)){<a name=line.895></a>
+        fail(<span class='literal'>"Expected toString of "</span> + aExpected + <span class='literal'>" but really is "</span> + dt.toString());<a name=line.896></a>
+      }<a name=line.897></a>
+    }<a name=line.898></a>
+    <span class='keyword'>else</span> {<a name=line.899></a>
+      <span class='keyword'>if</span>(dt.toString().equals(aExpected)){<a name=line.900></a>
+        fail(<span class='literal'>"Expected failure for toString being "</span> + aExpected);<a name=line.901></a>
+      }<a name=line.902></a>
+    }<a name=line.903></a>
+  }<a name=line.904></a>
+  <a name=line.905></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testToString(<span class='keyword'>boolean</span> aSuccess, Integer y, Integer m, Integer d, Integer h, Integer min, Integer sec, Integer frac, String aExpected) {<a name=line.906></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(y,m,d,h,min,sec,frac);<a name=line.907></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.908></a>
+      <span class='keyword'>if</span>(!dt.toString().equals(aExpected)){<a name=line.909></a>
+        fail(<span class='literal'>"Expected toString of "</span> + aExpected + <span class='literal'>" but really is "</span> + dt.toString());<a name=line.910></a>
+      }<a name=line.911></a>
+    }<a name=line.912></a>
+    <span class='keyword'>else</span> {<a name=line.913></a>
+      <span class='keyword'>if</span>(dt.toString().equals(aExpected)){<a name=line.914></a>
+        fail(<span class='literal'>"Expected failure for toString being "</span> + aExpected);<a name=line.915></a>
+      }<a name=line.916></a>
+    }<a name=line.917></a>
+  }<a name=line.918></a>
+  <a name=line.919></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testDayOfWeek(<span class='keyword'>boolean</span> aSuccess, String aDateTime, <span class='keyword'>int</span> aWeekday){<a name=line.920></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.921></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.922></a>
+      <span class='keyword'>if</span>( dt.getWeekDay() != aWeekday) {<a name=line.923></a>
+        fail(<span class='literal'>"Expected weekday '"</span> + aWeekday + <span class='literal'>"', but was actually "</span> + dt.getWeekDay());<a name=line.924></a>
+      }<a name=line.925></a>
+    }<a name=line.926></a>
+    <span class='keyword'>else</span> {<a name=line.927></a>
+      <span class='keyword'>try</span> {<a name=line.928></a>
+       <span class='keyword'>int</span> dayOfWeek = dt.getWeekDay();<a name=line.929></a>
+        fail(<span class='literal'>"Expected failure"</span>);<a name=line.930></a>
+      }<a name=line.931></a>
+      <span class='keyword'>catch</span>(RuntimeException ex){<a name=line.932></a>
+        <span class='comment'>//OK - expected<a name=line.933></a>
+</span>      }<a name=line.934></a>
+    }<a name=line.935></a>
+  }<a name=line.936></a>
+<a name=line.937></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testDayOfYear(<span class='keyword'>boolean</span> aSuccess, String aDateTime, <span class='keyword'>int</span> aExpectedDay){<a name=line.938></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.939></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.940></a>
+      <span class='keyword'>if</span>( dt.getDayOfYear() != aExpectedDay) {<a name=line.941></a>
+        fail(<span class='literal'>"Expected weekday '"</span> + aExpectedDay + <span class='literal'>"', but was actually "</span> + dt.getDayOfYear());<a name=line.942></a>
+      }<a name=line.943></a>
+    }<a name=line.944></a>
+    <span class='keyword'>else</span> {<a name=line.945></a>
+      <span class='keyword'>try</span> {<a name=line.946></a>
+        dt.getDayOfYear();<a name=line.947></a>
+        fail();<a name=line.948></a>
+      }<a name=line.949></a>
+      <span class='keyword'>catch</span> (RuntimeException ex){<a name=line.950></a>
+        <span class='comment'>//OK - expected branch<a name=line.951></a>
+</span>      }<a name=line.952></a>
+    }<a name=line.953></a>
+  }<a name=line.954></a>
+<a name=line.955></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testSameDayAs(<span class='keyword'>boolean</span> aSuccess, String aA, String aB){<a name=line.956></a>
+    DateTime a = <span class='keyword'>new</span> DateTime(aA);<a name=line.957></a>
+    DateTime b = <span class='keyword'>new</span> DateTime(aB);<a name=line.958></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.959></a>
+      <span class='keyword'>if</span>(!a.isSameDayAs(b)){<a name=line.960></a>
+        fail(<span class='literal'>"The date "</span> + aA + <span class='literal'>" should be the same day as this, but isn't: "</span> + aB);<a name=line.961></a>
+      }<a name=line.962></a>
+    }<a name=line.963></a>
+    <span class='keyword'>if</span>(!aSuccess){<a name=line.964></a>
+      <span class='keyword'>if</span>(a.isSameDayAs(b)){<a name=line.965></a>
+        fail(<span class='literal'>"The date "</span> + aA + <span class='literal'>" should NOT be the same day as this, but it is : "</span> + aB);<a name=line.966></a>
+      }<a name=line.967></a>
+    }<a name=line.968></a>
+  }<a name=line.969></a>
+  <a name=line.970></a>
+  <a name=line.971></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testCompare(String aThis, String aThat, <span class='keyword'>boolean</span> aIsLess){  <a name=line.972></a>
+    DateTime a = <span class='keyword'>new</span> DateTime(aThis);<a name=line.973></a>
+    DateTime b = <span class='keyword'>new</span> DateTime(aThat);<a name=line.974></a>
+    <span class='keyword'>if</span>(aIsLess){<a name=line.975></a>
+      <span class='keyword'>if</span> ( a.compareTo(b) >= <span class='literal'>0</span> ) {<a name=line.976></a>
+        fail(aThis + <span class='literal'>" is meant to be less than this date, but isn't: "</span> + aThat);<a name=line.977></a>
+      }<a name=line.978></a>
+    }<a name=line.979></a>
+  }<a name=line.980></a>
+  <a name=line.981></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span>  testBefore(String aThis, String aThat){<a name=line.982></a>
+    DateTime a = <span class='keyword'>new</span> DateTime(aThis);<a name=line.983></a>
+    DateTime b = <span class='keyword'>new</span> DateTime(aThat);<a name=line.984></a>
+    assertTrue(a.lt(b));<a name=line.985></a>
+  }<a name=line.986></a>
+<a name=line.987></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span>  testAfter(String aThis, String aThat){<a name=line.988></a>
+    DateTime a = <span class='keyword'>new</span> DateTime(aThis);<a name=line.989></a>
+    DateTime b = <span class='keyword'>new</span> DateTime(aThat);<a name=line.990></a>
+    assertTrue(a.gt(b));<a name=line.991></a>
+  }<a name=line.992></a>
+  <a name=line.993></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testTruncate(<span class='keyword'>boolean</span> aSuccess, String aInput, String aExpected, DateTime.Unit aPrecision){<a name=line.994></a>
+    DateTime a = <span class='keyword'>new</span> DateTime(aInput);<a name=line.995></a>
+    DateTime aTruncated = a.truncate(aPrecision);<a name=line.996></a>
+    DateTime expected = <span class='keyword'>new</span> DateTime(aExpected);<a name=line.997></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.998></a>
+      assertTrue(aTruncated.equals(expected));<a name=line.999></a>
+    }<a name=line.1000></a>
+    <span class='keyword'>else</span> {<a name=line.1001></a>
+      assertFalse(aTruncated.equals(expected));<a name=line.1002></a>
+    }<a name=line.1003></a>
+  }<a name=line.1004></a>
+<a name=line.1005></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testNumDaysInMonth(String aInput, <span class='keyword'>int</span> aExpected){<a name=line.1006></a>
+    DateTime a = <span class='keyword'>new</span> DateTime(aInput);<a name=line.1007></a>
+    assertTrue(a.getNumDaysInMonth() == aExpected);<a name=line.1008></a>
+  }<a name=line.1009></a>
+<a name=line.1010></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testModifiedJD(String aDateTime, Integer aExpected){<a name=line.1011></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.1012></a>
+    <span class='keyword'>if</span>( ! dt.getModifiedJulianDayNumber().equals(aExpected) ){<a name=line.1013></a>
+       fail(<span class='literal'>"Expected: "</span> + aExpected + <span class='literal'>" Actual: "</span> + dt.getModifiedJulianDayNumber());  <a name=line.1014></a>
+    }<a name=line.1015></a>
+  }<a name=line.1016></a>
+  <a name=line.1017></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testStartOfDay(String aDateTime, String aExpected){<a name=line.1018></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.1019></a>
+    DateTime expected = <span class='keyword'>new</span> DateTime(aExpected);<a name=line.1020></a>
+    DateTime calc = dt.getStartOfDay();<a name=line.1021></a>
+    <span class='keyword'>if</span>  ( ! calc.equals(expected)){<a name=line.1022></a>
+      fail(<span class='literal'>"Expected: "</span> + aExpected + <span class='literal'>" Actual: "</span> + dt.getStartOfDay());  <a name=line.1023></a>
+    }<a name=line.1024></a>
+  }<a name=line.1025></a>
+  <a name=line.1026></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testEndOfDay(String aDateTime, String aExpected){<a name=line.1027></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.1028></a>
+    DateTime expected = <span class='keyword'>new</span> DateTime(aExpected);<a name=line.1029></a>
+    <span class='keyword'>if</span>  ( ! dt.getEndOfDay().equals(expected)){<a name=line.1030></a>
+      fail(<span class='literal'>"Expected: "</span> + aExpected + <span class='literal'>" Actual: "</span> + dt.getStartOfDay());  <a name=line.1031></a>
+    }<a name=line.1032></a>
+  }<a name=line.1033></a>
+<a name=line.1034></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testStartOfMonth(String aDateTime, String aExpected){<a name=line.1035></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.1036></a>
+    DateTime expected = <span class='keyword'>new</span> DateTime(aExpected);<a name=line.1037></a>
+    DateTime calc = dt.getStartOfMonth();<a name=line.1038></a>
+    <span class='keyword'>if</span>  ( ! calc.equals(expected)){<a name=line.1039></a>
+      fail(<span class='literal'>"Expected: "</span> + aExpected + <span class='literal'>" Actual: "</span> + dt.getStartOfDay());  <a name=line.1040></a>
+    }<a name=line.1041></a>
+  }<a name=line.1042></a>
+  <a name=line.1043></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testEndOfMonth(String aDateTime, String aExpected){<a name=line.1044></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.1045></a>
+    DateTime expected = <span class='keyword'>new</span> DateTime(aExpected);<a name=line.1046></a>
+    DateTime calc = dt.getEndOfMonth();<a name=line.1047></a>
+    <span class='keyword'>if</span>  ( ! calc.equals(expected)){<a name=line.1048></a>
+      fail(<span class='literal'>"Expected: "</span> + aExpected + <span class='literal'>" Actual: "</span> + dt.getStartOfDay());  <a name=line.1049></a>
+    }<a name=line.1050></a>
+  }<a name=line.1051></a>
+  <a name=line.1052></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testDateFromJD(String aExpected, <span class='keyword'>int</span> aJD){<a name=line.1053></a>
+    DateTime expected = <span class='keyword'>new</span> DateTime(aExpected);<a name=line.1054></a>
+    <span class='keyword'>if</span>( ! DateTime.fromJulianDayNumberAtNoon(aJD).equals(expected) ){<a name=line.1055></a>
+      fail(<span class='literal'>"Expected: "</span> + aExpected + <span class='literal'>" Actual: "</span> + DateTime.fromJulianDayNumberAtNoon(aJD).format(<span class='literal'>"YYYY-MM-DD"</span>));  <a name=line.1056></a>
+    }<a name=line.1057></a>
+  }<a name=line.1058></a>
+<a name=line.1059></a>
+  <a name=line.1060></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testEquals(String aThis, String aThat, <span class='keyword'>boolean</span> aSuccess){<a name=line.1061></a>
+    DateTime thisDt = <span class='keyword'>new</span> DateTime(aThis); <a name=line.1062></a>
+    DateTime thatDt = <span class='keyword'>new</span> DateTime(aThat);<a name=line.1063></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.1064></a>
+      assertTrue(thisDt.equals(thatDt));<a name=line.1065></a>
+    }<a name=line.1066></a>
+    <span class='keyword'>else</span> {<a name=line.1067></a>
+      assertFalse(thisDt.equals(thatDt));<a name=line.1068></a>
+    }<a name=line.1069></a>
+  }<a name=line.1070></a>
+  <a name=line.1071></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testEquals(DateTime aThis, DateTime aThat, <span class='keyword'>boolean</span> aSuccess){<a name=line.1072></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.1073></a>
+      assertTrue(aThis.equals(aThat));<a name=line.1074></a>
+    }<a name=line.1075></a>
+    <span class='keyword'>else</span> {<a name=line.1076></a>
+      assertFalse(aThis.equals(aThat));<a name=line.1077></a>
+    }<a name=line.1078></a>
+  }<a name=line.1079></a>
+<a name=line.1080></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testChangeTimeZone(String aForDate, String aExpected, TimeZone aFrom, TimeZone aTo){<a name=line.1081></a>
+    DateTime from = <span class='keyword'>new</span> DateTime(aForDate);<a name=line.1082></a>
+    DateTime actual = from.changeTimeZone(aFrom, aTo);<a name=line.1083></a>
+    DateTime expected = <span class='keyword'>new</span> DateTime(aExpected);<a name=line.1084></a>
+    <span class='keyword'>if</span>( !actual.equals(expected) ){<a name=line.1085></a>
+      fail(<span class='literal'>"Expected:"</span>  + aExpected + <span class='literal'>" Actual:"</span> + actual);<a name=line.1086></a>
+    }<a name=line.1087></a>
+  }<a name=line.1088></a>
+  <a name=line.1089></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testChangeTimeZoneFails(String aForDate, String aExpected, TimeZone aFrom, TimeZone aTo){<a name=line.1090></a>
+    DateTime from = <span class='keyword'>new</span> DateTime(aForDate);<a name=line.1091></a>
+    <span class='keyword'>try</span> {<a name=line.1092></a>
+      DateTime actual = from.changeTimeZone(aFrom, aTo);<a name=line.1093></a>
+      fail();<a name=line.1094></a>
+    }<a name=line.1095></a>
+    <span class='keyword'>catch</span>(RuntimeException ex){<a name=line.1096></a>
+      <span class='comment'>//ok      <a name=line.1097></a>
+</span>    }<a name=line.1098></a>
+  }<a name=line.1099></a>
+  <a name=line.1100></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testGetMillis(String aDate, TimeZone aTimeZone, <span class='keyword'>int</span> aExpected){<a name=line.1101></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDate);<a name=line.1102></a>
+    <span class='keyword'>long</span> actual = dt.getMilliseconds(aTimeZone);<a name=line.1103></a>
+    <span class='keyword'>if</span>(actual != aExpected){<a name=line.1104></a>
+      fail(<span class='literal'>"Actual: "</span> + actual + <span class='literal'>" Expected: "</span> + aExpected);<a name=line.1105></a>
+    }<a name=line.1106></a>
+  }<a name=line.1107></a>
+  <a name=line.1108></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testForInstant(<span class='keyword'>int</span> aMillis, TimeZone aTimeZone, String aExpected){<a name=line.1109></a>
+    DateTime dtInstant = DateTime.forInstant(aMillis, aTimeZone);<a name=line.1110></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aExpected);<a name=line.1111></a>
+    <span class='keyword'>if</span> (! dtInstant.equals(dt)){<a name=line.1112></a>
+      fail(<span class='literal'>"Time from millis : "</span> + dtInstant + <span class='literal'>" not agreeing with expected: "</span> + dt);<a name=line.1113></a>
+    }<a name=line.1114></a>
+  }<a name=line.1115></a>
+<a name=line.1116></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testForInstantNanos(<span class='keyword'>long</span> aNanos, TimeZone aTimeZone, String aExpected){<a name=line.1117></a>
+    DateTime dtInstant = DateTime.forInstantNanos(aNanos, aTimeZone);<a name=line.1118></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aExpected);<a name=line.1119></a>
+    <span class='keyword'>if</span> (! dtInstant.equals(dt)){<a name=line.1120></a>
+      fail(<span class='literal'>"Time from nanos : "</span> + dtInstant + <span class='literal'>" not agreeing with expected: "</span> + aExpected);<a name=line.1121></a>
+    }<a name=line.1122></a>
+  }<a name=line.1123></a>
+  <a name=line.1124></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testGetNanosecondsFromEpoch(String aDateTime, TimeZone aTimeZone, <span class='keyword'>long</span> aExpected){<a name=line.1125></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.1126></a>
+    <span class='keyword'>if</span> ( dt.getNanosecondsInstant(aTimeZone) != aExpected ){<a name=line.1127></a>
+      fail(<span class='literal'>"DateTime nanos : "</span> + dt.getNanosecondsInstant(aTimeZone) + <span class='literal'>" not agreeing with expected: "</span> + aExpected);<a name=line.1128></a>
+    }<a name=line.1129></a>
+  }<a name=line.1130></a>
+  <a name=line.1131></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testNanosecondRange(String aDateTime){<a name=line.1132></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.1133></a>
+    <span class='keyword'>try</span> {<a name=line.1134></a>
+      dt.getNanosecondsInstant(TimeZone.getTimeZone(<span class='literal'>"UTC"</span>));<a name=line.1135></a>
+    }<a name=line.1136></a>
+    <span class='keyword'>catch</span> (Throwable ex){<a name=line.1137></a>
+      fail(<span class='literal'>"Nanoseconds out of range for: "</span> + aDateTime);<a name=line.1138></a>
+    }<a name=line.1139></a>
+  }<a name=line.1140></a>
+<a name=line.1141></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testNumSecondsFrom(String a, String b, <span class='keyword'>long</span> aExpected){<a name=line.1142></a>
+    DateTime dtA = <span class='keyword'>new</span> DateTime(a);<a name=line.1143></a>
+    DateTime dtB = <span class='keyword'>new</span> DateTime(b);<a name=line.1144></a>
+    <span class='keyword'>if</span> (dtA.numSecondsFrom(dtB) != aExpected){<a name=line.1145></a>
+      fail(<span class='literal'>"Num seconds error. Expected: "</span> + aExpected + <span class='literal'>" Actual: "</span> + dtA.numSecondsFrom(dtB));<a name=line.1146></a>
+    }<a name=line.1147></a>
+  }<a name=line.1148></a>
+  <a name=line.1149></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testInterConversion(String aDateTime, TimeZone aTimeZone){<a name=line.1150></a>
+    DateTime dt = <span class='keyword'>new</span> DateTime(aDateTime);<a name=line.1151></a>
+    <span class='comment'>//loss of precision :<a name=line.1152></a>
+</span>    <span class='keyword'>long</span> millis = dt.getMilliseconds(aTimeZone);<a name=line.1153></a>
+    DateTime again = DateTime.forInstant(millis, aTimeZone);<a name=line.1154></a>
+    <span class='keyword'>if</span>( dt.compareTo(again) != <span class='literal'>0</span>){<a name=line.1155></a>
+      fail(aDateTime + <span class='literal'>" not the same as "</span> + again.format(<span class='literal'>"YYYY-MM-DD hh:mm:ss.fffffffff"</span>));<a name=line.1156></a>
+    }<a name=line.1157></a>
+  }<a name=line.1158></a>
+  <a name=line.1159></a>
+  <span class='keyword'>private</span> <span class='keyword'>void</span> testParseable(<span class='keyword'>boolean</span> aSuccess, String aText){<a name=line.1160></a>
+    <span class='keyword'>if</span>(aSuccess){<a name=line.1161></a>
+      <span class='keyword'>if</span> (! DateTime.isParseable(aText)){<a name=line.1162></a>
+        fail(<span class='literal'>"Expecting text to be parseable, but it's not: "</span> + aText);<a name=line.1163></a>
+      }<a name=line.1164></a>
+    }<a name=line.1165></a>
+    <span class='keyword'>else</span> {<a name=line.1166></a>
+      <span class='keyword'>if</span> ( DateTime.isParseable(aText)){<a name=line.1167></a>
+        fail(<span class='literal'>"Expecting text to be un-parseable, but it is: "</span> + aText);<a name=line.1168></a>
+      }<a name=line.1169></a>
+    }<a name=line.1170></a>
+  }<a name=line.1171></a>
+  <a name=line.1172></a>
+} <a name=line.1173></a>
+</PRE><a name=line.1174></a>
+ </BODY><a name=line.1175></a>
+<HTML><a name=line.1176></a>
