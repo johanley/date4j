@@ -8,7 +8,7 @@ Date4j is a lightweight replacement for Java's built-in date classes.
 In 2014, improved date classes were finally added to the JDK.
 Those classes render date4j more or less obsolete. 
 
-Documentation is here (the site date4j.net is being shut down):
+Documentation is here (the site date4j.net has been shut down):
 
 https://johanley.github.io/date4j/index.html
 
